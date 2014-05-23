@@ -1,35 +1,29 @@
+<?php
+	$root_path = "./";
+?>
+
 <html>
 	<head>
 		<title>
-			Cancer Network Alterting Variant Database
+			Cancer Variant Database
 		</title>
-		<link href="./bootstrap.css" rel="stylesheet">
+		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-		<style>
-			#browse-tabs{
-				margin-top:15px;
-			}
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+		<script src="<?php echo $root_path;?>site.js" ></script>
+		<link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
 
-			h1 a{
-				text-decoration: none;
-				color:rgb(34, 34, 34);;
-			}
-			h1 a:hover{
-				text-decoration: none;
-				color:rgba(33, 33, 33, 0.8);
-			}
-		</style>
 	</head>
 
 	<body style="background:#fafafa">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container">
-	    <h1><a href="#">The Cancer Network Altering Variant Database</a></h1>
-	    <p class="pull-right" style="margin-left:10px;margin-top:5px;"><a class="btn btn-danger" role="button"><i class="fa fa-flask"></i> About </a>
-	    <a class="btn btn-default" role="button"><i class="fa fa-question"></i> FAQs</a>
-	    <a class="btn btn-default" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
+	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">CAN-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase</a></h1>
+	    <p class="pull-right" style="margin-left:10px;margin-top:5px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
+	    <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
+	    <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
 	    </p>
-	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the Cancer Network Altering-Variant Database (CAN-VD). CAN-VD stores the PPI interactions mediated by wildtype and variant protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
+	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase (CAN-VD). CAN-VD stores the PPI interactions mediated by wildtype and variant protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
 
 	  </div>
 	<div class="container">
@@ -46,20 +40,20 @@
 		</div>
 
 		<div class="col-md-9">
-		    <div class="input-group input-group-lg">
-			  <input type="search" class="form-control" placeholder="enter a protein name, cancer type, or tissue type.">
+		    <form id="search_form" class="input-group input-group-lg" action="./network/" method="post">
+			  <input type="search" id="search_input" class="form-control" placeholder="enter a protein name, cancer type, or tissue type.">
 			  <span class="input-group-btn">
-		        <button class="btn btn-danger" type="button">Search</button>
+		        <input type="submit" class="btn btn-danger" type="button" id="search_btn">Search</input>
 		      </span>
-			</div>
+			</form>
 
 			<ul class="nav nav-tabs" id="browse-tabs">
-			  <li class="active"><a href="#">Proteins</a></li>
-			  <li><a href="#">Cancer Types</a></li>
-			  <li><a href="#">Tumor Tissue</a></li>
+			  <li class="active"><a data-tab="protein">Proteins</a></li>
+			  <li><a data-tab="cancer">Cancer Types</a></li>
+			  <li><a data-tab="tumor">Tumor Tissue</a></li>
 			</ul>
 
-			<table class="table table-striped table-hover ">
+			<table class="table table-striped table-hover" id="prots-table">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -113,6 +107,60 @@
                   </tr>
                 </tbody>
               </table>
+
+              <table class="table table-striped table-hover" id="cancer-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Cancer Type</th>
+                    <th>Number of Proteins</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>                  
+                </tbody>
+              </table>
+
+              <table class="table table-striped table-hover" id="tissue-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Tissue Type</th>
+                    <th>Number of Proteins</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Column content</td>
+                    <td>Column content</td>
+                  </tr>                  
+                </tbody>
+              </table>
           <ul class="pagination">
 			  <li><a href="#">&laquo;</a></li>
 			  <li class="active"><a href="#">1</a></li>
@@ -124,7 +172,9 @@
 		  </ul>
 		</div>
 	</div>
-		<div style="padding-top:50px;margin-bottom:15px;font-size:0.8em;font-style:italic;background:#fafafa;">Developed by Alex Crits-Christoph as part of Google Summer of Code under guidance of Dr. Mohamed Helmy. The CAN-VD database was developed by Mohamed Helmy in the Bader Lab at University of Toronto.</div>
+		<?php
+      		include $root_path. 'footer.php';
+		?>
 
 	</div>
 
