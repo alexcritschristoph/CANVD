@@ -1,11 +1,15 @@
 <?php
 	$root_path = "./";
+  include_once('./common.php');
+
+  //Generate sitewide database statistics
+  include_once('./generate_stats.php');
 ?>
 
 <html>
 	<head>
 		<title>
-			Cancer Variant Database
+			Cancer Variants Database
 		</title>
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -18,30 +22,31 @@
 	<body style="background:#fafafa">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container">
-	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">CAN-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase</a></h1>
+	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">CAN-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 	    <p class="pull-right" style="margin-left:10px;margin-top:5px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
 	    <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
 	    <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
 	    </p>
-	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase (CAN-VD). CAN-VD stores the PPI interactions mediated by wildtype and variant protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
+	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (CAN-VD). CAN-VD stores the PPI interactions mediated by wildtype and variants protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
 
 	  </div>
 	<div class="container">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="list-group">
-			  <a href="#" class="list-group-item active">
-			    All Proteins (3000)
-			  </a>
-			  <a href="#" class="list-group-item">Matching hits (5)</a>
-			  <a href="#" class="list-group-item">Selected proteins (3)</a>			  
-			  <a href="#" class="list-group-item">View Network</a>
+			  <li class="list-group-item" style="background:#f04124;color:white;font-size:1.1em;">
+			    CAN-VD Statistics
+			  </li>
+			  <li class="list-group-item">Proteins <span data-color="alert-info" class="badge "><?php echo number_format(intval($protein_count));?></span></li>			  
+        <li class="list-group-item">Interaction Domains <span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?></span></li>
+			  <li class="list-group-item">Interactions <span data-color="alert-info" class="badge "><?php echo number_format(intval($interaction_count));?></span></li>
+        <li class="list-group-item">Mutations <span data-color="alert-info" class="badge "><?php echo number_format(intval($mutation_count));?></span></li>
 			</div>
 		</div>
 
 		<div class="col-md-9">
-		    <form id="search_form" class="input-group input-group-lg" action="./network/" method="post">
-			  <input type="search" id="search_input" class="form-control" placeholder="enter a protein name, cancer type, or tissue type.">
+		    <form id="search_form" class="input-group input-group-lg" action="./network/" method="get">
+			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="enter a protein name. Examples: CRK, NEDD9">
 			  <span class="input-group-btn">
 		        <input type="submit" class="btn btn-danger" type="button" id="search_btn">Search</input>
 		      </span>

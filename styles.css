@@ -55,3 +55,7 @@ font-size:1em !important;
 #browse-tabs li a:hover{
 	cursor:pointer;
 }
+
+li .active{
+	color:white !important;
+}
