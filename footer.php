@@ -8,6 +8,6 @@
 	<p style="font-size:1em;margin-top:7px;">Developed by Alex Crits-Christoph as part of Google Summer of Code 2014</p>
 	</div>
 	<div class="pull-left" style="margin-bottom:20px;margin-left:30px;margin-top:-10px;">
-	<span><img src="<?php echo $root_path;?>footer_logo.png" height="80px"></img></span><span>	<img src="<?php echo $root_path;?>gsoc_logo.png" height="80px" style="margin-left:20px;"></img></span>
+	<span><a href="http://baderlab.org/"><img src="<?php echo $root_path;?>footer_logo.png" height="80px"></img></a></span><span>	<a href="https://developers.google.com/open-source/soc/?csw=1"><img src="<?php echo $root_path;?>gsoc_logo.png" height="80px" style="margin-left:20px;"></img></a></span>
 	</div>
 	</div>
