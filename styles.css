@@ -59,3 +59,39 @@ font-size:1em !important;
 li .active{
 	color:white !important;
 }
+
+.muts-table{
+	font-size:12px;
+	margin-bottom:0px;
+}
+
+.muts-table td{
+	padding:0 !important;
+	margin:0 !important;
+	padding-top:3px !important;
+	padding-bottom: 3px !important;
+	padding-left:15px !important;
+	padding-right:10px !important;
+}
+
+.qtip-content{
+	padding-left:0px;
+	padding-right:0px;
+	padding-bottom:0px;
+}
+
+.qtip-content h6{
+	margin-left:10px;
+}
+
+#tissues_filter_table{
+	text-transform:capitalize;
+}
+
+.hidden_tr{
+	display: none;
+}
+
+#tissue-load-less{
+	display:none;
+}

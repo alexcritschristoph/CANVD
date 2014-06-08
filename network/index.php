@@ -10,21 +10,27 @@
 		</title>
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+    <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
+    <script type="text/javascript" src="<?php echo $root_path;?>jquery.qtip.js"></script>
+    
     <script src="<?php echo $root_path;?>site.js" ></script>
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+    <script src="https://rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape.js-qtip.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
+    
 	</head>
 
 	<body style="background:#fafafa;">
 
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container" style="margin-bottom:15px;">
+    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
+      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
+      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
+      </p>
 	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-	    <p class="pull-right" style="margin-left:10px;margin-top:5px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
-	    <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
-	    <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
-	    </p>
+	    
 	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (Can-VD).</p>
 
 	  </div>
@@ -42,19 +48,7 @@
             <th>Tissues</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Example 1<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 2<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 3<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 4<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
+        <tbody id="tissues_filter_table">
         </tbody>
       </table>
 
@@ -144,6 +138,8 @@
 
 	</div>
 
+  <script src="<?php echo $root_path;?>bootstrap.js"></script>
+
   <script>
   $(function() {
 
@@ -168,9 +164,8 @@
   for(net in networkData) 
   { 
     for (n in networkData[net])
-    
     {
-      net_nodes.push( { data: { id: n, name: n, weight: 65, }} );
+      net_nodes.push( { data: { id: n, name: n, gene_id: net, weight: 65, muts: networkData[net][n]}} );
     }
 
   }
@@ -184,6 +179,98 @@
       net_edges.push( { data: { source: target_protein, target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
     }
   }
+
+  //Create list of tissues for filter list
+  var tissues = {};
+  for (net in networkData)
+  {
+    for (n in networkData[net])
+    {
+      for (m in networkData[net][n])
+      {
+        if (isNaN(tissues[networkData[net][n][m][2]]))
+        {
+          tissues[networkData[net][n][m][2]] = 1;
+        }
+        tissues[networkData[net][n][m][2]] += 1;
+      }
+    }
+  }
+
+
+  var sortable = [];
+  for (var tissue in tissues)
+      sortable.push([tissue, tissues[tissue]])
+
+  var sorted_tissues = sortable.sort(function(a, b) {return a[1] - b[1]}).reverse();
+  console.log(sorted_tissues);
+
+  var counter = 0;
+  for (var tissue in sorted_tissues)
+  {
+    sorted_tissues[tissue][0] = sorted_tissues[tissue][0].replace("_"," ").replace("_"," ").replace("_"," ");
+    if (counter < 4){
+    $("#tissues_filter_table").append("<tr><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
+    counter += 1;
+    }
+    else if (counter == 4)
+    {
+      $("#tissues_filter_table").append("<tr id='tissue-load-more'><td><a><i>Show More</i></a></tr></td");
+      $("#tissues_filter_table").append("<tr class='hidden_tr'><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
+    counter += 1;
+
+    }
+    else
+    {
+     $("#tissues_filter_table").append("<tr class='hidden_tr'><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
+    
+    }
+  }
+
+  $("#tissues_filter_table").append("<tr id='tissue-load-less'><td><a><i>Show Less</i></a></tr></td");
+
+
+   $('body').on( "click", ".tissue_filter", function() {
+         if ( $(this).find(".badge").hasClass("alert-success"))
+         {
+            $(this).find(".badge").removeClass("alert-success");
+            for (net in networkData)
+              {
+                var found = 0;
+                for (n in networkData[net])
+                {
+                  for (m in networkData[net][n])
+                  {
+                     var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
+                     if ($(this).data('name') == temp)
+                     {
+                        cy.$("node[name='"+Object.keys(networkData[net])[0]+"']").hide();
+                     }
+                  }
+                }
+              }
+         }
+         else
+         {
+            $(this).find(".badge").addClass("alert-success");
+            for (net in networkData)
+              {
+                var found = 0;
+                for (n in networkData[net])
+                {
+                  for (m in networkData[net][n])
+                  {
+                     var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
+                     if ($(this).data('name') == temp)
+                     {
+                        cy.$("node[name='"+Object.keys(networkData[net])[0]+"']").show();
+                     }
+                  }
+                }
+              }
+         }
+         
+   });
 
 	$(loadCy = function(){
 
@@ -200,26 +287,24 @@
         .css({
           'background-color': '#292929',
           'content': 'data(name)',
-          'font-size': 10,
+          'font-size': 14,
           'text-valign': 'center',
           'color': 'white',
           'text-outline-color': '#292929',
-          'text-outline-width':'2',
-          'height': '20',
-          'width':'20',
+          'text-outline-width':'3',
+          'height': '40',
+          'width':'40',
           'border-color': '#fff'
         })
       .selector(':selected')
         .css({
-          'background-color': '#a8a8a8',
-          'text-outline-color': '#c4c4c4',
-          'background-opacity':'0.5',
+          'background-opacity':'0.9',
           'text-outline-opacity':'0',
           'line-color': '#000',
           'target-arrow-color': '#000',
-          'border-color':'hsla(0, 84%, 54%, 0.77)',
-          'border-opacity':'0.5',
-          'border-width':'2',
+          'border-color':'#398bc6',
+          'border-opacity':'0.8',
+          'border-width':'5',
         })
       .selector('edge')
         .css({
@@ -256,13 +341,54 @@
     ready: function(){
       cy = this;
       cy.userZoomingEnabled(0);
+
+      var clickedNode = null;
+      cy.$('node').on('click', function(e){
+        var ele = e.cyTarget;
+        clickedNode = ele;
+      });
+
+      cy.elements('node').qtip({
+      content: {
+        text: function(event, api) {
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"'>Ensembl Link</a></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6>"
+            var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA</th><th>Tumor</th></tr></thead><tbody>";
+            for (m in clickedNode.data("muts")){
+              var row_string = "<tr><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][1] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
+              muts_string += row_string;
+            }
+            return html + muts_string + "</tbody></table></div>";
+          },
+        title: function(event, api) {
+          return clickedNode.data("id");
+        }
+      },
+      show: {
+        ready: false
+      },
+      position: {
+        my: 'top center',
+        at: 'bottom center'
+      },
+      style: {
+        classes: 'qtip-light',
+        tip: {
+          width: 10,
+          height: 8
+        }
+      }
+     });
+
     }
   };
 
   $('#cy').cytoscape(options);
 
 
+
 });
+
+
 });
 	</script>
 	</body>

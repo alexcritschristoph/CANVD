@@ -9,6 +9,21 @@ $(function() {
 
    });
 
+   //Tissue load more button on network page
+   $('body').on( "click", "#tissue-load-more", function() {
+         $(".hidden_tr").show();
+         $(this).hide()
+         $("#tissue-load-less").show();
+   });
+
+   $('body').on( "click", "#tissue-load-less", function() {
+         $(".hidden_tr").hide();
+         $(this).hide()
+         $("#tissue-load-more").show();
+   });
+
+
+   
    //Selecting Download button on network page
    $("#downloads_btn").on( "click", function() {
    		$("#downloads_li").addClass("active");
