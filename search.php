@@ -46,7 +46,7 @@ while ($row = $stmt->fetch())
 $plist = '\'' . implode('\',\'', $ens_ids) . '\'';
 $query = 'SELECT Interaction_EnsPID
 			  FROM T_Interaction
-			  WHERE Domain_EnsPID IN(' . $plist . ')';
+			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT 50;';
 
 //Parametized SQL prevents SQL injection
 $query_params = array(':ens' => $plist);

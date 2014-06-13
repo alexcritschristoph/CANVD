@@ -54,8 +54,8 @@
 			</form>
 
 			<ul class="nav nav-tabs" id="browse-tabs">
-			  <li ><a data-tab="protein">Tissues</a></li>
-			  <li class="active"><a data-tab="cancer">Proteins</a></li>
+			  <li class="active" ><a data-tab="protein">Tissues</a></li>
+			  <li><a data-tab="cancer">Proteins</a></li>
 			  <li><a data-tab="tumor">PWMs</a></li>
 			</ul>
 
