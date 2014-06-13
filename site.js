@@ -37,19 +37,19 @@ $(function() {
    		$("#browse-tabs").find("li").removeClass("active");
    		$(this).parent().addClass("active");
    		if($(this).data("tab")=="protein"){
-   			$("#cancer-table").hide();
-   			$("#tissue-table").hide();
-   			$("#prots-table").show();
+   			$("#protein-table").hide();
+   			$("#pwm-table").hide();
+   			$("#tissue-table").show();
    		}
    		else if($(this).data("tab")=="cancer"){
-   			$("#prots-table").hide();
    			$("#tissue-table").hide();
-   			$("#cancer-table").show();
+   			$("#pwm-table").hide();
+   			$("#protein-table").show();
    		}
    		else if($(this).data("tab")=="tumor"){
-   			$("#cancer-table").hide();
-   			$("#prots-table").hide();
-   			$("#tissue-table").show();
+   			$("#protein-table").hide();
+   			$("#tissue-table").hide();
+   			$("#pwm-table").show();
    		}
    });
 

@@ -2,6 +2,7 @@
 /*
 	Runs searches for gene / protein interactions.
 */
+$root_path = "../";
 include_once($root_path . './common.php');
 
 //Select Domain EnsPID from the gene name entered
@@ -15,7 +16,7 @@ else{
 
 
 $query = 'SELECT EnsPID
-			  FROM T_Domain
+			  FROM T_Ensembl
 			  WHERE GeneName = :gene_name;';
 
 //Parametized SQL prevents SQL injection
@@ -23,16 +24,24 @@ $query_params = array(':gene_name' => $gene_name);
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
-$ens_id = $stmt->fetch()[0];
+$ens_ids = array();
+while ($row = $stmt->fetch())
+{
+	$ens_ids[] = $row[0];
+	//echo $row[0] . ' ';
+
+}
+
 //echo $ens_id . '<br><br>';
 
 //Select all interactions with that Domain PID
-$query = 'SELECT Interactions_EnsPID
+$plist = '\'' . implode('\',\'', $ens_ids) . '\'';
+$query = 'SELECT Interaction_EnsPID
 			  FROM T_Interaction
-			  WHERE T_Domain_EnsPID = :ens;';
+			  WHERE Domain_EnsPID IN(' . $plist . ')';
 
 //Parametized SQL prevents SQL injection
-$query_params = array(':ens' => $ens_id);
+$query_params = array(':ens' => $plist);
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
@@ -41,14 +50,14 @@ $interaction_partners = array();
 while ($row = $stmt->fetch())
 {
 	$interaction_partners[] = $row[0];
-	//echo $row[0] . '<br>';
 }
 
 $plist = '\'' . implode('\',\'', $interaction_partners) . '\'';
 //Find all mutations of all interaction partners and (if possible) Gene names
-$query = 'SELECT EnsPID, GeneName, mut_nt, mut_aa, tumour_site
+$query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site
 			  FROM T_Mutations
 			  WHERE EnsPID IN(' . $plist . ')';
+//echo $query;
 //echo $query;
 //Parametized SQL prevents SQL injection
 $query_params = array();
@@ -64,8 +73,8 @@ $proteins = array();
 while ($row = $stmt->fetch())
 {
 	$proteins[$row['EnsPID']] = 1;
-	$tumors[$row[4]] = 1; 
-	$results[$row['EnsPID']][$row[1]][] = array($row[2], $row[3], $row[4]);
+	$tumors[$row[3]] = 1; 
+	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3]);
 	$mut_counter += 1;
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }

@@ -28,7 +28,7 @@
       </p>
 	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 	    
-	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (Can-VD). Can-VD stores the PPI interactions mediated by wildtype and variants protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
+	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>). <span style="color:#ea2f10">Can-VD</span> stores the PPI interactions mediated by wildtype and variants protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
 
 	  </div>
 	<div class="container">
@@ -54,128 +54,181 @@
 			</form>
 
 			<ul class="nav nav-tabs" id="browse-tabs">
-			  <li class="active"><a data-tab="protein">Proteins</a></li>
-			  <li><a data-tab="cancer">Cancer Types</a></li>
-			  <li><a data-tab="tumor">Tumor Tissue</a></li>
+			  <li ><a data-tab="protein">Tissues</a></li>
+			  <li class="active"><a data-tab="cancer">Proteins</a></li>
+			  <li><a data-tab="tumor">PWMs</a></li>
 			</ul>
 
-			<table class="table table-striped table-hover" id="prots-table">
+			<table class="table table-striped table-hover" id="tissue-table">
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th>Tissue</th>
+                    <th>Total Variants</th>
+                    <th>Gain of Function Variants</th>
+                    <th>Loss of Function Variants</th>
+                    <th>Total Proteins</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="tissue-table-body">
+                </tbody>
+              </table>
+
+          <script>
+              $(function() {
+                function update_tissue_view()
+                {
+                  //var test = $("#protein-page").data("page");
+                $.ajax({
+                        url: "./tables/tissues.php",
+                        type: "post",
+                        data: {start:0},
+                        success: function(results){
+                            $("#tissue-table-body").html('');
+                            $("#tissue-table-body").html(results);
+                        },
+                        error:function(){
+                            alert("failure");
+                        }
+                    });                  
+                }
+
+               // update_tissue_view();
+
+            /*    $("#protein-back").on( "click", function() {
+                  if ($("#protein-page").data("page") != 0)
+                  {
+                    $("#protein-page").data("page", $("#protein-page").data("page")- 10);
+                    update_protein_view();
+                  }
+                });
+
+                $("#protein-forward").on( "click", function() {
+                  $("#protein-page").data("page", $("#protein-page").data("page")+ 10);
+                  update_protein_view();
+                });*/
+
+              });
+              </script>    
+          <div  id="protein-table">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
                     <th>Protein Name</th>
-                    <th>Mutations</th>
-                    <th>Interaction Partners</th>
+                    <th>Type/Domain</th>
+                    <th>Gain of Function Interactions</th>
+                    <th>Loss of Function Interactions</th>
+                    <th>Total Variants</th>
+                    <th>Details</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
+                <tbody id="protein-table-body">
                 </tbody>
               </table>
 
-              <table class="table table-striped table-hover" id="cancer-table">
+              <script>
+              $(function() {
+                function update_protein_view()
+                {
+                  var test = $("#protein-page").data("page");
+                $.ajax({
+                        url: "./tables/proteins.php",
+                        type: "post",
+                        data: {start:test},
+                        success: function(results){
+                            $("#protein-table-body").html('');
+                            $("#protein-table-body").html(results);
+                        },
+                        error:function(){
+                            alert("failure");
+                        }
+                    });                  
+                }
+
+                update_protein_view();
+
+                $("#protein-back").on( "click", function() {
+                  if ($("#protein-page").data("page") != 0)
+                  {
+                $("#protein-page").data("page", $("#protein-page").data("page")- 10);
+                    update_protein_view();
+                  }
+                });
+
+                $("#protein-forward").on( "click", function() {
+                  $("#protein-page").data("page", $("#protein-page").data("page")+ 10);
+                  update_protein_view();
+                });
+
+
+                function update_pwm_view()
+                {
+                  var test = $("#pwm-page").data("page");
+                $.ajax({
+                        url: "./tables/pwm.php",
+                        type: "post",
+                        data: {start:test},
+                        success: function(results){
+                            if (results ==''){
+
+                            }
+                            else{
+                            $("#pwm-table-body").html('');
+                            $("#pwm-table-body").html(results);                              
+                            }
+
+                        },
+                        error:function(){
+                            alert("failure");
+                        }
+                    });                  
+                }
+
+                update_pwm_view();
+
+                $("#pwm-back").on( "click", function() {
+                $("#pwm-page").data("page", $("#pwm-page").data("page")- 10);
+                    update_pwm_view();
+                });
+
+                $("#pwm-forward").on( "click", function() {
+                  $("#pwm-page").data("page", $("#pwm-page").data("page")+ 10);
+                  update_pwm_view();
+                });
+
+
+              });
+              </script>
+
+              <ul class="pager" id="protein-page" data-page=0>
+                <li><a id="protein-back">Previous</a></li>
+                <li><a id="protein-forward">Next</a></li>
+              </ul>
+
+          </div>
+          <div id="pwm-table">
+              <table class="table table-striped table-hover" >
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Cancer Type</th>
-                    <th>Number of Proteins</th>
+                    <th>PWM</th>
+                    <th>Domain/Pattern</th>
+                    <th>Protein</th>
+                    <th>Logo</th>
+                    <th>File</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>                  
+                <tbody id="pwm-table-body">
+                                   
                 </tbody>
               </table>
 
-              <table class="table table-striped table-hover" id="tissue-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Tissue Type</th>
-                    <th>Number of Proteins</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Column content</td>
-                    <td>Column content</td>
-                  </tr>                  
-                </tbody>
-              </table>
-          <ul class="pagination">
-			  <li><a href="#">&laquo;</a></li>
-			  <li class="active"><a href="#">1</a></li>
-			  <li><a href="#">2</a></li>
-			  <li><a href="#">3</a></li>
-			  <li><a href="#">4</a></li>
-			  <li><a href="#">5</a></li>
-			  <li><a href="#">&raquo;</a></li>
-		  </ul>
+              <ul class="pager" id="pwm-page" data-page=0>
+                <li><a id="pwm-back">Previous</a></li>
+                <li><a id="pwm-forward">Next</a></li>
+              </ul>
+
+          </div>
+
 		</div>
 	</div>
 		<?php

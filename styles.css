@@ -44,11 +44,11 @@ font-size:1em !important;
 	padding-bottom:2px;
 }
 
-#cancer-table{
+#tissue-table{
 	display:none;
 }
 
-#tissue-table{
+#pwm-table{
 	display:none;
 }
 
@@ -94,4 +94,12 @@ li .active{
 
 #tissue-load-less{
 	display:none;
+}
+
+#protein-page a:hover{
+	cursor:pointer !important;
+}
+
+#pwm-page a:hover{
+	cursor:pointer !important;
 }
