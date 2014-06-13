@@ -103,3 +103,11 @@ li .active{
 #pwm-page a:hover{
 	cursor:pointer !important;
 }
+
+#tissue-page a:hover{
+	cursor:pointer !important;
+}
+
+#protein-choice-list a:hover{
+	cursor:pointer !important;
+};

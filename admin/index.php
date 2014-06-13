@@ -19,8 +19,9 @@
 
     .admin-table-item:hover{
       cursor:pointer;
-      *:focus {
     }
+
+    *:focus {
     outline: 0;
 }
   .btn-file {

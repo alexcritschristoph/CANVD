@@ -59,7 +59,8 @@
 			  <li><a data-tab="tumor">PWMs</a></li>
 			</ul>
 
-			<table class="table table-striped table-hover" id="tissue-table">
+      <div  id="tissue-table">
+			<table class="table table-striped table-hover">
                 <thead>
                   <tr>
                     <th>Tissue</th>
@@ -73,43 +74,11 @@
                 <tbody id="tissue-table-body">
                 </tbody>
               </table>
-
-          <script>
-              $(function() {
-                function update_tissue_view()
-                {
-                  //var test = $("#protein-page").data("page");
-                $.ajax({
-                        url: "./tables/tissues.php",
-                        type: "post",
-                        data: {start:0},
-                        success: function(results){
-                            $("#tissue-table-body").html('');
-                            $("#tissue-table-body").html(results);
-                        },
-                        error:function(){
-                            alert("failure");
-                        }
-                    });                  
-                }
-
-               // update_tissue_view();
-
-            /*    $("#protein-back").on( "click", function() {
-                  if ($("#protein-page").data("page") != 0)
-                  {
-                    $("#protein-page").data("page", $("#protein-page").data("page")- 10);
-                    update_protein_view();
-                  }
-                });
-
-                $("#protein-forward").on( "click", function() {
-                  $("#protein-page").data("page", $("#protein-page").data("page")+ 10);
-                  update_protein_view();
-                });*/
-
-              });
-              </script>    
+              <ul class="pager" id="tissue-page" data-page=0>
+                <li><a id="tissue-back">Previous</a></li>
+                <li><a id="tissue-forward">Next</a></li>
+              </ul>
+      </div>    
           <div  id="protein-table">
               <table class="table table-striped table-hover">
                 <thead>
@@ -187,8 +156,11 @@
                 update_pwm_view();
 
                 $("#pwm-back").on( "click", function() {
+                  if ($("#tissue-page").data("page") != 0)
+                  {
                 $("#pwm-page").data("page", $("#pwm-page").data("page")- 10);
                     update_pwm_view();
+                  }
                 });
 
                 $("#pwm-forward").on( "click", function() {
@@ -196,6 +168,42 @@
                   update_pwm_view();
                 });
 
+
+                function update_tissue_view()
+                {
+                  var test = $("#tissue-page").data("page");
+                $.ajax({
+                        url: "./tables/tissues.php",
+                        type: "post",
+                        data: {start:test},
+                        success: function(results){
+                          if (results ==''){
+                          }
+                          else {
+                            $("#tissue-table-body").html('');
+                            $("#tissue-table-body").html(results);
+                          }
+                        },
+                        error:function(){
+                            alert("failure");
+                        }
+                    });                  
+                }
+
+                update_tissue_view();
+
+                $("#tissue-back").on( "click", function() {
+                  if ($("#tissue-page").data("page") != 0)
+                  {
+                $("#tissue-page").data("page", $("#tissue-page").data("page")- 10);
+                    update_tissue_view();
+                  }
+                });
+
+                $("#tissue-forward").on( "click", function() {
+                  $("#tissue-page").data("page", $("#tissue-page").data("page")+ 10);
+                  update_tissue_view();
+                });
 
               });
               </script>

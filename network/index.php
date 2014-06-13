@@ -31,7 +31,7 @@
       </p>
 	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 	    
-	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
+	    <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
 
 	  </div>
 	<div class="container">
@@ -148,19 +148,30 @@
   include_once('../search.php');
   ?>
 
-  if (protein_count == "1"){
+  //for each protein, display
+  if (all_proteins.length > 1)
+  {
+    $("#main-top-text").after("<div class='panel panel-default' style='width:400px;'><div class='panel-heading' id='table-name-header'>Protein choices</div><div class='panel-body'><div class=\"list-group\" id=\"protein-choice-list\"></div></div>");
+    for (var i = 0; i < all_proteins.length; i++) {
+        $("#protein-choice-list").append("<a class=\"list-group-item\">" + all_proteins[i] + "</a>")
+    }
+
+  }
+
+  if (protein_count1 == "1"){
     $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein was not found in the database.</p></div>");
   }
   else{
-      $("#prot_c").text(protein_count);
-      $("#mut_c").text(mutation_count);
-      $("#tumor_c").text(tumor_count);
+      $("#prot_c").text(protein_count1);
+      $("#mut_c").text(mutation_count1);
+      $("#tumor_c").text(tumor_count1);
 
   }
 
   //Create list of nodes
   var net_nodes = [];
-  net_nodes.push({ data: { id: target_protein, name: target_protein, weight: 65, }} )
+  var networkData = networkData1;
+  net_nodes.push({ data: { id: target_protein1, name: target_protein1, weight: 65, }} )
   for(net in networkData) 
   { 
     for (n in networkData[net])
@@ -176,7 +187,7 @@
   { 
     for (n in networkData[net])
     {
-      net_edges.push( { data: { source: target_protein, target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
+      net_edges.push( { data: { source: target_protein1, target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
     }
   }
 

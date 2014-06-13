@@ -14,13 +14,21 @@ else{
 	exit();
 }
 
+$counter = 0;
+$diff_genes = array();
+$gene_names = explode(" ", $gene_name);
+foreach ($gene_names as $gene)
+{
 
+$diff_genes[] = $gene;
+
+$counter += 1;
 $query = 'SELECT EnsPID
 			  FROM T_Ensembl
 			  WHERE GeneName = :gene_name;';
 
 //Parametized SQL prevents SQL injection
-$query_params = array(':gene_name' => $gene_name);
+$query_params = array(':gene_name' => $gene);
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
@@ -79,8 +87,13 @@ while ($row = $stmt->fetch())
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
 ?>
-var tumor_count = "<?php echo count(array_keys($tumors)); ?>";
-var protein_count = "<?php echo count(array_keys($proteins)) + 1; ?>";
-var mutation_count = "<?php echo $mut_counter; ?>";
-var target_protein = "<?php echo $gene_name ?>";
-var networkData = <?php echo json_encode($results);?>
+var tumor_count<?php echo $counter;?> = "<?php echo count(array_keys($tumors)); ?>";
+var protein_count<?php echo $counter;?> = "<?php echo count(array_keys($proteins)) + 1; ?>";
+var mutation_count<?php echo $counter;?> = "<?php echo $mut_counter; ?>";
+var target_protein<?php echo $counter;?> = "<?php echo $gene ?>";
+var networkData<?php echo $counter;?> = <?php echo json_encode($results);?>;
+<?php
+}
+?>
+
+var all_proteins = <?php echo json_encode($diff_genes);?>;
