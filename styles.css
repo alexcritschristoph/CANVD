@@ -111,3 +111,11 @@ li .active{
 #protein-choice-list a:hover{
 	cursor:pointer !important;
 };
+
+#myModalLabel{
+	padding-right:25px;
+}
+
+.modal-body{
+	padding: 0;
+}

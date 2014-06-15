@@ -16,6 +16,11 @@ else{
 
 $counter = 0;
 $diff_genes = array();
+$tumor_json = array();
+$protein_json = array();
+$mutation_json = array();
+$target_json = array();
+$networkData_json = array();
 $gene_names = explode(" ", $gene_name);
 foreach ($gene_names as $gene)
 {
@@ -86,14 +91,20 @@ while ($row = $stmt->fetch())
 	$mut_counter += 1;
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
-?>
-var tumor_count<?php echo $counter;?> = "<?php echo count(array_keys($tumors)); ?>";
-var protein_count<?php echo $counter;?> = "<?php echo count(array_keys($proteins)) + 1; ?>";
-var mutation_count<?php echo $counter;?> = "<?php echo $mut_counter; ?>";
-var target_protein<?php echo $counter;?> = "<?php echo $gene ?>";
-var networkData<?php echo $counter;?> = <?php echo json_encode($results);?>;
-<?php
+
+$tumor_json[] = count(array_keys($tumors));
+$protein_json[] = count(array_keys($proteins)) + 1;
+$mutation_json[] = $mut_counter;
+$target_json[] = $gene;
+$networkData_json[] = $results;
 }
 ?>
 
+var tumor_count = <?php echo json_encode($tumor_json); ?>;
+var protein_count = <?php echo json_encode($protein_json); ?>;
+var mutation_count = <?php echo json_encode($mutation_json); ?>;
+var target_protein = <?php echo json_encode($target_json) ?>;
+var networkData1 = <?php echo json_encode($networkData_json);?>;
 var all_proteins = <?php echo json_encode($diff_genes);?>;
+
+console.log(tumor_count);

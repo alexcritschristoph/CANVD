@@ -4,45 +4,45 @@
 ?>
 
 <html>
-	<head>
-		<title>
-			Cancer Variants Database
-		</title>
-		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+  <head>
+    <title>
+      Cancer Variants Database
+    </title>
+    <link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
     <script type="text/javascript" src="<?php echo $root_path;?>jquery.qtip.js"></script>
     
     <script src="<?php echo $root_path;?>site.js" ></script>
-		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
     <script src="https://rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape.js-qtip.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
     
-	</head>
+  </head>
 
-	<body style="background:#fafafa;">
+  <body style="background:#fafafa;">
 
-	<div class="jumbotron" style="margin-bottom:0px;height:100%">
-	  <div class="container" style="margin-bottom:15px;">
+  <div class="jumbotron" style="margin-bottom:0px;height:100%">
+    <div class="container" style="margin-bottom:15px;">
     <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
       <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
-	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-	    
-	    <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
+      <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
+      
+      <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
 
-	  </div>
-	<div class="container">
-	<div class="row">
-		<div class="col-md-2">
-			<ul class="nav nav-pills">
-			  <li id="filters_li" class="active"><a href="#" id="filters_btn">Filters</a></li>
-			  <li id="downloads_li"><a href="#" id="downloads_btn">Download</a></li>
-			</ul>
+    </div>
+  <div class="container">
+  <div class="row">
+    <div class="col-md-2">
+      <ul class="nav nav-pills">
+        <li id="filters_li" class="active"><a href="#" id="filters_btn">Filters</a></li>
+        <li id="downloads_li"><a href="#" id="downloads_btn">Download</a></li>
+      </ul>
       <div id="filters_panel">
-			<table class="table table-striped table-hover ">
+      <table class="table table-striped table-hover ">
         <thead>
           <tr>
             <th>Tissues</th>
@@ -99,11 +99,11 @@
         <a href="#" class="list-group-item">MySQL Data</a>
       </div>
       </div>
-		</div>
+    </div>
 
-		<div class="col-md-8" id="main_network_column" style="padding-right:0;">
-		    	<div id="cy"></div>
-		</div>
+    <div class="col-md-8" id="main_network_column" style="padding-right:0;">
+          <div id="cy"></div>
+    </div>
     <div class="col-md-2" style="padding:0;margin:0;">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -129,14 +129,14 @@
           <a class="list-group-item show-item l-prot"><span data-color="alert-warning" class="badge alert-warning">14</span> Loss of Function </a>
         </div>
     </div>
-	</div>
+  </div>
   <?php
       include $root_path. 'footer.php';
     ?>
 
-	</div>
+  </div>
 
-	</div>
+  </div>
 
   <script src="<?php echo $root_path;?>bootstrap.js"></script>
 
@@ -151,12 +151,42 @@
   //for each protein, display
   if (all_proteins.length > 1)
   {
-    $("#main-top-text").after("<div class='panel panel-default' style='width:400px;'><div class='panel-heading' id='table-name-header'>Protein choices</div><div class='panel-body'><div class=\"list-group\" id=\"protein-choice-list\"></div></div>");
+  $("#main-top-text").after("<button class='btn btn-primary btn-sm' data-toggle='modal' data-target='#myModal'>Choose network to display</button>");
+    $("#main-top-text").after("<div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><button type='button' class='close' style='margin-right:6px;margin-top:6px' data-dismiss='modal' aria-hidden='true'>&times;</button><div class=\"modal-header\"><h4 class='modal-title' id='myModalLabel' style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4></div><div class='modal-body'><div class=\"list-group\" id=\"protein-choice-list\"></div><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
         $("#protein-choice-list").append("<a class=\"list-group-item\">" + all_proteins[i] + "</a>")
     }
 
+    $('#myModal').modal('toggle');
+
   }
+
+
+  var net_nodes = [];
+  var net_edges = [];
+  var protein_count1;
+  var mutation_count1;
+  var tumor_count1;
+  var networkData;
+  var target_protein1;
+  $('#protein-choice-list').on( "click", "a", function() {
+
+    net_nodes = [];
+    net_edges = [];
+    networkData = networkData1[$(this).index()];
+    protein_count1 = protein_count[$(this).index()];
+    mutation_count1 = mutation_count[$(this).index()];
+    tumor_count1 = tumor_count[$(this).index()];
+    target_protein1 = target_protein[0];
+    console.log(target_protein1);
+    $('#cy').cytoscape(options);
+    $('#myModal').modal('toggle');
+  });
+
+
+
+  function protein_page_setup()
+  {
 
   if (protein_count1 == "1"){
     $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein was not found in the database.</p></div>");
@@ -168,10 +198,11 @@
 
   }
 
+  
   //Create list of nodes
-  var net_nodes = [];
-  var networkData = networkData1;
-  net_nodes.push({ data: { id: target_protein1, name: target_protein1, weight: 65, }} )
+  net_nodes = [];
+  var networkData = networkData1[1];
+  net_nodes.push({ data: { id: target_protein[0], name: target_protein[0], weight: 65, }} )
   for(net in networkData) 
   { 
     for (n in networkData[net])
@@ -182,12 +213,12 @@
   }
 
   //Create list of edges
-  var net_edges = [];
+  net_edges = [];
   for(net in networkData) 
   { 
     for (n in networkData[net])
     {
-      net_edges.push( { data: { source: target_protein1, target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
+      net_edges.push( { data: { source: target_protein[0], target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
     }
   }
 
@@ -240,7 +271,8 @@
 
   $("#tissues_filter_table").append("<tr id='tissue-load-less'><td><a><i>Show Less</i></a></tr></td");
 
-
+  }
+  protein_page_setup();
    $('body').on( "click", ".tissue_filter", function() {
          if ( $(this).find(".badge").hasClass("alert-success"))
          {
@@ -283,11 +315,11 @@
          
    });
 
-	$(loadCy = function(){
+  $(loadCy = function(){
 
   options = {
     layout: { name: "random" },
-  	name: 'circle',
+    name: 'circle',
     showOverlay: true,
     minZoom: 0.5,
     maxZoom: 2,
@@ -393,7 +425,7 @@
     }
   };
 
-  $('#cy').cytoscape(options);
+  
 
 
 
@@ -401,7 +433,7 @@
 
 
 });
-	</script>
-	</body>
+  </script>
+  </body>
 
 </html>
