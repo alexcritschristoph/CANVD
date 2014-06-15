@@ -148,6 +148,14 @@
   include_once('../search.php');
   ?>
 
+  var net_nodes = [];
+  var net_edges = [];
+  var protein_count1;
+  var mutation_count1;
+  var tumor_count1;
+  var networkData;
+  var target_protein1;
+
   //for each protein, display
   if (all_proteins.length > 1)
   {
@@ -161,19 +169,24 @@
 
   }
 
+  else 
+  {
+    networkData = networkData1[0];
+    protein_count1 = protein_count[0];
+    mutation_count1 = mutation_count[0];
+    tumor_count1 = tumor_count[0];
+    target_protein1 = target_protein[0];
+    console.log(target_protein1);
+    var networkData = networkData1[0];
 
-  var net_nodes = [];
-  var net_edges = [];
-  var protein_count1;
-  var mutation_count1;
-  var tumor_count1;
-  var networkData;
-  var target_protein1;
+  }
+
+
   $('#protein-choice-list').on( "click", "a", function() {
 
     net_nodes = [];
     net_edges = [];
-    networkData = networkData1[$(this).index()];
+    var networkData = networkData1[$(this).index()];
     protein_count1 = protein_count[$(this).index()];
     mutation_count1 = mutation_count[$(this).index()];
     tumor_count1 = tumor_count[$(this).index()];
@@ -199,9 +212,9 @@
   }
 
   
+  networkData = networkData1[0];
   //Create list of nodes
   net_nodes = [];
-  var networkData = networkData1[1];
   net_nodes.push({ data: { id: target_protein[0], name: target_protein[0], weight: 65, }} )
   for(net in networkData) 
   { 
@@ -273,6 +286,7 @@
 
   }
   protein_page_setup();
+
    $('body').on( "click", ".tissue_filter", function() {
          if ( $(this).find(".badge").hasClass("alert-success"))
          {
@@ -314,7 +328,6 @@
          }
          
    });
-
   $(loadCy = function(){
 
   options = {
@@ -425,11 +438,15 @@
     }
   };
 
-  
 
+  if (all_proteins.length == 1){
+    console.log(net_nodes);
+    $('#cy').cytoscape(options);
+  }
 
 
 });
+
 
 
 });
