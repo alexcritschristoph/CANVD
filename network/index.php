@@ -304,6 +304,7 @@
  //
 
    $('body').on( "click", ".tissue_filter", function() {
+    
          if ( $(this).find(".badge").hasClass("alert-success"))
          {
             $(this).find(".badge").removeClass("alert-success");
@@ -317,7 +318,7 @@
                      var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
                      if ($(this).data('name') == temp)
                      {
-                        cy.$("node[name='"+Object.keys(networkData[net])[0]+"']").hide();
+                        cy.$("node[id='"+Object.keys(networkData[net])[0]+"']").hide();
                      }
                   }
                 }
@@ -336,7 +337,7 @@
                      var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
                      if ($(this).data('name') == temp)
                      {
-                        cy.$("node[name='"+Object.keys(networkData[net])[0]+"']").show();
+                        cy.$("node[id='"+Object.keys(networkData[net])[0]+"']").show();
                      }
                   }
                 }
