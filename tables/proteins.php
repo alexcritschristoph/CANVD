@@ -20,17 +20,6 @@ while ($row = $stmt->fetch())
 
 foreach ($proteins as $protein)
 {
-	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='loss of function';";
-	$query_params = array(':protid' => $protein[2]);
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$loss_num = $stmt->fetch()[0];
-
-	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='gain of function';";
-	$query_params = array(':protid' => $protein[2]);
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$gain_num = $stmt->fetch()[0];
 
 	$query = "SELECT COUNT(*) FROM T_Mutations WHERE EnsPID=:protid;";
 	$query_params = array(':protid' => $protein[2]);
@@ -43,8 +32,6 @@ foreach ($proteins as $protein)
 	<tr>
         <td><?php echo $protein[0];?></td>
         <td><?php echo $protein[1];?></td>
-        <td><?php echo $gain_num;?></td>
-        <td><?php echo $loss_num;?></td>
         <td><?php echo $mut_num;?></td>
         <td><a href="./network/?genename=<?php echo $protein[0]; ?>">Network</a></td>
 	</tr>

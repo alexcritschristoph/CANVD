@@ -17,13 +17,20 @@
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
     <style>
 
+    .form-signin
+    {
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+    }
+
     .admin-table-item:hover{
       cursor:pointer;
     }
 
-    *:focus {
-    outline: 0;
-}
+      *:focus {
+      outline: 0 !important;
+  }
   .btn-file {
     position: relative;
     overflow: hidden;
@@ -43,17 +50,28 @@
     cursor: inherit;
     display: block;
 }
+
+.show-btn:hover{
+  cursor:pointer;
+  text-decoration: underline;
+}
+
+.show-btn{
+  color:#454545;
+}
+
+.delete-btn:hover{
+  cursor:pointer;
+}
+}
     </style>
 	</head>
 
 	<body style="background:#fafafa;">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container" style="margin-bottom:15px;">
-	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">CAN-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase</a></h1>
-	    <p class="pull-right" style="margin-left:10px;margin-top:5px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
-	    <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
-	    <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
-	    </p>
+	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariant <span style="color:#ea2f10">D</span>atabase</a></h1>
+
 
     <?php
         $failure = false;
@@ -98,8 +116,8 @@
           echo $error;
           ?>
 
+            <h2 class="form-signin" style="padding-left:60px;">Can-VD Admin- Please Sign In</h2>
             <form class="form-signin" role="form" action="../admin/" method="post">
-              <h2 class="form-signin-heading">Please sign in</h2>
 
               <input type="input" name="username" style="margin-left:120px;margin-top:40px;margin-bottom:20px;width:300px;" class="input-group" placeholder="Username" required autofocus>
               <input type="password" name="password" style="margin-left:120px;margin-top:20px;margin-bottom:20px;width:300px;" class="input-group input-group-lg" placeholder="Password" required>
@@ -111,11 +129,98 @@
         {
 ?>
             <form action="../logout.php" method="post">
-                      <button class="btn btn-md btn-info pull-right" type="submit" style="margin-top:5px;">Log out</button>
+                      <button class="btn btn-md btn-primary pull-right" type="submit" style="margin-top:5px;margin-left:10px;">Log out</button>
             </form>
-                          <h2 style="margin-top:20px;"> CANVD Administration Panel </h2>
+                      <button class="btn btn-md btn-default pull-right" id="data-btn" style="margin-top:1px;margin-left:10px;">Data </button>
+                      <button class="btn btn-md btn-success pull-right" id="ann-btn"  style="margin-top:1px;margin-left:10px;">Announcements</button>
 
-                          <div class="row" style="margin-top:50px;">
+                          <h2 style="margin-top:20px;"> Can-VD Administration Panel </h2>
+
+                          <script>
+                            $(function() {
+
+                                  $("#ann-btn").on( "click", function() {
+                                    $("#data-view").hide();
+                                    $("#announce-view").fadeIn('fast');
+                                    $(this).removeClass("btn-default").addClass("btn-success");
+                                    $("#data-btn").removeClass("btn-success").addClass("btn-default");
+                              });
+                                  $("#data-btn").on( "click", function() {
+                                    $("#announce-view").hide();
+                                    $("#data-view").fadeIn('fast');
+                                    $(this).removeClass("btn-default").addClass("btn-success");   
+                                    $("#ann-btn").removeClass("btn-success").addClass("btn-default");                             
+                              });
+                            });
+                          </script>
+
+                          <div class="row" style="margin-top:50px" id="announce-view">
+                          <div class="col-md-6 col-md-offset-3">
+                            <div class="panel panel-default">
+                              <div class="panel-heading">
+                                Add an announcement
+                              </div>
+                              <div class="panel-body">
+                                <form role="form" action="./create_announce.php" method="get">
+                                <input type="text" style="width:90%" class="form-control" name="title" placeholder="Announcement title">
+                                <textarea style="width:90%;margin-bottom:25px;margin-top:20px;color:#6f6f6f;resize:none;" name="body" placeholder="Announcement text (supports html tags)." rows="5"></textarea>
+                                <button type="submit" class="btn btn-default">Submit</button>
+                                </form>
+                              </div>
+                            </div>
+
+                              <?php
+                             $query = 'SELECT *
+                                      FROM announcements ORDER BY id DESC;';
+                             $query_params = array();
+                             $stmt = $dbh->prepare($query);
+                             $stmt->execute($query_params);
+
+                              while ($row = $stmt->fetch())
+                              {
+                                  ?>
+                                  <div class="panel panel-success">
+                                    <div class="panel-heading">
+                                      <span class="pull-right">
+                                      <?php
+                                      if ($row[4] == 1){
+                                      ?>
+                                      <i class="fa fa-check-square-o show-btn" data-btn-type='show' data-item-id=<?php echo $row[0]?>> <span style="font-size:0.7em"> Show</span></i>
+                                      <?php
+                                    }
+                                    else{
+                                      ?>
+                                      <i class="fa fa-square-o show-btn" data-btn-type='show' data-item-id=<?php echo $row[0]?>> <span style="font-size:0.7em"> Show</span></i>
+                                      <?php
+                                    }
+
+                                    if ($row[5] == 1){
+                                    ?>
+                                      <i class="fa fa-check-square-o show-btn" data-btn-type='show_homepage' data-item-id=<?php echo $row[0]?> style="margin-left:15px;"> <span style="font-size:0.7em"> Show in Home</span></i>
+                                    <?php
+                                  }else{
+                                    ?>
+                                      <i class="fa fa-square-o show-btn" data-btn-type='show_homepage' data-item-id=<?php echo $row[0]?> style="margin-left:15px;"> <span style="font-size:0.7em"> Show in Home</span></i>
+                                    <?php
+                                  }?>
+                                      </span>
+
+                                      <?php echo $row[2]; ?>
+                                    </div>
+                                    <div class="panel-body">
+                                      <?php echo $row[3]; ?>
+                                    </div>
+                                    <a style="font-size:0.7em;margin-bottom:5px;margin-right:10px;" data-item-id=<?php echo $row[0]?> class="pull-right delete-btn">Delete</a>
+
+                                    <p style="font-size:0.7em;margin-bottom:5px;margin-left:10px;font-style:italic;"><?php echo $row[1];?></p>
+                                    <div class="clearfix "></div>
+                                  </div>
+                                  <?php
+                              }
+                              ?>
+                          </div>
+                          </div>
+                          <div class="row" style="margin-top:50px;display:none;" id="data-view">
                             <div class="col-md-3">
                               <div class="list-group" id="admin-list">
                                 <div class="list-group-item" style="background:#f5f5f5;color:black;font-size:1.1em;">
@@ -146,6 +251,46 @@
 
                                 <script>
                                 $(function() {
+                                  $(".delete-btn").on( "click", function() {
+                                      var this_btn = $(this).parent();
+                                      $.ajax({
+                                            url: "./announce_delete.php",
+                                            type: "post",
+                                            data: {a_id:$(this).data("item-id")},
+                                            success: function(results){
+
+                                             this_btn.fadeOut();
+                                            },
+                                            error:function(){
+                                                alert("failure");
+                                            }
+                                        });                                    
+                                  });
+
+                                  $(".show-btn").on( "click", function() {
+                                    var valueT = 0;
+                                    if($(this).hasClass("fa-check-square-o"))
+                                    {
+                                      valueT = 0;
+                                      $(this).removeClass("fa-check-square-o").addClass("fa-square-o");
+                                    }
+                                    else
+                                    {
+                                      valueT = 1;
+                                      $(this).removeClass("fa-square-o").addClass("fa-check-square-o");
+                                    }
+
+                                      $.ajax({
+                                            url: "./announce_change.php",
+                                            type: "post",
+                                            data: {switchV:$(this).data("btn-type"),value:valueT,a_id:$(this).data("item-id")},
+                                            success: function(results){
+                                            },
+                                            error:function(){
+                                                alert("failure");
+                                            }
+                                        });                                    
+                                  });
 
                                   $("#admin-list").on( "click", "a", function() {
                                     $("#table-name-header").text($(this).text());
@@ -175,7 +320,7 @@
                                   <div id="panel-content" style="display:none"> <!-- style="display:none"-->
                                     <p id="table-name"></p>
                                     <p>
-                                    <p>Note: To upload data to CANVD, files must be tab separated text files with the appropriate column structure
+                                    <p>Note: To upload data to Can-VD, files must be tab separated text files with the appropriate column structure
                                     needed for each table.</p>
 
                                     <form action="upload_text.php" method="post"
@@ -185,13 +330,13 @@
                                     <div data-toggle="buttons" style="margin-top:5px;">
                                         <label>
                                             <input type="radio" name="action" value="add" checked>
-                                        Add this data to the table </label>
+                                        Append this data to the table </label>
                                         <label>
                                             <input type="radio" name="action" value="replace">
                                         Replace the ENTIRE table with this data </label>
                                     </div>
 
-                                    <button class="btn btn-md btn-success" style="margin-top:15px;margin-left:200px;" type="submit">Submit</button>
+                                    <button class="btn btn-md btn-primary" style="margin-top:15px;margin-left:200px;" type="submit">Submit</button>
                                     </form>
                                   </div>
                                 </div>

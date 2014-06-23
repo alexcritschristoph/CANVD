@@ -38,4 +38,12 @@ $query = 'SELECT COUNT(ID)
 	$stmt->execute($query_params);
 	$mutation_count = $stmt->fetch()[0];
 
+//Count # of PWMs
+$query = 'SELECT COUNT(PWM)
+			  FROM T_PWM;';
+  	$query_params = array();
+	$stmt = $dbh->prepare($query);
+	$stmt->execute($query_params);
+	$pwm_count = $stmt->fetch()[0];	
+
 ?>

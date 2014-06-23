@@ -9,63 +9,20 @@ $start = $_POST['start'];
 
 //Get list of unique tissues in entire database
 //Get # of mutations for each tissue
-$query = "SELECT DISTINCT tumour_site FROM T_Mutations LIMIT " . strval($start) . ",10;";
+$query = "SELECT * FROM tissue_table_browser LIMIT " . strval($start) . ",10;";
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 $tissues = array();
+
 while ($row = $stmt->fetch())
 {
-	$tissues[] = $row[0];
-	echo $row[0];
-}
-
-//Get # of gain and loss and total proteins
-
-foreach ($tissues as $tissue)
-{
-	//get all mutations
-	/*$query = "SELECT ID FROM T_Mutations WHERE tumour_site=:tissue;";
-	$query_params = array(":tissue" => $tissue);
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$ids = array();
-	while ($row = $stmt->fetch())
-	{
-		$ids[] = $row[0];
-		//echo $row[0];
-	}*/
-	//count interactions
-/*	$plist = '\'' . implode('\',\'', $ids) . '\'';
-	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE IID IN(" . $plist . ") AND Eval='loss of function';";
-	$query_params = array();
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$loss_num = $stmt->fetch()[0];*/
-
-/*	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE IID IN(" . $plist . ") AND Eval='gain of function';";
-	$query_params = array();
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$gain_num = $stmt->fetch()[0];
-
-	//count proteins
-	$query = "SELECT Count(DISTINCT EnsPID) FROM T_Mutations WHERE tumour_site=:tissue;";
-	$query_params = array(":tissue" => $tissue);
-	$stmt = $dbh->prepare($query);
-	$stmt->execute($query_params);
-	$tissues = array();
-	$prot_num = $stmt->fetch()[0];
-	//Display results
-	?>*/
 	?>
 	<tr>
-        <td><?php echo ucwords(str_replace("_"," ", $tissue));;?></td>
-        <td><?php echo '-';?></td>
-        <td><?php echo '-'?></td>
-        <td><?php echo '-'?></td>
-        <td><?php echo '-'?></td>
-        <td><?php echo '-'?></td>
+        <td><?php echo ucwords(str_replace("_"," ", $row[1]));;?></td>
+        <td><?php echo $row[2];?></td>
+        <td><?php echo $row[3];	?></td>
+        <td><?php echo "<a href='#'>Proteins</a> - <a href='#'>Downloads</a>"?></td>
 	</tr>
 
 	<?php

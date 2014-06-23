@@ -172,9 +172,7 @@ legend {
   border: 0;
   padding: 0;
 }
-textarea {
-  overflow: auto;
-}
+
 optgroup {
   font-weight: bold;
 }

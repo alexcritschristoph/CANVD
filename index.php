@@ -39,17 +39,47 @@
 			    Can-VD Statistics
 			  </li>
 			  <li class="list-group-item">Proteins <span data-color="alert-info" class="badge "><?php echo number_format(intval($protein_count));?></span></li>			  
-        <li class="list-group-item">Interaction Domains <span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?></span></li>
+        <li class="list-group-item">Domains <span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?></span></li>
 			  <li class="list-group-item">Interactions <span data-color="alert-info" class="badge "><?php echo number_format(intval($interaction_count));?></span></li>
-        <li class="list-group-item">Mutations <span data-color="alert-info" class="badge "><?php echo number_format(intval($mutation_count));?></span></li>
+        <li class="list-group-item">Variants <span data-color="alert-info" class="badge "><?php echo number_format(intval($mutation_count));?></span></li>
+        <li class="list-group-item">PWMs <span data-color="alert-info" class="badge "><?php echo number_format(intval($pwm_count));?></span></li>
+
 			</div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background:#f04124;color:white;font-size:0.8em;font-weight:300;">
+        Announcements and News
+        </div>
+        <div class="panel-body" style="font-size:0.8em;">
+
+         <?php
+                             $query = 'SELECT *
+                                      FROM announcements WHERE `show_homepage`=1 ORDER BY id DESC;';
+                             $query_params = array();
+                             $stmt = $dbh->prepare($query);
+                             $stmt->execute($query_params);
+
+                              while ($row = $stmt->fetch())
+                              {
+
+                                ?>
+        <div style="margin-bottom:15px;">
+        <span  style="display:block;margin-bottom:1px;"><b style="display:block;"><?php echo $row[2];?></b><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></span>
+        <?php echo $row[3];?>
+        </div>
+        <?php
+      }
+      ?>
+        </div>
+        </div>
 		</div>
 
 		<div class="col-md-9">
 		    <form id="search_form" class="input-group input-group-lg" action="./network/" method="get">
-			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="enter a protein name. Examples: CRK, NEDD9">
+			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602">
 			  <span class="input-group-btn">
-		        <input type="submit" class="btn btn-danger" type="button" id="search_btn">Search</input>
+		        <button type="submit" class="btn btn-danger" type="button" id="search_btn">Search</button>
+            <button type="submit" class="btn btn-default" type="button" id="search_btn">Advanced</button>
 		      </span>
 			</form>
 
@@ -65,8 +95,6 @@
                   <tr>
                     <th>Tissue</th>
                     <th>Total Variants</th>
-                    <th>Gain of Function Variants</th>
-                    <th>Loss of Function Variants</th>
                     <th>Total Proteins</th>
                     <th>Details</th>
                   </tr>
@@ -85,8 +113,6 @@
                   <tr>
                     <th>Protein Name</th>
                     <th>Type/Domain</th>
-                    <th>Gain of Function Interactions</th>
-                    <th>Loss of Function Interactions</th>
                     <th>Total Variants</th>
                     <th>Details</th>
                   </tr>
@@ -156,7 +182,7 @@
                 update_pwm_view();
 
                 $("#pwm-back").on( "click", function() {
-                  if ($("#tissue-page").data("page") != 0)
+                  if ($("#pwm-page").data("page") != 0)
                   {
                 $("#pwm-page").data("page", $("#pwm-page").data("page")- 10);
                     update_pwm_view();
@@ -221,6 +247,7 @@
                     <th>PWM</th>
                     <th>Domain/Pattern</th>
                     <th>Protein</th>
+                    <th>Type</th>
                     <th>Logo</th>
                     <th>File</th>
                   </tr>

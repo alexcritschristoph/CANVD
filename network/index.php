@@ -12,13 +12,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
     <script type="text/javascript" src="<?php echo $root_path;?>jquery.qtip.js"></script>
-    
+
     <script src="<?php echo $root_path;?>site.js" ></script>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
     <script src="https://rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape.js-qtip.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
-    
+
   </head>
 
   <body style="background:#fafafa;">
@@ -30,11 +30,13 @@
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-      
+
       <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
 
     </div>
-  <div class="container">
+  <div class="test" id="network-selection-container" >
+  </div>
+  <div class="container" id="network-view-container">
   <div class="row">
     <div class="col-md-2">
       <ul class="nav nav-pills">
@@ -49,28 +51,6 @@
           </tr>
         </thead>
         <tbody id="tissues_filter_table">
-        </tbody>
-      </table>
-
-      <table class="table table-striped table-hover ">
-        <thead>
-          <tr>
-            <th>Cancers</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Example 1<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 2<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 3<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
-          <tr>
-            <td>Example 4<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
         </tbody>
       </table>
 
@@ -159,49 +139,79 @@
   //for each protein, display
   if (all_proteins.length > 1)
   {
-  $("#main-top-text").after("<button class='btn btn-primary btn-sm' data-toggle='modal' data-target='#myModal'>Choose network to display</button>");
-    $("#main-top-text").after("<div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><button type='button' class='close' style='margin-right:6px;margin-top:6px' data-dismiss='modal' aria-hidden='true'>&times;</button><div class=\"modal-header\"><h4 class='modal-title' id='myModalLabel' style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4></div><div class='modal-body'><div class=\"list-group\" id=\"protein-choice-list\"></div><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div></div></div>");
+  $("#network-view-container").hide();
+  $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
+    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-9 col-md-offset-1\"><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Ensembl Ids</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
-        $("#protein-choice-list").append("<a class=\"list-group-item\">" + all_proteins[i] + "</a>")
+        var keys = [];
+        var keystring = "";
+        var j = 0;
+        for(var k in networkData1[i]) {
+          if (j > 0) {
+          keys.push(k);
+          keystring = keystring+ ", " + k;
+
+          }
+          else{
+          keys.push(k);
+          keystring = k;
+          }
+          j += 1
+        }
+        console.log();
+        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:0.8em;max-width:330px;'>"+keystring+"</td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
     }
 
-    $('#myModal').modal('toggle');
 
   }
 
-  else 
+  else
   {
     networkData = networkData1[0];
     protein_count1 = protein_count[0];
     mutation_count1 = mutation_count[0];
     tumor_count1 = tumor_count[0];
     target_protein1 = target_protein[0];
+    interaction_names1 = interaction_names[0];
+    interaction_edges1 = interaction_edges[0];
     console.log(target_protein1);
-    var networkData = networkData1[0];
-
+    protein_page_setup();
   }
 
-
-  $('#protein-choice-list').on( "click", "a", function() {
+  $('#protein-selection-btn').on("click", function(){
+    $("#network-view-container").hide();
+    $("#network-selection-container").show();
+  });
+  $('#protein-choice-list').on( "click", "tr", function() {
 
     net_nodes = [];
     net_edges = [];
-    var networkData = networkData1[$(this).index()];
+    networkData = networkData1[$(this).index()];
+    console.log(networkData);
+    console.log("***");
     protein_count1 = protein_count[$(this).index()];
     mutation_count1 = mutation_count[$(this).index()];
     tumor_count1 = tumor_count[$(this).index()];
-    target_protein1 = target_protein[0];
-    console.log(target_protein1);
+    target_protein1 = target_protein[$(this).index()];
+    interaction_names1 = interaction_names[$(this).index()];
+    interaction_edges1 = interaction_edges[$(this).index()];
+    protein_page_setup();
+      console.log("%%%%%%%%%%%5");
+
+    console.log(networkData);
+    console.log("%%%%%%%%%%%%%");
+    loadCy();
     $('#cy').cytoscape(options);
-    $('#myModal').modal('toggle');
+    console.log(options);
+    $("#network-selection-container").hide();
+    $("#network-view-container").show();
   });
 
 
 
   function protein_page_setup()
   {
-
-  if (protein_count1 == "1"){
+  if (target_protein.length < 1){
     $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein was not found in the database.</p></div>");
   }
   else{
@@ -211,27 +221,32 @@
 
   }
 
-  
-  networkData = networkData1[0];
+  console.log(networkData);
+  console.log("***");
   //Create list of nodes
   net_nodes = [];
-  net_nodes.push({ data: { id: target_protein[0], name: target_protein[0], weight: 65, }} )
-  for(net in networkData) 
-  { 
+  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 65, }} )
+    var l = 0;  
+  for(net in networkData)
+  {
     for (n in networkData[net])
     {
-      net_nodes.push( { data: { id: n, name: n, gene_id: net, weight: 65, muts: networkData[net][n]}} );
+      console.log(interaction_names1[l]);
+      net_nodes.push( { data: { id: n, name: interaction_names1[l], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n]}} );
+      l += 1;
     }
 
   }
 
   //Create list of edges
   net_edges = [];
-  for(net in networkData) 
-  { 
+  var l = 0;
+  for(net in networkData)
+  {
     for (n in networkData[net])
     {
-      net_edges.push( { data: { source: target_protein[0], target: n, feature: "mut", type: 'solid', func:'#6FB1FC' } });
+      net_edges.push( { data: { source: target_protein1, target: n, width:(parseFloat(interaction_edges1[l])*parseFloat(interaction_edges1[l])*parseFloat(interaction_edges1[l])*20), feature: "mut", type: 'solid', func:'#6FB1FC' } });
+      l += 1;
     }
   }
 
@@ -261,6 +276,7 @@
   console.log(sorted_tissues);
 
   var counter = 0;
+  $("#tissues_filter_table").html('');
   for (var tissue in sorted_tissues)
   {
     sorted_tissues[tissue][0] = sorted_tissues[tissue][0].replace("_"," ").replace("_"," ").replace("_"," ");
@@ -278,14 +294,14 @@
     else
     {
      $("#tissues_filter_table").append("<tr class='hidden_tr'><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
-    
+
     }
   }
 
   $("#tissues_filter_table").append("<tr id='tissue-load-less'><td><a><i>Show Less</i></a></tr></td");
 
   }
-  protein_page_setup();
+ //
 
    $('body').on( "click", ".tissue_filter", function() {
          if ( $(this).find(".badge").hasClass("alert-success"))
@@ -326,7 +342,7 @@
                 }
               }
          }
-         
+
    });
   $(loadCy = function(){
 
@@ -341,12 +357,12 @@
     style: cytoscape.stylesheet()
       .selector('node')
         .css({
-          'background-color': '#292929',
+          'background-color': 'data(color)',
           'content': 'data(name)',
           'font-size': 14,
           'text-valign': 'center',
           'color': 'white',
-          'text-outline-color': '#292929',
+          'text-outline-color': 'data(color)',
           'text-outline-width':'3',
           'height': '40',
           'width':'40',
@@ -368,6 +384,7 @@
           'line-color': 'data(func)',
           'line-style': 'data(type)',
           'opacity':'0.3',
+          'width':'data(width)',
           'target-arrow-shape': 'triangle',
           'target-arrow-color': 'data(func)'
         })
@@ -440,7 +457,6 @@
 
 
   if (all_proteins.length == 1){
-    console.log(net_nodes);
     $('#cy').cytoscape(options);
   }
 

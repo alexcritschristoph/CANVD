@@ -16,12 +16,21 @@ $stmt->execute($query_params);
 $tissues = array();
 while ($row = $stmt->fetch())
 {
+	$query = "SELECT EnsPID,Type FROM T_Domain WHERE Domain LIKE :domain;";
+	$query_params = array(":domain"=>substr($row[1], 0, -3) .  "%");
+	$stmt2 = $dbh->prepare($query);
+	$stmt2->execute($query_params);
+	$result = $stmt2->fetch();
+	$protein = $result[0];
+	$type = $result[1];
 	?>
+
 
 	<tr>
         <td><?php echo $row[0];?></td>
         <td><?php echo $row[1];?></td>
-        <td>-</td>
+        <td><a href="http://127.0.0.1/gsoc/network/?genename=<?php echo $protein;?>"><?php echo $protein;?></a></td>
+        <td><?php echo $type;?></td>
         <td>-</td>
         <td>-</td>
 	</tr>
