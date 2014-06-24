@@ -21,6 +21,8 @@ while ($row = $stmt->fetch())
 	<tr>
         <td><?php echo ucwords(str_replace("_"," ", $row[1]));;?></td>
         <td><?php echo $row[2];?></td>
+        <td><?php echo $row[4];?></td>
+        <td><?php echo $row[5];?></td>
         <td><?php echo $row[3];	?></td>
         <td><?php echo "<a href='#'>Proteins</a> - <a href='#'>Downloads</a>"?></td>
 	</tr>

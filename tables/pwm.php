@@ -29,10 +29,10 @@ while ($row = $stmt->fetch())
 	<tr>
         <td><?php echo $row[0];?></td>
         <td><?php echo $row[1];?></td>
-        <td><a href="http://127.0.0.1/gsoc/network/?genename=<?php echo $protein;?>"><?php echo $protein;?></a></td>
+        <td><a href="./network/?genename=<?php echo $protein;?>"><?php echo $protein;?></a></td>
         <td><?php echo $type;?></td>
-        <td>-</td>
-        <td>-</td>
+        <td><img src="./pwms/logos/<?php echo $row[0]?>.png" height="50px"></td>
+        <td><a href="./pwms/mimp/<?php echo $row[0]?>.mimp">MIMP</a>, <a href="./pwms/enologo/<?php echo $row[0]?>.enologo">Enologo</a>, <a href="./pwms/musi/<?php echo $row[0]?>.musi">Musi</a></td>
 	</tr>
 
 	<?php

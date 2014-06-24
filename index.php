@@ -22,8 +22,8 @@
 	<body style="background:#fafafa">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container">
-    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> About </a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> FAQs</a>
+    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> Variants </a>
+      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
 	    <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
@@ -95,6 +95,8 @@
                   <tr>
                     <th>Tissue</th>
                     <th>Total Variants</th>
+                    <th>Gain of Function</th>
+                    <th>Loss of Function</th>
                     <th>Total Proteins</th>
                     <th>Details</th>
                   </tr>
@@ -111,8 +113,11 @@
               <table class="table table-striped table-hover">
                 <thead>
                   <tr>
+                    <th>Ensembl ID</th>
                     <th>Protein Name</th>
                     <th>Type/Domain</th>
+                    <th>Gain of Function</th>
+                    <th>Loss of Function</th>
                     <th>Total Variants</th>
                     <th>Details</th>
                   </tr>
@@ -249,7 +254,7 @@
                     <th>Protein</th>
                     <th>Type</th>
                     <th>Logo</th>
-                    <th>File</th>
+                    <th>Files</th>
                   </tr>
                 </thead>
                 <tbody id="pwm-table-body">
@@ -261,7 +266,11 @@
                 <li><a id="pwm-back">Previous</a></li>
                 <li><a id="pwm-forward">Next</a></li>
               </ul>
-
+              <script>
+              $(function () {
+    $('#example').popover();
+});
+              </script>
           </div>
 
 		</div>
