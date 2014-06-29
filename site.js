@@ -73,8 +73,20 @@ $(function() {
 
    			//If disabling mutant interactions
    			if($(this).hasClass("m-int")){
-   				cy.elements("edge[feature = 'mut']").hide();
+   				cy.elements("node[feature = 'mut']").hide();
    			}
+            else if ($(this).hasClass("w-int")){
+               cy.elements("node[feature = 'wt']").hide();
+            }
+            else if ($(this).hasClass("gain-int")){
+               cy.elements("node[mut_type = 'gain']").hide();
+            }
+            else if ($(this).hasClass("loss-int")){
+               cy.elements("node[mut_type = 'loss']").hide();
+            }
+            else if ($(this).hasClass("no-int")){
+               cy.elements("node[mut_type = 'norm']").hide();
+            }
 
    		}
    		else{
@@ -82,8 +94,20 @@ $(function() {
 
    			//If enabling mutant interactions
    			if($(this).hasClass("m-int")){
-   				cy.elements("edge[feature = 'mut']").show();
+   				cy.elements("node[feature = 'mut']").show();
    			}
+            else if ($(this).hasClass("w-int")){
+               cy.elements("node[feature = 'wt']").show();
+            }
+            else if ($(this).hasClass("gain-int")){
+               cy.elements("node[mut_type = 'gain']").show();
+            }
+            else if ($(this).hasClass("loss-int")){
+               cy.elements("node[mut_type = 'loss']").show();
+            }
+            else if ($(this).hasClass("no-int")){
+               cy.elements("node[mut_type = 'norm']").show();
+            }
    		}
    });
 

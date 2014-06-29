@@ -152,9 +152,12 @@ while ($row = $stmt->fetch())
 }
 
 //Find all gene names of the interaction partners
+//Organize results
+$results = array();
+$proteins = array();
 
 $plist = '\'' . implode('\',\'', $interaction_partners) . '\'';
-$query = 'SELECT GeneName FROM T_Ensembl WHERE EnsPID IN(' . $plist . ')';
+$query = 'SELECT GeneName, EnsPID FROM T_Ensembl WHERE EnsPID IN(' . $plist . ')';
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
@@ -163,11 +166,16 @@ $interaction_names = [];
 while ($row = $stmt->fetch())
 {
 	$interaction_names[] = $row[0];
+	$proteins[$row['EnsPID']] = 1;
+	$results[$row['EnsPID']][$row[1]] = [];
 }
 
-//Get all interaction edge values
+/*echo count($interaction_partners);
+echo "**";
+echo count($interaction_names);
+*///Get all interaction edge values
 $plist2 = '\'' . implode('\',\'', $interaction_ids) . '\'';
-$query = 'SELECT Avg FROM T_Interactions_Eval WHERE IID IN(' . $plist2 . ')';
+$query = 'SELECT * FROM T_Interactions_Eval WHERE IID IN(' . $plist2 . ')';
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
@@ -175,10 +183,21 @@ $stmt->execute($query_params);
 $interaction_edges = [];
 while ($row = $stmt->fetch())
 {
-	$interaction_edges[] = $row[0];
+	$interaction_edges[$row[0]] = $row;
 }
 
+//Get interaction type (gain / loss)
+$query = 'SELECT IID, Eval FROM T_Interaction_MT WHERE IID IN(' . $plist2 . ')';
+$query_params = array();
+$stmt = $dbh->prepare($query);
+$stmt->execute($query_params);
 
+while ($row = $stmt->fetch())
+{
+	$interaction_edges[$row[0]]['Type'] = $row[1];
+}
+
+$interaction_edges = array_values($interaction_edges);
 //Find all mutations of all interaction partners
 $query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site
 			  FROM T_Mutations
@@ -190,21 +209,16 @@ $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
-//Organize results
-$results = array();
 //echo "<br>******************<br>";
 $mut_counter = 0;
 $tumors = array();
-$proteins = array();
 while ($row = $stmt->fetch())
 {
-	$proteins[$row['EnsPID']] = 1;
 	$tumors[$row[3]] = 1; 
 	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3]);
 	$mut_counter += 1;
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
-
 $tumor_json[] = count(array_keys($tumors));
 $protein_json[] = count(array_keys($proteins)) + 1;
 $mutation_json[] = $mut_counter;

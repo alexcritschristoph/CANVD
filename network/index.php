@@ -98,15 +98,14 @@
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Networks</b></span>
-          <a class="list-group-item show-item w-prot"><span data-color="alert-info" class="badge alert-info">14</span>Wildtype Proteins </a>
-          <a class="list-group-item show-item m-prot"><span data-color="alert-danger" class="badge alert-danger">14</span> Mutant Proteins </a>
-          <a class="list-group-item show-item w-int"><span data-color="alert-info" class="badge alert-info">14</span>Wildtype Interactions </a>
-          <a class="list-group-item show-item m-int"><span data-color="alert-danger" class="badge alert-danger">14</span>Mutant Interactions </a>
+          <a class="list-group-item show-item w-prot w-int"><span data-color="alert-info" class="badge alert-info">14</span>Wildtype Proteins </a>
+          <a class="list-group-item show-item m-prot m-int"><span data-color="alert-warning" class="badge alert-warning">14</span> Mutant Proteins </a>
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Mutation Type</b></span>
-          <a class="list-group-item show-item g-prot"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Function </a>
-          <a class="list-group-item show-item l-prot"><span data-color="alert-warning" class="badge alert-warning">14</span> Loss of Function </a>
+          <a class="list-group-item show-item g-prot no-int"><span data-color="alert-info" class="badge alert-info">14</span>No Change </a>
+          <a class="list-group-item show-item g-prot gain-int"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Function </a>
+          <a class="list-group-item show-item l-prot loss-int"><span data-color="alert-danger" class="badge alert-danger">14</span> Loss of Function </a>
         </div>
     </div>
   </div>
@@ -158,7 +157,6 @@
           }
           j += 1
         }
-        console.log();
         $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:0.8em;max-width:330px;'>"+keystring+"</td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
     }
 
@@ -174,7 +172,6 @@
     target_protein1 = target_protein[0];
     interaction_names1 = interaction_names[0];
     interaction_edges1 = interaction_edges[0];
-    console.log(target_protein1);
     protein_page_setup();
   }
 
@@ -187,8 +184,6 @@
     net_nodes = [];
     net_edges = [];
     networkData = networkData1[$(this).index()];
-    console.log(networkData);
-    console.log("***");
     protein_count1 = protein_count[$(this).index()];
     mutation_count1 = mutation_count[$(this).index()];
     tumor_count1 = tumor_count[$(this).index()];
@@ -196,13 +191,8 @@
     interaction_names1 = interaction_names[$(this).index()];
     interaction_edges1 = interaction_edges[$(this).index()];
     protein_page_setup();
-      console.log("%%%%%%%%%%%5");
-
-    console.log(networkData);
-    console.log("%%%%%%%%%%%%%");
     loadCy();
     $('#cy').cytoscape(options);
-    console.log(options);
     $("#network-selection-container").hide();
     $("#network-view-container").show();
   });
@@ -221,34 +211,88 @@
 
   }
 
-  console.log(networkData);
-  console.log("***");
   //Create list of nodes
   net_nodes = [];
   net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 65, }} )
-    var l = 0;  
+    var l = 0;
+    var prot_wt_count = 0;
+    var prot_mut_count = 0;
   for(net in networkData)
   {
     for (n in networkData[net])
     {
-      console.log(interaction_names1[l]);
-      net_nodes.push( { data: { id: n, name: interaction_names1[l], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n]}} );
+      var n_feature = "wt";
+      if (Object.keys(networkData[net][n]).length != 0){
+        n_feature = "mut";
+        prot_mut_count += 1;
+      }  
+      else {
+        prot_wt_count += 1;
+      }
+      var mut_type = '';
+      if (interaction_edges1[l]['Type'] == 'gain of function')
+      {
+        mut_type = 'gain';
+      }
+      else if (interaction_edges1[l]['Type'] == 'loss of function')
+      {
+        mut_type = 'loss';
+      }
+      else {
+        if (Object.keys(networkData[net][n]).length != 0){
+        mut_type = 'norm';
+        }
+      }
+      net_nodes.push( { data: { id: n, name: interaction_names1[l], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
       l += 1;
     }
 
   }
+
+  //Assign 
+  $(".m-int").find("span").text(prot_mut_count);
+  $(".w-int").find("span").text(prot_wt_count);
 
   //Create list of edges
   net_edges = [];
   var l = 0;
+  var k = 0;
+  var gain_count = 0;
+  var loss_count = 0;
+  var norm_count = 0;
   for(net in networkData)
   {
     for (n in networkData[net])
     {
-      net_edges.push( { data: { source: target_protein1, target: n, width:(parseFloat(interaction_edges1[l])*parseFloat(interaction_edges1[l])*parseFloat(interaction_edges1[l])*20), feature: "mut", type: 'solid', func:'#6FB1FC' } });
+      var edge_color = "hsla(193, 59%, 45%, 0.78)";
+      var edge_style = "solid";
+      if (interaction_edges1[l]['Type'] == 'gain of function')
+      {
+        edge_color = "hsla(129, 93%, 34%, 1)";
+        edge_style = "dashed";
+        gain_count += 1;
+      }
+      else if (interaction_edges1[l]['Type'] == 'loss of function')
+      {
+        edge_color = "hsla(352, 89%, 52%, 1)";
+        edge_style = "dashed";
+        loss_count += 1;
+      }
+      else {
+        if (Object.keys(networkData[net][n]).length != 0){
+        norm_count += 1;
+        }
+      }
+      net_edges.push( { data: { source: target_protein1, target: n, content: interaction_edges1[l], width:(parseFloat(interaction_edges1[l]['Avg'])*parseFloat(interaction_edges1[l]['Avg'])*parseFloat(interaction_edges1[l]['Avg'])*20), feature: "mut", type: edge_style, func:edge_color } });
       l += 1;
     }
+    k += 1;
   }
+
+  //Assign
+  $(".gain-int").find("span").text(gain_count);
+  $(".loss-int").find("span").text(loss_count);
+  $(".no-int").find("span").text(norm_count);
 
   //Create list of tissues for filter list
   var tissues = {};
@@ -273,7 +317,6 @@
       sortable.push([tissue, tissues[tissue]])
 
   var sorted_tissues = sortable.sort(function(a, b) {return a[1] - b[1]}).reverse();
-  console.log(sorted_tissues);
 
   var counter = 0;
   $("#tissues_filter_table").html('');
@@ -384,7 +427,7 @@
           'width': 3,
           'line-color': 'data(func)',
           'line-style': 'data(type)',
-          'opacity':'0.3',
+          'opacity':'0.4',
           'width':'data(width)',
           'target-arrow-shape': 'triangle',
           'target-arrow-color': 'data(func)'
@@ -415,12 +458,20 @@
     ready: function(){
       cy = this;
       cy.userZoomingEnabled(0);
-
+      cy.boxSelectionEnabled(0);
+      cy.userPanningEnabled(0);
       var clickedNode = null;
+      var clickedEdge = null;
       cy.$('node').on('click', function(e){
         var ele = e.cyTarget;
         clickedNode = ele;
       });
+
+      cy.$('edge').on('click', function(e){
+        var ele = e.cyTarget;
+        clickedEdge = ele;
+      });
+
 
       cy.elements('node').qtip({
       content: {
@@ -436,6 +487,36 @@
         title: function(event, api) {
           return clickedNode.data("id");
         }
+      },
+      show: {
+        ready: false
+      },
+      position: {
+        my: 'top center',
+        at: 'bottom center'
+      },
+      style: {
+        classes: 'qtip-light',
+        tip: {
+          width: 10,
+          height: 8
+        }
+      }
+     });
+
+    cy.elements('edge').qtip({
+      content: {
+        text: function(event, api) {
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h5 style='margin-left:10px;'>Interaction Evaluation:</h5>"
+            var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>";
+            muts_string += "<h6><b>Average: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
+            for (m in clickedEdge.data("content")){
+              if (isNaN(m) && m != 'IID'){
+                muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";
+              }
+            }
+            return html + muts_string +  "</tbody></table></div>";
+          },
       },
       show: {
         ready: false

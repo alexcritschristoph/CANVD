@@ -16,7 +16,9 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
 		<script src="<?php echo $root_path;?>site.js" ></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
+    <link href="./slider.css" rel="stylesheet">
     <script src="<?php echo $root_path;?>bootstrap.js"></script>
+    <script src="./bootstrap-slider.js"></script>
 	</head>
 
 	<body style="background:#fafafa">
@@ -48,7 +50,7 @@
 
       <div class="panel panel-default">
         <div class="panel-heading" style="background:#f04124;color:white;font-size:0.8em;font-weight:300;">
-        Announcements and News
+        <a href="./announce/" style="color:white;">Announcements and News</a>
         </div>
         <div class="panel-body" style="font-size:0.8em;">
 
@@ -64,7 +66,7 @@
 
                                 ?>
         <div style="margin-bottom:15px;">
-        <span  style="display:block;margin-bottom:1px;"><b style="display:block;"><?php echo $row[2];?></b><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></span>
+        <span  style="display:block;margin-bottom:1px;"><a href="./announce/"><b style="display:block;"><?php echo $row[2];?></b></a><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></span>
         <?php echo $row[3];?>
         </div>
         <?php
@@ -79,10 +81,55 @@
 			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602">
 			  <span class="input-group-btn">
 		        <button type="submit" class="btn btn-danger" type="button" id="search_btn">Search</button>
-            <button type="submit" class="btn btn-default" type="button" id="search_btn">Advanced</button>
+            <button class="btn btn-default" type="button" id="advanced_btn">Advanced</button>
 		      </span>
 			</form>
 
+      <div id="advanced-search-box" style="Display:none">
+      <form class="form-signin" role="form">
+        <div class="col-md-6">
+        <p class="form-signin-heading">Advanced Search Options:</p>        
+        <input type="email" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="Max # of Interactions" required autofocus>
+        <label class="checkbox" style="margin-top:15px;">
+          <input type="checkbox" value="remember-me"> Mutant Networks Only
+        </label>
+        <label class="checkbox" style="margin-top:5px;">
+          <input type="checkbox" value="remember-me"> Gain of Interaction Only
+        </label>
+
+        <label class="checkbox" style="margin-top:5px;">
+          <input type="checkbox" value="remember-me"> Loss of Interaction Only
+        </label>
+        </div>
+
+        <div class="col-md-6">
+        <p>Interaction Evaluation Ranges</p>
+
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl1" ><span style="padding-left:15px;font-size:1em;">Gene Expression</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl2" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Protein Expression</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;padding-left:25px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl3" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Disorder</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl4" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Surface Accessibility</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl5" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Peptide Conversation</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl6" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Molecular Function</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl7" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Biological Process</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl8" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Localization</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl9" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
+        <div style="padding-top:10px;">
+        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Average</span></div>
+             
+        </div>
+      </form>
+      </div>
+      <div id="browse-and-tabs">
 			<ul class="nav nav-tabs" id="browse-tabs">
 			  <li class="active" ><a data-tab="protein">Tissues</a></li>
 			  <li><a data-tab="cancer">Proteins</a></li>
@@ -128,6 +175,17 @@
 
               <script>
               $(function() {
+
+                $('#sl1').slider();
+                $('#sl2').slider();
+                $('#sl3').slider();
+                $('#sl4').slider();
+                $('#sl5').slider();
+                $('#sl6').slider();
+                $('#sl7').slider();
+                $('#sl8').slider();
+                $('#sl9').slider();
+                $('#sl10').slider();
                 function update_protein_view()
                 {
                   var test = $("#protein-page").data("page");
@@ -236,6 +294,22 @@
                   update_tissue_view();
                 });
 
+                $("#advanced_btn").on( "click", function() {
+                  if ($("#advanced_btn").text() == 'Advanced'){
+                    $("#advanced_btn").addClass("btn-info");
+                    $("#advanced_btn").text("Basic");
+                    $("#browse-and-tabs").hide();
+                    $("#advanced-search-box").show();
+                  }
+                  else{
+                    $("#advanced_btn").removeClass("btn-info");
+                    $("#advanced_btn").text("Advanced");
+                    $("#browse-and-tabs").show();
+                    $("#advanced-search-box").hide();
+                  }
+
+                });
+
               });
               </script>
 
@@ -272,7 +346,7 @@
 });
               </script>
           </div>
-
+    </div>
 		</div>
 	</div>
 		<?php
