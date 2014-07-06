@@ -145,10 +145,13 @@ $stmt->execute($query_params);
 //Get all interaction partners
 $interaction_partners = array();
 $interaction_ids = array();
+$interaction_association = array();
+
 while ($row = $stmt->fetch())
 {
 	$interaction_partners[] = $row[0];
 	$interaction_ids[] = $row[1];
+	$interaction_association[$row[1]] = $row[0];
 }
 
 //Find all gene names of the interaction partners
@@ -157,7 +160,7 @@ $results = array();
 $proteins = array();
 
 $plist = '\'' . implode('\',\'', $interaction_partners) . '\'';
-$query = 'SELECT GeneName, EnsPID FROM T_Ensembl WHERE EnsPID IN(' . $plist . ')';
+$query = 'SELECT GeneName, EnsPID, Description FROM T_Ensembl WHERE EnsPID IN(' . $plist . ')';
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
@@ -165,7 +168,7 @@ $stmt->execute($query_params);
 $interaction_names = [];
 while ($row = $stmt->fetch())
 {
-	$interaction_names[] = $row[0];
+	$interaction_names[$row[1]] = array($row[0], $row[2]);
 	$proteins[$row['EnsPID']] = 1;
 	$results[$row['EnsPID']][$row[1]] = [];
 }
@@ -184,10 +187,11 @@ $interaction_edges = [];
 while ($row = $stmt->fetch())
 {
 	$interaction_edges[$row[0]] = $row;
+	$interaction_edges[$row[0]]['protein_id'] = $interaction_association[$row['IID']];
 }
 
 //Get interaction type (gain / loss)
-$query = 'SELECT IID, Eval FROM T_Interaction_MT WHERE IID IN(' . $plist2 . ')';
+$query = 'SELECT IID, Eval, Mut_Syntax FROM T_Interaction_MT WHERE IID IN(' . $plist2 . ')';
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
@@ -195,11 +199,13 @@ $stmt->execute($query_params);
 while ($row = $stmt->fetch())
 {
 	$interaction_edges[$row[0]]['Type'] = $row[1];
+	$interaction_edges[$row[0]]['Syntax'] = $row[2];
 }
+
 
 $interaction_edges = array_values($interaction_edges);
 //Find all mutations of all interaction partners
-$query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site
+$query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site, mut_syntax_aa
 			  FROM T_Mutations
 			  WHERE EnsPID IN(' . $plist . ')';
 //echo $query;
@@ -212,11 +218,31 @@ $stmt->execute($query_params);
 //echo "<br>******************<br>";
 $mut_counter = 0;
 $tumors = array();
+$existing_syntaxes = array();
 while ($row = $stmt->fetch())
 {
-	$tumors[$row[3]] = 1; 
-	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3]);
-	$mut_counter += 1;
+	$tumors[$row[3]] = 1;
+	//find if any of these cause gain / loss
+	$mut_type = 0;
+	foreach ($interaction_edges as $int_edge)
+	{
+		if (array_key_exists('Syntax', $int_edge))
+		{
+			if ($int_edge['protein_id'] == $row[0] && $int_edge['Syntax'] == $row[4])
+			{
+				$mut_type = 1;
+			}			
+		}
+
+	}
+	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3], $row[4], $mut_type);
+	
+	if (!in_array($row[4], $existing_syntaxes))
+	{
+		$mut_counter += 1;
+	}
+	$existing_syntaxes[] = $row[4];
+	//echo "console.log(" . var_dump($existing_syntaxes) . ");";
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
 $tumor_json[] = count(array_keys($tumors));

@@ -25,7 +25,7 @@
 
   <div class="jumbotron" style="margin-bottom:0px;height:100%">
     <div class="container" style="margin-bottom:15px;">
-    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> Variants </a>
+    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
       <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
@@ -62,11 +62,9 @@
         </thead>
         <tbody>
           <tr>
-            <td>Source 1<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
+            <td id="cosmic-id">COSMIC <span  id="cosmic-placeholder" data-color='alert-success' class='badge alert-success pull-right'></span></td>
           </tr>
-          <tr>
-            <td>Source 2<i class="fa fa-check pull-right" style="padding-top:3px;color:#43ac6a;"></i></td>
-          </tr>
+
         </tbody>
       </table>
       </div>
@@ -93,7 +91,7 @@
             <p><b id="prot_c"></b> total proteins</p>
             <p><b id="mut_c"></b> total mutations</p>
             <p><b id="tumor_c"></b> tumor types</p>
-            <p><b></b> interaction domain</p>
+            <p><b>1</b> interaction domain</p>
           </div>
         </div>
         <div class="list-group show-list">
@@ -208,6 +206,7 @@
       $("#prot_c").text(protein_count1);
       $("#mut_c").text(mutation_count1);
       $("#tumor_c").text(tumor_count1);
+      $("#cosmic-placeholder").text(protein_count1 - 1);
 
   }
 
@@ -230,11 +229,21 @@
         prot_wt_count += 1;
       }
       var mut_type = '';
-      if (interaction_edges1[l]['Type'] == 'gain of function')
+      var this_interaction_edge = {};
+      //find the correct interaction_edge
+      for (j in interaction_edges1)
+      {
+        if (interaction_edges1[j]["protein_id"] == n)
+        {
+          this_interaction_edge = interaction_edges1[j];
+        }
+      }
+
+      if (this_interaction_edge['Type'] == 'gain of function')
       {
         mut_type = 'gain';
       }
-      else if (interaction_edges1[l]['Type'] == 'loss of function')
+      else if (this_interaction_edge['Type'] == 'loss of function')
       {
         mut_type = 'loss';
       }
@@ -243,7 +252,7 @@
         mut_type = 'norm';
         }
       }
-      net_nodes.push( { data: { id: n, name: interaction_names1[l], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
+      net_nodes.push( { data: { id: n, name: interaction_names1[n][0], description: interaction_names1[n][1], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
       l += 1;
     }
 
@@ -266,13 +275,22 @@
     {
       var edge_color = "hsla(193, 59%, 45%, 0.78)";
       var edge_style = "solid";
-      if (interaction_edges1[l]['Type'] == 'gain of function')
+      var this_interaction_edge = {};
+      //find the correct interaction_edge
+      for (j in interaction_edges1)
+      {
+        if (interaction_edges1[j]["protein_id"] == n)
+        {
+          this_interaction_edge = interaction_edges1[j];
+        }
+      }
+      if (this_interaction_edge['Type'] == 'gain of function')
       {
         edge_color = "hsla(129, 93%, 34%, 1)";
         edge_style = "dashed";
         gain_count += 1;
       }
-      else if (interaction_edges1[l]['Type'] == 'loss of function')
+      else if (this_interaction_edge['Type'] == 'loss of function')
       {
         edge_color = "hsla(352, 89%, 52%, 1)";
         edge_style = "dashed";
@@ -283,7 +301,7 @@
         norm_count += 1;
         }
       }
-      net_edges.push( { data: { source: target_protein1, target: n, content: interaction_edges1[l], width:(parseFloat(interaction_edges1[l]['Avg'])*parseFloat(interaction_edges1[l]['Avg'])*parseFloat(interaction_edges1[l]['Avg'])*20), feature: "mut", type: edge_style, func:edge_color } });
+      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*20), feature: "mut", type: edge_style, func:edge_color } });
       l += 1;
     }
     k += 1;
@@ -300,13 +318,20 @@
   {
     for (n in networkData[net])
     {
+      var arr = [];
       for (m in networkData[net][n])
       {
         if (isNaN(tissues[networkData[net][n][m][2]]))
         {
           tissues[networkData[net][n][m][2]] = 1;
         }
+
+        if ($.inArray(networkData[net][n][m][2], arr) == -1)
+        {
         tissues[networkData[net][n][m][2]] += 1;
+        arr.push(networkData[net][n][m][2]);
+        }
+
       }
     }
   }
@@ -345,6 +370,19 @@
 
   }
  //
+
+  $('body').on( "click", "#cosmic-id", function() {
+    if ( $(this).find(".badge").hasClass("alert-success"))
+         {
+          $(this).find(".badge").removeClass("alert-success");
+          cy.$("node[id!='" + target_protein1 + "']").hide();
+        }
+        else
+        {
+          $(this).find(".badge").addClass("alert-success");
+          cy.$("node[id!='" + target_protein1 + "']").show();
+        }
+  });
 
    $('body').on( "click", ".tissue_filter", function() {
     
@@ -476,11 +514,19 @@
       cy.elements('node').qtip({
       content: {
         text: function(event, api) {
-            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"'>Ensembl Link</a></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6>"
-            var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA</th><th>Tumor</th></tr></thead><tbody>";
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
+            var muts_string = "";
             for (m in clickedNode.data("muts")){
-              var row_string = "<tr><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][1] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
-              muts_string += row_string;
+              if (clickedNode.data("muts")[m][4] == 1){
+                var row_string = "<tr class='highlighted_mut'><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
+                muts_string = row_string + muts_string;
+              }
+              else
+              {
+                var row_string = "<tr><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
+                muts_string += row_string;
+              }
+              
             }
             return html + muts_string + "</tbody></table></div>";
           },
@@ -511,8 +557,20 @@
             var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>";
             muts_string += "<h6><b>Average: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
             for (m in clickedEdge.data("content")){
-              if (isNaN(m) && m != 'IID'){
+              if (isNaN(m) && m != 'IID'  && m != 'Avg'  && m != 'protein_id'  && m != 'Syntax'  && m != 'Type'){
                 muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";
+              }
+
+              if (m == "Type")
+              {
+                var the_color = '';
+                if (clickedEdge.data("content")[m] == 'loss of function'){
+                  the_color = '#d43a3a';
+                }
+                else{
+                  the_color = '#66da49';
+                }
+                muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + clickedEdge.data("content")[m] + "</b></h6>";
               }
             }
             return html + muts_string +  "</tbody></table></div>";

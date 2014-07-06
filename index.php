@@ -24,7 +24,7 @@
 	<body style="background:#fafafa">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
 	  <div class="container">
-    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" href="<?php echo $root_path;?>about" role="button"><i class="fa fa-flask"></i> Variants </a>
+    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
       <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
