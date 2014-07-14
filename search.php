@@ -8,7 +8,6 @@ include_once($root_path . './common.php');
 //Select Domain EnsPID from the gene name entered
 if(isset($_GET['genename'])) {
 	$gene_name = $_GET['genename'];
-
 }
 else{
 	exit();
@@ -191,7 +190,7 @@ while ($row = $stmt->fetch())
 }
 
 //Get interaction type (gain / loss)
-$query = 'SELECT IID, Eval, Mut_Syntax FROM T_Interaction_MT WHERE IID IN(' . $plist2 . ')';
+$query = 'SELECT IID, Eval, Mut_Syntax, WT, MT, WTscore, MTscore FROM T_Interaction_MT WHERE IID IN(' . $plist2 . ')';
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
@@ -200,6 +199,10 @@ while ($row = $stmt->fetch())
 {
 	$interaction_edges[$row[0]]['Type'] = $row[1];
 	$interaction_edges[$row[0]]['Syntax'] = $row[2];
+	$interaction_edges[$row[0]]['WT'] = $row[3];
+	$interaction_edges[$row[0]]['MT'] = $row[4];
+	$interaction_edges[$row[0]]['WTscore'] = $row[5];
+	$interaction_edges[$row[0]]['MTscore'] = $row[6];
 }
 
 

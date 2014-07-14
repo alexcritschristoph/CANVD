@@ -294,6 +294,7 @@
 
                                   $("#admin-list").on( "click", "a", function() {
                                     $("#table-name-header").text($(this).text());
+                                    $("#hidden-table").val($(this).text());
                                     $("#panel-content").show();
                                   });
 
@@ -335,7 +336,7 @@
                                             <input type="radio" name="action" value="replace">
                                         Replace the ENTIRE table with this data </label>
                                     </div>
-
+                                    <input type="hidden" id="hidden-table" name="table-name" value="">
                                     <button class="btn btn-md btn-primary" style="margin-top:15px;margin-left:200px;" type="submit">Submit</button>
                                     </form>
                                   </div>

@@ -102,8 +102,8 @@
         <div class="list-group show-list">
           <span class="list-group-item"><b>Mutation Type</b></span>
           <a class="list-group-item show-item g-prot no-int"><span data-color="alert-info" class="badge alert-info">14</span>No Change </a>
-          <a class="list-group-item show-item g-prot gain-int"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Function </a>
-          <a class="list-group-item show-item l-prot loss-int"><span data-color="alert-danger" class="badge alert-danger">14</span> Loss of Function </a>
+          <a class="list-group-item show-item g-prot gain-int"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Interaction </a>
+          <a class="list-group-item show-item l-prot loss-int"><span data-color="alert-danger" class="badge alert-danger">14</span> Loss of Interaction </a>
         </div>
     </div>
   </div>
@@ -514,8 +514,38 @@
       cy.elements('node').qtip({
       content: {
         text: function(event, api) {
+
+            //find the protein's interaction edge data
+            var this_edge;
+            for (edge in interaction_edges1)
+            {
+              if (interaction_edges1[edge]['protein_id'] == clickedNode.data("gene_id"))
+              {
+                this_edge = interaction_edges1[edge];
+                console.dir(this_edge['WT']);
+              }
+            }
+
+            var mut_found = false;
+            for (m in clickedNode.data("muts")){
+              if (clickedNode.data("muts")[m][4] == 1){
+                mut_found = true;
+              }
+            }
+
+            if (mut_found)
+            {
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><p style='margin-left:10px;font-size:1.2em;'>Wildtype: " + this_edge['WT'] + " | Score: " + this_edge['WTscore'].slice(0,4) + "</p><p style='margin-left:10px;font-size:1.2em;'> Mutant : " + this_edge['MT'] + " | Score: " + this_edge['MTscore'].slice(0,4) + "<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
+
+            }
+            else
+            {
             var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
+
+            }
             var muts_string = "";
+            
+
             for (m in clickedNode.data("muts")){
               if (clickedNode.data("muts")[m][4] == 1){
                 var row_string = "<tr class='highlighted_mut'><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
@@ -570,7 +600,16 @@
                 else{
                   the_color = '#66da49';
                 }
-                muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + clickedEdge.data("content")[m] + "</b></h6>";
+                var int_type_var = '';
+                if (clickedEdge.data("content")[m] == "loss of function")
+                {
+                  int_type_var = "Loss of interaction";
+                }
+                else
+                {
+                  int_type_var = "Gain of interaction";
+                }
+                muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + int_type_var + "</b></h6>";
               }
             }
             return html + muts_string +  "</tbody></table></div>";

@@ -310,6 +310,12 @@
 
                 });
 
+                $("body").on( "click", ".pwm-img", function() {
+                  $("#testing").modal('show');
+                  $("#actual-image-content").html($(this).clone().css("height", "200px"));
+                });
+                
+
               });
               </script>
 
@@ -319,8 +325,16 @@
               </ul>
 
           </div>
+          <div class="modal fade" id="testing">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <p id="actual-image-content" class="row text-center">
+            </p>
+          </div>
+          </div>
+          </div>
           <div id="pwm-table">
-              <table class="table table-striped table-hover" >
+              <table class="table table-striped table-hover" id="pwm-actual-table">
                 <thead>
                   <tr>
                     <th>PWM</th>

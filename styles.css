@@ -194,3 +194,8 @@ li .active{
 .highlighted_mut{
 	background:#fff157;
 }
+
+.selectable{
+	color:#345dbc;
+	text-decoration: underline;
+}
