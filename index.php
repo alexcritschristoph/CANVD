@@ -188,12 +188,17 @@
                 $('#sl10').slider();
                 function update_protein_view()
                 {
+                $("#protein-table").fadeOut('fast');
                   var test = $("#protein-page").data("page");
                 $.ajax({
                         url: "./tables/proteins.php",
                         type: "post",
                         data: {start:test},
                         success: function(results){
+                            if (onTheClick)
+                            {
+                            $("#protein-table").fadeIn('fast');
+                            }
                             $("#protein-table-body").html('');
                             $("#protein-table-body").html(results);
                         },
@@ -204,8 +209,9 @@
                 }
 
                 update_protein_view();
-
+                var onTheClick = false;
                 $("#protein-back").on( "click", function() {
+                  onTheClick = true;
                   if ($("#protein-page").data("page") != 0)
                   {
                 $("#protein-page").data("page", $("#protein-page").data("page")- 10);
@@ -214,7 +220,9 @@
                 });
 
                 $("#protein-forward").on( "click", function() {
+                  onTheClick = true;
                   $("#protein-page").data("page", $("#protein-page").data("page")+ 10);
+
                   update_protein_view();
                 });
 

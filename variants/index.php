@@ -35,193 +35,82 @@
    if(isset($_GET['search']))
    {
     ?>
-    <div class="col-md-11">
+    <div class="col-md-12">
+    <div class="navbar navbar-inverse">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">Variant Browser</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num">2930</span> Total Matches</a></li>
+      <li><button href="#" class="btn btn-default" style="color:black;font-size:1.5em;height:42px;" id="click-more" >+</button></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter by <b class="caret"></b></a>
+
+        <ul class="dropdown-menu">
+          <li><a href="#"></a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-header">Dropdown header</li>
+          <li><a href="#">Separated link</a></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
   <table class="table table-striped table-hover" id="variant-table">
       <thead>
         <tr>
           <th>Tissue</th>        
           <th>Protein ID</th>
           <th>Protein Name</th>
-          <th>Applicable Variants</th>
+          <th>Variants in Tissue(s)</th>
           <th>Interactions</th>
           <th>Effect(s)</th>
         </tr>
       </thead>
       <tbody id="variants-results">
-  <?php
-
-    //Which tissues are specified?
-    if(isset($_GET['tissue'])){
-    $tissues = $_GET['tissue'];
-    $plist = '\'' . implode('\',\'', $tissues) . '\'';
-    }            
-    
-    //First look for proteins in T_Mutations with correct tumor site, source, and protein name.
-    $query = '';
-    $protein = '';
-    $source = '';
-    if ($_GET['prot'] == ''){
-      unset($_GET['prot']); 
-    }
-    $query_params = array();
-    if(isset($_GET['prot']) && isset($_GET['tissue']) && isset($_GET['source']))
-    {
-      $protein = (string)$_GET['prot'];
-      $source = $_GET['source'];
-      $query_params = array(':source' => $source . "%", ':prot' => $protein);
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE source LIKE :source and `gene name` LIKE :prot and tumour_site IN(' . $plist . ') LIMIT 20;';
-    }
-    else if (isset($_GET['prot']) && isset($_GET['tissue']))
-    {
-      $protein = $_GET['prot'];
-      $query_params = array(':prot' => $protein);
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE `gene name` LIKE :prot and tumour_site IN(' . $plist . ') LIMIT 20;';
-    }
-    else if (isset($_GET['prot']) && isset($_GET['source']))
-    {
-      $protein = (string)$_GET['prot'];
-      $source = (string)$_GET['source'];
-      $query_params = array(':source' => $source . "%", ':prot' => $protein);
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE source LIKE :source and `gene name` LIKE :prot LIMIT 20;';
-    }
-     else if (isset($_GET['source']) && isset($_GET['tissue']))
-    {
-      $source = $_GET['source'];
-      $query_params = array(':source' => $source . "%");
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE source LIKE :source and tumour_site IN(' . $plist . ') LIMIT 20;';
-    }
-    else if (isset($_GET['source']))
-    {
-      $source = $_GET['source'];
-      $query_params = array(':source' => $source . "%");
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE source LIKE :source LIMIT 20;';
-    }
-    else if (isset($_GET['protein']))
-    {
-      $protein = $_GET['protein'];
-      $query_params = array(':prot' => $protein);
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE `gene name` LIKE :prot LIMIT 20;';
-    }
-    else if (isset($_GET['tissue']))
-    {
-      $query = 'SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE tumour_site IN(' . $plist . ') LIMIT 20;';
-    }
-
-    $stmt = $dbh->prepare($query);
-    $stmt->execute($query_params);
-
-    $variants = array();
-    $variant_names = array();
-    $variant_ids = array();
-    while ($row = $stmt->fetch())
-    {
-      if(!array_key_exists($row[0],$variants))
-      {
-        $variants[$row[0]] = array(array($row[1], $row[3]));
-        $variant_names[$row[0]] = $row[2];
-        $variant_ids[] = $row[0];
-      }
-      else
-      {
-        $variants[$row[0]][] = array($row[1], $row[3]);
-      }
-    }
-    //let's get the interactions
-    $interactions = array();
-    $interaction_ids = array();
-    $plist = '\'' . implode('\',\'', $variant_ids) . '\'';
-    $query = 'SELECT IID, Interaction_EnsPID FROM T_Interaction WHERE Interaction_EnsPID IN(' . $plist . ');';
-    $stmt = $dbh->prepare($query);
-    $query_params = array();
-    $stmt->execute($query_params);
-    while ($row = $stmt->fetch())
-    {
-      $interaction_ids[] = $row[0];
-      if(!array_key_exists($row[1],$interactions))
-      {
-      $interactions[$row[1]] = array($row[0]);
-      }
-      else
-      {
-      $interactions[$row[1]][] = $row[0];   
-      }
-    }
-
-    //let's get the effects
-    $effects = array();
-    $plist = '\'' . implode('\',\'', $interaction_ids) . '\'';
-    $query = 'SELECT IID, Eval FROM T_Interaction_MT WHERE IID IN(' . $plist . ');';
-    $stmt = $dbh->prepare($query);
-    $query_params = array();
-    $stmt->execute($query_params);
-    while ($row = $stmt->fetch())
-    {
-      $protein = '';
-      foreach($interactions as $prot_name => $int)
-      {
-        foreach($int as $i)
-        {
-          if ($i == $row[0])
-          {
-            $protein = $prot_name;
-          }
-        }
-      }
-      if(!array_key_exists($protein,$effects))
-      {
-        $effects[$protein] = array($row[1]);
-      }
-      else
-      {
-        if(!in_array($row[1],$effects[$protein]))
-        {
-          $effects[$protein][] = $row[1];
-        }
-      }
-    }
-
-    foreach ($variants as $name => $data)
-    {
-      //get interactions
-      if (array_key_exists($name, $interactions))
-      {
-        $int_num = count($interactions[$name]);
-      }
-      else
-      {
-        $int_num = '0';
-      }
-      $tissues = array();
-      foreach ($data as $d){
-        if(!in_array(ucwords(str_replace("_"," ", $d[0])),$tissues))
-        {
-          $tissues[] = ucwords(str_replace("_"," ", $d[0]));
-        }
-      }
-      $plist = implode($tissues);
-      if (array_key_exists($name, $effects))
-      {
-      $elist = implode(', ',$effects[$name]);
-    }
-    else
-    {
-      $elist = 'None';
-    }
-    ?>
-  <tr data-protein="<?php echo $name;?>">
-        <?php  ?>
-        
-        <td><?php echo $plist;?></td>
-        <td class="selectable"><?php echo $name;?></td>
-        <td class="selectable"><?php echo $variant_names[$name];?></td>
-        <td><?php echo count($data)?></td>
-        <td><?php echo $int_num;?></td>
-        <td><?php echo $elist;?></td>
-        </a>
-  </tr>
+    <?php include('./variant_load.php');?>
 
     <script>
+    var tissues_selected = <?php echo json_encode($_GET['tissue']);?>;
     $( document ).ready(function() {
+
+      $("#click-more").on("click", function(){
+        $("#click-more").html("<img src='./ajax-loader.gif'>");
+        $("#click-more").attr('disabled','disabled');
+      $.ajax({
+          url: "./variant_load.php",
+          type: "GET",
+          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          success: function(results){
+            $("#current_count").html(parseInt($("#current_count").text())+20);
+            $("#variants-results").append(results);
+            $("#click-more").html("+");
+            $("#click-more").removeAttr('disabled');
+          },
+          error:function(){
+              alert("failure");
+          }
+      });        
+    });
+
+
+      $("#total_num").html(mut_count);
       $('#variant-table tr').click(function() {
         window.location.href = './details.php?variant=' +$(this).data("protein");
 
@@ -229,10 +118,7 @@
     });
 
 
-    </script>
-    <?php
-    }
-    ?>
+    </script>    
       </tbody>
     </table>
 </div>

@@ -199,3 +199,50 @@ li .active{
 	color:#345dbc;
 	text-decoration: underline;
 }
+
+.wt{
+	color:#41b300;
+	font-weight: bold;
+}
+
+.mt{
+	color:#b30000;
+	font-weight: bold;
+	
+}
+
+.navbar-inverse{
+	background-color: #e7e7e7;
+}
+.navbar-brand{
+	background-color:#f04124;
+}
+
+.navbar-brand:hover{
+	background-color:#f04124 !important;
+	cursor: default;
+}
+
+.navbar-nav .active a:hover{
+	cursor:default;
+}
+
+.navbar-nav .active a{
+	background-color:#e7e7e7 !important;
+	color:rgb(34, 34, 34) !important;
+}
+
+.download-dropdown{
+	background-color:#f04124;
+}
+
+.download-dropdown:hover{
+	background-color: #dc2c0f !important;
+}
+.filter-dropdown{
+	color:rgb(34, 34, 34) !important;
+}
+
+.filter-dropdown:hover{
+	background-color: #d3d3d3 !important;
+}

@@ -21,11 +21,12 @@ $names_json = array();
 $mutation_json = array();
 $target_json = array();
 $edges_json = array();
+$pwms_json = array();
 $networkData_json = array();
-$gene_names = explode(" ", $gene_name);
+$gene_names = explode(",", $gene_name);
 foreach ($gene_names as $gene)
 {
-
+$gene = trim($gene);
 /* 
 	SEARCH ALGORITHM
 	WHAT IS THE USER SEARCHING FOR?
@@ -132,7 +133,8 @@ $diff_genes[] = $true_name;
 
 //Select all interactions with that Domain PID
 $plist = '\'' . implode('\',\'', $ens_ids) . '\'';
-$query = 'SELECT Interaction_EnsPID, IID
+
+$query = 'SELECT Interaction_EnsPID, IID, PWM
 			  FROM T_Interaction
 			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT 50;';
 
@@ -145,12 +147,15 @@ $stmt->execute($query_params);
 $interaction_partners = array();
 $interaction_ids = array();
 $interaction_association = array();
+$pwms = array();
 
 while ($row = $stmt->fetch())
 {
 	$interaction_partners[] = $row[0];
 	$interaction_ids[] = $row[1];
 	$interaction_association[$row[1]] = $row[0];
+	$pwms[$row[0]] = $row[2];
+	$pwms['quickpwm'] = $row[2];
 }
 
 //Find all gene names of the interaction partners
@@ -255,9 +260,11 @@ $target_json[] = $true_name;
 $networkData_json[] = $results;
 $names_json[] = $interaction_names;
 $edges_json[] = $interaction_edges;
+$pwms_json[] = $pwms;
 }
 }
 ?>
+var interaction_pwms = <?php echo json_encode($pwms_json);?>;
 var interaction_names = <?php echo json_encode($names_json);?>;
 var interaction_edges = <?php echo json_encode($edges_json);?>;
 var tumor_count = <?php echo json_encode($tumor_json); ?>;

@@ -138,7 +138,7 @@
   {
   $("#network-view-container").hide();
   $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
-    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-9 col-md-offset-1\"><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Ensembl Ids</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div>");
+    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>PWM</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
         var keys = [];
         var keystring = "";
@@ -155,7 +155,7 @@
           }
           j += 1
         }
-        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:0.8em;max-width:330px;'>"+keystring+"</td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
+        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:0.8em;max-width:330px;'><img src='../pwms/logos/" + interaction_pwms[i]['quickpwm'] + ".png' height='60'></td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
     }
 
 
@@ -170,6 +170,7 @@
     target_protein1 = target_protein[0];
     interaction_names1 = interaction_names[0];
     interaction_edges1 = interaction_edges[0];
+    interaction_pwms1 = interaction_pwms[0];
     protein_page_setup();
   }
 
@@ -188,6 +189,7 @@
     target_protein1 = target_protein[$(this).index()];
     interaction_names1 = interaction_names[$(this).index()];
     interaction_edges1 = interaction_edges[$(this).index()];
+    interaction_pwms1 = interaction_pwms[$(this).index()];
     protein_page_setup();
     loadCy();
     $('#cy').cytoscape(options);
@@ -535,13 +537,27 @@
 
             if (mut_found)
             {
-            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><p style='margin-left:10px;font-size:1.2em;'>Wildtype: " + this_edge['WT'] + " | Score: " + this_edge['WTscore'].slice(0,4) + "</p><p style='margin-left:10px;font-size:1.2em;'> Mutant : " + this_edge['MT'] + " | Score: " + this_edge['MTscore'].slice(0,4) + "<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
+              var wt_seq = "";
+              var mt_seq = "";
+              for ( var i = 0; i < this_edge['WT'].length; i++ )
+              {
+                if (this_edge['WT'].charAt(i) != this_edge['MT'].charAt(i))
+                {
+                  wt_seq = wt_seq + "<span class='wt'>" + this_edge['WT'].charAt(i) + "</span>";
+                  mt_seq = mt_seq + "<span class='mt'>" + this_edge['MT'].charAt(i) + "</span>";
+                }
+                else
+                {
+                  wt_seq += this_edge['WT'].charAt(i);
+                  mt_seq += this_edge['MT'].charAt(i);
+                }
+              }
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><p style='margin-left:10px;font-size:1.2em;font-family:monospace;margin-top:12px;margin-right:10px;'>WT: " + wt_seq + " | Score: " + this_edge['WTscore'].slice(0,4) + "</p><p style='margin-left:10px;font-size:1.2em;font-family:monospace;'> MT: " + mt_seq + " | Score: " + this_edge['MTscore'].slice(0,4) + "<img src='../pwms/logos/"+interaction_pwms1[clickedNode.data("gene_id")]+".png' height='60px' style='margin-top:10px;display:block;' class='pwm-img'>" + "<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
 
             }
             else
             {
-            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
-
+            var html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><img src='../pwms/logos/"+interaction_pwms1[clickedNode.data("gene_id")]+".png' height='60px' class='pwm-img' style='margin-bottom:5px;margin-left:10px;display:block;'>" + "<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>"
             }
             var muts_string = "";
             
