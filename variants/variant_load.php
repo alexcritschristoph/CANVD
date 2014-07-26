@@ -84,10 +84,11 @@
 
     }
 
-    $stmt = $dbh->prepare($query2);
-    $stmt->execute($query_params);
-    $mut_count = $stmt->fetch()[0];
+
     if (!isset($_GET['is_ajax'])){
+	    $stmt = $dbh->prepare($query2);
+	    $stmt->execute($query_params);
+	    $mut_count = $stmt->fetch()[0];    	
 	    echo "<script>var mut_count = '" . number_format($mut_count) . "';</script>";
     }
     $stmt = $dbh->prepare($query);

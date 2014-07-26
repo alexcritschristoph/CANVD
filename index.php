@@ -153,6 +153,7 @@
               </table>
               <ul class="pager" id="tissue-page" data-page=0>
                 <li><a id="tissue-back">Previous</a></li>
+                <span> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">20</span> of <span id="tissue-total">40</span></span>
                 <li><a id="tissue-forward">Next</a></li>
               </ul>
       </div>    
@@ -176,6 +177,21 @@
               <script>
               $(function() {
 
+                //Get total counts for the tables
+                $.ajax({
+                    url: "./tables/get_totals.php",
+                    type: "post",
+                    dataType: 'json',
+                    success: function(results){
+                      $("#tissue-total").html(results[0]);
+                      $("#pwm-total").html(results[1]);
+                      $("#protein-total").html(results[2]);
+                    },
+                    error:function(){
+                        alert("failure");
+                    }
+                });  
+
                 $('#sl1').slider();
                 $('#sl2').slider();
                 $('#sl3').slider();
@@ -190,6 +206,8 @@
                 {
                 $("#protein-table").fadeOut('fast');
                   var test = $("#protein-page").data("page");
+                  $("#protein-start").html(test);
+                  $("#protein-end").html(test+10);
                 $.ajax({
                         url: "./tables/proteins.php",
                         type: "post",
@@ -230,6 +248,8 @@
                 function update_pwm_view()
                 {
                   var test = $("#pwm-page").data("page");
+                  $("#pwm-start").html(test);
+                  $("#pwm-end").html(test+10);
                 $.ajax({
                         url: "./tables/pwm.php",
                         type: "post",
@@ -269,6 +289,8 @@
                 function update_tissue_view()
                 {
                   var test = $("#tissue-page").data("page");
+                  $("#tissue-start").html(test);
+                  $("#tissue-end").html(test+10);
                 $.ajax({
                         url: "./tables/tissues.php",
                         type: "post",
@@ -329,6 +351,7 @@
 
               <ul class="pager" id="protein-page" data-page=0>
                 <li><a id="protein-back">Previous</a></li>
+                <span> Viewing <span id="protein-start">1</span>-<span id="protein-end">20</span> of <span id="protein-total">40</span></span>                
                 <li><a id="protein-forward">Next</a></li>
               </ul>
 
@@ -360,6 +383,7 @@
 
               <ul class="pager" id="pwm-page" data-page=0>
                 <li><a id="pwm-back">Previous</a></li>
+                <span> Viewing <span id="pwm-start">1</span>-<span id="pwm-end">20</span> of <span id="pwm-total">40</span></span>                                
                 <li><a id="pwm-forward">Next</a></li>
               </ul>
               <script>

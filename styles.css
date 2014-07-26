@@ -246,3 +246,22 @@ li .active{
 .filter-dropdown:hover{
 	background-color: #d3d3d3 !important;
 }
+
+.navbar-nav > .open > a, a:focus{
+	background: #f04124 !important;
+	color: #ffffff;
+}
+
+.navbar-nav > .open > .filter-dropdown, .filter-dropdown:focus{
+	background:#d3d3d3 !important;
+}
+
+.dropdown-menu li a{
+	background:#e7e7e7 !important;
+	color:black !important;
+}
+
+.dropdown-menu li a:hover{
+	background:#d3d3d3 !important;
+	color:black !important;
+}

@@ -14,6 +14,7 @@
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
+    <script src="<?php echo $root_path;?>bootstrap.js"></script>
 	</head>
 
 	<body style="background:#fafafa;">
@@ -42,19 +43,27 @@
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num">2930</span> Total Matches</a></li>
-      <li><button href="#" class="btn btn-default" style="color:black;font-size:1.5em;height:42px;" id="click-more" >+</button></li>
+      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num">2930</span> Total Variants</a></li>
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter by <b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Interaction <b class="caret"></b></a>
 
         <ul class="dropdown-menu">
-          <li><a href="#"></a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li class="dropdown-header">Dropdown header</li>
-          <li><a href="#">Separated link</a></li>
-          <li><a href="#">One more separated link</a></li>
+          <li><a href="#">Gain of Interaction</a></li>
+          <li><a href="#">Loss of Interaction</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+      <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Tissue <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+
+          <?php
+            $tissues = $_GET['tissue'];
+            foreach ($tissues as $tissue_name)
+            {
+             ?><li><a href="#" class="tissue-filter"><?php echo $tissue_name;?></a></li><?php
+            }
+          ?>
         </ul>
       </li>
     </ul>
@@ -62,11 +71,8 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
+          <li><a href="#">Download Current</a></li>
+          <li><a href="#">Download All</a></li>
         </ul>
       </li>
     </ul>
@@ -88,8 +94,57 @@
 
     <script>
     var tissues_selected = <?php echo json_encode($_GET['tissue']);?>;
+    var processing;
+
     $( document ).ready(function() {
 
+      $(".tissue-filter").on("click", function(){
+        $("#current_count").text("0");
+        $("#variants-results").empty();
+        tissues_selected = [$(this).html()];
+        $("#variants-results").after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+        $.ajax({
+          url: "./variant_load.php",
+          type: "GET",
+          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          success: function(results){
+            $("#current_count").html(parseInt($("#current_count").text())+20);
+            $("#variants-results").append(results);
+            $("#loader").remove();
+            processing = false;
+          },
+          error:function(){
+              alert("failure");
+          }
+        });  
+
+      });
+
+       $(document).scroll(function(e){
+
+        if (processing)
+            return false;
+
+        if ($(window).scrollTop() >= ($(document).height() - $(window).height())*0.9){
+          processing = true;
+          $("#variants-results").after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+          $.ajax({
+          url: "./variant_load.php",
+          type: "GET",
+          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          success: function(results){
+            $("#current_count").html(parseInt($("#current_count").text())+20);
+            $("#variants-results").append(results);
+            $("#loader").remove();
+            processing = false;
+          },
+          error:function(){
+              alert("failure");
+          }
+      });  
+
+        }
+       });
       $("#click-more").on("click", function(){
         $("#click-more").html("<img src='./ajax-loader.gif'>");
         $("#click-more").attr('disabled','disabled');
@@ -111,7 +166,7 @@
 
 
       $("#total_num").html(mut_count);
-      $('#variant-table tr').click(function() {
+      $('#variant-table').on("click", "tr", function() {
         window.location.href = './details.php?variant=' +$(this).data("protein");
 
       });
