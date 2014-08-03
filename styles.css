@@ -265,3 +265,11 @@ li .active{
 	background:#d3d3d3 !important;
 	color:black !important;
 }
+
+.badge, .num-viewer{
+	color:black !important;
+}
+
+.badge{
+	border-radius:4px;
+}

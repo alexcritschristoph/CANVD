@@ -1,4 +1,8 @@
 <?php
+
+//output format 1: protein id, tissue type, variant #, interaction #
+
+//output format 2: protein id, tissue type, variant id, effect
   $root_path = "../";
   include_once('../common.php');
 
@@ -217,12 +221,12 @@
   <tr data-protein="<?php echo $name;?>">
         <?php  ?>
         
-        <td><?php echo $plist;?></td>
-        <td class="selectable"><?php echo $name;?></td>
-        <td class="selectable"><?php echo $variant_names[$name];?></td>
-        <td><?php echo count($data)?></td>
-        <td><?php echo $int_num;?></td>
-        <td><?php echo $elist;?></td>
+        <?php echo $plist;?>
+        <?php echo $name;?>
+        <?php echo $variant_names[$name];?>
+        <?php echo count($data)?>
+        <?php echo $int_num;?>
+        <?php echo $elist;?>
         </a>
   </tr>
     <?php

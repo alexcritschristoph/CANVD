@@ -17,7 +17,7 @@
     <script src="<?php echo $root_path;?>bootstrap.js"></script>
 	</head>
 
-	<body style="background:#fafafa;">
+	<body style="background:#fafafa;height:110%;">
 	<div class="jumbotron" style="margin-bottom:0px;height:100%">
     <div class="container" style="margin-bottom:15px;">
     <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
@@ -43,7 +43,7 @@
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num">2930</span> Total Variants</a></li>
+      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num"></span> Variants in <span id="prot_current"></span> out of <span id="prot_num"></span> Proteins</a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Interaction <b class="caret"></b></a>
 
@@ -102,14 +102,18 @@
         $("#current_count").text("0");
         $("#variants-results").empty();
         tissues_selected = [$(this).html()];
-        $("#variants-results").after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+        $("#variants-results").parent().after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
         $.ajax({
           url: "./variant_load.php",
           type: "GET",
-          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          data: { is_ajax: "yes", is_tissue: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
           success: function(results){
             $("#current_count").html(parseInt($("#current_count").text())+20);
             $("#variants-results").append(results);
+            $("#total_num").html($("#mut_c").data("count"));
+            $("#prot_num").html($("#prot_c").data("count"));
+
+            $("#prot_current").html($("#variants-results tr").length);
             $("#loader").remove();
             processing = false;
           },
@@ -127,7 +131,7 @@
 
         if ($(window).scrollTop() >= ($(document).height() - $(window).height())*0.9){
           processing = true;
-          $("#variants-results").after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+          $("#variants-results").parent().after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
           $.ajax({
           url: "./variant_load.php",
           type: "GET",
@@ -135,6 +139,7 @@
           success: function(results){
             $("#current_count").html(parseInt($("#current_count").text())+20);
             $("#variants-results").append(results);
+            $("#prot_current").html($("#variants-results tr").length);
             $("#loader").remove();
             processing = false;
           },
@@ -166,8 +171,10 @@
 
 
       $("#total_num").html(mut_count);
-      $('#variant-table').on("click", "tr", function() {
-        window.location.href = './details.php?variant=' +$(this).data("protein");
+      $("#prot_num").html(prot_count);
+      $("#prot_current").html($("#variants-results tr").length);
+      $('#variant-table tbody').on("click", "tr", function() {
+        window.location.href = './details.php?variant=' +$(this).data("protein") + '&tissues=' + tissues_selected;
 
       });
     });

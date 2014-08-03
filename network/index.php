@@ -406,6 +406,7 @@
     $(".layout-select").removeClass("active");
     $(this).addClass("active");
     loadCy();
+
     $('#cy').cytoscape(options);
 
     }

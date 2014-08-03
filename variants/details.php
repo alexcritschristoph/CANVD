@@ -14,6 +14,7 @@
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
+    <script src="<?php echo $root_path;?>bootstrap.js"></script>
 	</head>
 
 	<body style="background:#fafafa;">
@@ -28,12 +29,12 @@
       <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
 
     </div>  
-	<div class="container">
-	 <div class="row">
+
    <?php
      /* Is this the search page, or the results page, or the details page? */
    if(isset($_GET['variant']))
    {
+
     //get protein name
     $query = 'SELECT GeneName, Description FROM T_Ensembl WHERE EnsPID=:ens;';
     $stmt = $dbh->prepare($query);
@@ -46,8 +47,18 @@
       $name = $row[0];
       $description = $row[1];
     }
+
+    if(isset($_GET['tissues'])){
+    $tissue = $_GET['tissues'];
+    $tissues = explode(",",$tissue);
+    $plist = '\'' . implode('\',\'', $tissues) . '\'';
+    $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site, MUTATION_ID, mut_description FROM T_Mutations WHERE EnsPID=:ens AND tumour_site IN(' . $plist . ') ;';
+    }
     //get all variants
-    $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site FROM T_Mutations WHERE EnsPID=:ens;';
+    else 
+    {
+      $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site, MUTATION_ID, mut_description FROM T_Mutations WHERE EnsPID=:ens;';
+    }
     $stmt = $dbh->prepare($query);
     $query_params = array(':ens'=> $_GET['variant']);
     $stmt->execute($query_params);
@@ -89,30 +100,64 @@
 
     ?>
 
-    <p> Variant Details for <?php echo $_GET['variant'] ?> (<?php echo $name;?>)</p>
-    <p  style="margin-bottom:30px;font-size:0.9em;margin-left:30px;"><?php echo $description;?></p>
-    <div class="col-md-8">
+
+    <div class="container">
+   <div class="row">
+
+   <div class="col-md-12">
+   <div class="navbar navbar-inverse">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#"><?php echo $name;?> (<?php echo $_GET['variant'] ?>)</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#"><?php echo $description;?></a></li>
+
+
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="../proteins/wt/<?php echo $_GET['variant'];?>.fasta">Download Wildtype Sequence</a></li>
+          <li><a href="#" id="download_all">Download All Mutant Sequences</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+   </div>
+
+    <div class="col-md-12">
     <table class="table table-striped table-hover">
     <thead>
         <tr>
-          <th>Variant Syntax</th>        
+          <th>Mutation ID</th>
+          <th>Variant Syntax</th>  
+          <th>Mutation Type</th>      
           <th>Tissues</th>
           <th>Effect</th>
           <th>SH3 Interacting Domain</th>
-          <th>Interaction Network</th>        
+          <th>Interaction Network</th>
+          <th>Download Sequence</th>        
         </tr>
       </thead>
     <tbody>
     <?php
     foreach($variants as $var)
     {
+      $mut_id = $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
       ?>
       <tr>
-      <td><?php echo $var[1];?></td>
+      <td><?php echo $mut_id;?></td>
+      <td><?php echo explode(".",$var[1])[1];?></td>
+      <td><?php echo $var[4];?></td>
       <td><?php echo ucwords(str_replace("_"," ", $var[2]));?></td>
       <td><?php if (isset($effects[$var[1]][3])) {echo $effects[$var[1]][3]; } else { echo "None";}?></td>
       <td><?php if (isset($effects[$var[1]][3])) {echo $domains[$effects[$var[1]][4]][1]; } else  { echo "None";}?></td>
       <td><?php if (isset($effects[$var[1]][3])) {?><a href="../network/?genename=<?php echo $domains[$effects[$var[1]][4]][0];?>">Network Link</a><?php }?></td>
+      <td><a href="../proteins/wt/<?php echo $mut_id?>.fasta">Download</a></td>
       </tr>
       <?php
     }
@@ -120,7 +165,45 @@
     ?>
     </tbody>
     </table>
+    <?php if(isset($_GET['tissues'])){
+      ?>
+      <p style="margin-top:20px;margin-bottom:60px;font-size:1.2em;text-align:center;"> <a id="showall" href="#" class="btn btn-default">Showing variants in specific tissue(s). Click here to view all variants for this protein.</a></p>
+      <?php
+    }
+    ?>
     </div>
+    <script>
+      $( document ).ready(function() {
+
+        $("#showall").on("click", function(){
+          window.location.href = './details.php?variant=<?php echo $_GET['variant'];?>';
+        });
+
+      <?php
+      $var_list = "";
+      $i = 0;
+      foreach($variants as $var)
+    {
+      if ($i > 0){
+        $var_list = $var_list . "," . $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
+      }
+      else 
+      {
+      $var_list = $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
+      }
+      $i += 1;
+    }
+      echo "var variant_list = '" . $var_list . "';";
+      ?>
+
+      $("#download_all").on("click", function(){
+        alert("test");
+        window.location.href = './download_variants.php?variant_ids=' + variant_list;
+      });
+
+      });
+    </script>
+
     <?php
   }
    else

@@ -153,7 +153,7 @@
               </table>
               <ul class="pager" id="tissue-page" data-page=0>
                 <li><a id="tissue-back">Previous</a></li>
-                <span> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">20</span> of <span id="tissue-total">40</span></span>
+                <span class='num-viewer'> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">20</span> of <span id="tissue-total">40</span></span>
                 <li><a id="tissue-forward">Next</a></li>
               </ul>
       </div>    
@@ -351,7 +351,7 @@
 
               <ul class="pager" id="protein-page" data-page=0>
                 <li><a id="protein-back">Previous</a></li>
-                <span> Viewing <span id="protein-start">1</span>-<span id="protein-end">20</span> of <span id="protein-total">40</span></span>                
+                <span class='num-viewer'> Viewing <span id="protein-start">1</span>-<span id="protein-end">20</span> of <span id="protein-total">40</span></span>                
                 <li><a id="protein-forward">Next</a></li>
               </ul>
 
@@ -383,7 +383,7 @@
 
               <ul class="pager" id="pwm-page" data-page=0>
                 <li><a id="pwm-back">Previous</a></li>
-                <span> Viewing <span id="pwm-start">1</span>-<span id="pwm-end">20</span> of <span id="pwm-total">40</span></span>                                
+                <span  class='num-viewer'> Viewing <span id="pwm-start">1</span>-<span id="pwm-end">20</span> of <span id="pwm-total">40</span></span>                                
                 <li><a id="pwm-forward">Next</a></li>
               </ul>
               <script>
