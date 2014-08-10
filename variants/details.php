@@ -197,7 +197,6 @@
       ?>
 
       $("#download_all").on("click", function(){
-        alert("test");
         window.location.href = './download_variants.php?variant_ids=' + variant_list;
       });
 

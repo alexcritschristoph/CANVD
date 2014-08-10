@@ -33,7 +33,7 @@ foreach ($proteins as $protein)
 	$stmt->execute($query_params);
 	$gain_num = $stmt->fetch()[0];
 
-	$query = "SELECT COUNT(*) FROM T_Mutations WHERE EnsPID=:protid;";
+	$query = "SELECT COUNT(*) FROM T_Interaction WHERE Domain_EnsPID=:protid;";
 	$query_params = array(':protid' => $protein[2]);
 	$stmt = $dbh->prepare($query);
 	$stmt->execute($query_params);

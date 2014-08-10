@@ -136,7 +136,7 @@ $plist = '\'' . implode('\',\'', $ens_ids) . '\'';
 
 $query = 'SELECT Interaction_EnsPID, IID, PWM
 			  FROM T_Interaction
-			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT 50;';
+			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT 100;';
 
 //Parametized SQL prevents SQL injection
 $query_params = array(':ens' => $plist);

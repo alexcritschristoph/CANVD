@@ -273,3 +273,17 @@ li .active{
 .badge{
 	border-radius:4px;
 }
+
+#top_btns{
+	margin-left:10px;margin-top:25px;
+}
+@media (max-width: 800px) {
+#title_fix{
+	display:block;
+	clear: both;
+}
+
+#title_h1{
+	margin-top:0px;
+	font-size:2.6em;
+}

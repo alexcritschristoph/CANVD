@@ -16,13 +16,15 @@ $stmt->execute($query_params);
 $tissues = array();
 while ($row = $stmt->fetch())
 {
-	$query = "SELECT EnsPID,Type FROM T_Domain WHERE Domain LIKE :domain;";
+	$query = "SELECT EnsPID,Type,GeneName,ProteinLength,DomainSequence FROM T_Domain WHERE Domain LIKE :domain;";
 	$query_params = array(":domain"=>substr($row[1], 0, -3) .  "%");
 	$stmt2 = $dbh->prepare($query);
 	$stmt2->execute($query_params);
 	$result = $stmt2->fetch();
 	$protein = $result[0];
 	$type = $result[1];
+
+	$content = "<p style='font-size:0.8em;margin-top:10px;'><b>PWM: " . $row[0] . "</b><br><b>Domain: " . $row[1] . "</b></p><p style='font-size:0.6em'>Gene Name: " . $result[2] . "<br>Protein Length: " . $result[3]. "<br>Domain Sequence:<div style='font-size:0.6em;max-width:400px;word-wrap: break-word;margin-left:100px;'>" . $result[4] . "</div></p>";
 	?>
 
 
@@ -31,7 +33,7 @@ while ($row = $stmt->fetch())
         <td><?php echo $row[1];?></td>
         <td><a href="./network/?genename=<?php echo $protein;?>"><?php echo $protein;?></a></td>
         <td><?php echo $type;?></td>
-        <td><img src="./pwms/logos/<?php echo $row[0]?>.png" height="50px" class="pwm-img"></td>
+        <td><img src="./pwms/logos/<?php echo $row[0]?>.png" height="50px" class="pwm-img" data-content="<?php echo $content;?>"></td>
         <td><a href="./pwms/mimp/<?php echo $row[0]?>.mimp">MIMP</a>, <a href="./pwms/enologo/<?php echo $row[0]?>.enologo">Enologo</a>, <a href="./pwms/musi/<?php echo $row[0]?>.musi">Musi</a></td>
 	</tr>
 

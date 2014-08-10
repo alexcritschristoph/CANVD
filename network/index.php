@@ -107,7 +107,6 @@
         <div class="list-group show-list">
           <span class="list-group-item"><b>Layout Options</b></span>
           <a class="list-group-item layout-select show-item active">Circle</a>
-          <a class="list-group-item layout-select show-item">Random</a>
           <a class="list-group-item layout-select show-item">Grid</a>          
 
         </div>
@@ -144,7 +143,7 @@
   {
   $("#network-view-container").hide();
   $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
-    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>PWM</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table><button type='button' style='margin-left:20px;margin-bottom:10px;' class='btn btn-primary'>Download data for all</button></div></div>");
+    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
         var keys = [];
         var keystring = "";
@@ -161,7 +160,7 @@
           }
           j += 1
         }
-        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:0.8em;max-width:330px;'><img src='../pwms/logos/" + interaction_pwms[i]['quickpwm'] + ".png' height='60'></td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
+        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
     }
 
 
@@ -414,9 +413,14 @@
   });
 
     $(".json-download").on("click", function(){
-      var url = 'data:text/json;charset=utf8,' + encodeURIComponent(JSON.stringify(cy.json()['elements']));
-      window.open(url, '_blank');
-      window.focus();
+      $.ajax({
+        url:"./save_data.php",
+        type: "POST",
+        data: {download_data:JSON.stringify(cy.json()['elements'])},
+        success:function(result){
+      window.location.href = './download.php';         
+      }});
+
     });
 
     $(".csv-download").on("click", function(){
@@ -443,9 +447,13 @@
         i += 1;
       }
         console.log(string);
-        var url = 'data:text/json;charset=utf8,' + encodeURIComponent(string);
-        window.open(url, '_blank');
-        window.focus();
+        $.ajax({
+        url:"./save_data.php",
+        type: "POST",
+        data: {download_data:string},
+        success:function(result){
+      window.location.href = './download.php';         
+       }});
           
     });
    $('body').on( "click", ".tissue_filter", function() {
@@ -498,8 +506,6 @@
     layout: { name: layout_type },
     name: 'circle',
     showOverlay: true,
-    minZoom: 0.5,
-    maxZoom: 2,
     fit:true,
 
     style: cytoscape.stylesheet()

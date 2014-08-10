@@ -23,8 +23,13 @@
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-      <p><h2> Frequently Asked Questions about CANVD</h2></p>
-	  </div>
+      <p><h2 style="margin-bottom:30px;"> Frequently Asked Questions about CANVD</h2></p>
+
+      <p><b>Integer interdum, tellus et vehicula dictum</b></p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque blandit sagittis. Aenean porttitor porta velit sed consequat. Phasellus gravida commodo massa. Etiam faucibus dui vitae dui tristique sodales. Aenean posuere dui vulputate consectetur tincidunt. Nam aliquam quam neque, vitae posuere augue tristique a. Ut aliquam, elit tempor aliquam consectetur, augue eros malesuada nisi, sed rhoncus nibh ante eget velit. Maecenas in feugiat magna. Quisque quam augue, gravida eget nisl scelerisque, malesuada sagittis dolor. Curabitur adipiscing neque mi, euismod dictum est facilisis in.</p>
+	    <p><b>Duis elit dui, suscipit eu volutpat at, elementum vitae lorem.</b></p>
+      <p>Pellentesque ut sem condimentum, varius massa congue, fermentum nunc. Fusce laoreet vitae massa eget tempus. Nunc placerat, eros dictum sodales fringilla, risus elit laoreet quam, eu venenatis sem massa sit amet tortor. Aenean tristique imperdiet ante at viverra. Vestibulum eget commodo nisi, ac pharetra dui. Maecenas in mauris sit amet lacus laoreet dapibus. Vivamus in nibh vel nunc laoreet viverra non rhoncus dolor. Ut arcu enim, rhoncus eu bibendum vel, tristique id enim.</p>
+    </div>
 	<div class="container">
 	
   <?php

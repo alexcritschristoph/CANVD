@@ -43,27 +43,19 @@
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Showing <span id="current_count">20</span> out of <span id="total_num"></span> Variants in <span id="prot_current"></span> out of <span id="prot_num"></span> Proteins</a></li>
-      <li class="dropdown">
+      <li class="active"><a href="#">Showing <span id="current_count"></span> out of <span id="total_num"></span> Variants in <span id="prot_current"></span> out of <span id="prot_num"></span> Proteins</a></li>
+<!--       <li class="dropdown">
         <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Interaction <b class="caret"></b></a>
 
         <ul class="dropdown-menu">
           <li><a href="#">Gain of Interaction</a></li>
           <li><a href="#">Loss of Interaction</a></li>
         </ul>
-      </li>
+      </li> -->
 
       <li class="dropdown">
       <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Tissue <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-
-          <?php
-            $tissues = $_GET['tissue'];
-            foreach ($tissues as $tissue_name)
-            {
-             ?><li><a href="#" class="tissue-filter"><?php echo $tissue_name;?></a></li><?php
-            }
-          ?>
+        <ul class="dropdown-menu" id="filter-tissue-list">
         </ul>
       </li>
     </ul>
@@ -71,8 +63,7 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="#">Download Current</a></li>
-          <li><a href="#">Download All</a></li>
+          <li><a href="#" id='download-current'>Download Current View</a></li>
         </ul>
       </li>
     </ul>
@@ -94,26 +85,43 @@
 
     <script>
     var tissues_selected = <?php echo json_encode($_GET['tissue']);?>;
+    var mut_types = <?php echo json_encode($_GET['mut_type']);?>;
+    var prot_name = <?php echo json_encode($_GET['prot']);?>;
+    var prot_source = <?php echo json_encode($_GET['source']);?>;
     var processing;
 
     $( document ).ready(function() {
+      if (tissues_selected.length > 0){
+        for (index = 0; index < tissues_selected.length; ++index) {
+        $("#filter-tissue-list").append("<li><a href='#' class='tissue-filter' data-tissue='" + tissues_selected[index] + "'>" + tissues_selected[index].replace("_", " ").charAt(0).toUpperCase() + tissues_selected[index].replace("_", " ").slice(1) + "</a></li>");
+        }
+      }
 
       $(".tissue-filter").on("click", function(){
         $("#current_count").text("0");
+        $("#prot_current").text("0");
         $("#variants-results").empty();
-        tissues_selected = [$(this).html()];
+        tissues_selected = [$(this).data("tissue")];
         $("#variants-results").parent().after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
         $.ajax({
           url: "./variant_load.php",
           type: "GET",
-          data: { is_ajax: "yes", is_tissue: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          data: { is_ajax: "yes", is_tissue: "yes", tissue:tissues_selected, current_count:parseInt($("#prot_current").text()), prot:prot_name, source:prot_source, mut_type:mut_types},
           success: function(results){
-            $("#current_count").html(parseInt($("#current_count").text())+20);
             $("#variants-results").append(results);
+
+            var variant_count = 0;
+            $('#variants-results').children('tr').each(function () {
+             if ($.isNumeric($(this).find(".mut-count").text())){
+               variant_count += parseInt($(this).find(".mut-count").text());
+             }
+            });
+            $("#current_count").html(variant_count);
+
             $("#total_num").html($("#mut_c").data("count"));
             $("#prot_num").html($("#prot_c").data("count"));
 
-            $("#prot_current").html($("#variants-results tr").length);
+            $("#prot_current").html($("#variants-results .normal").length);
             $("#loader").remove();
             processing = false;
           },
@@ -135,11 +143,20 @@
           $.ajax({
           url: "./variant_load.php",
           type: "GET",
-          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
+          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#prot_current").text()), prot:prot_name, source:prot_source, mut_type:mut_types},
           success: function(results){
-            $("#current_count").html(parseInt($("#current_count").text())+20);
             $("#variants-results").append(results);
-            $("#prot_current").html($("#variants-results tr").length);
+            //Get current # of variants
+            var variant_count = 0;
+            $('#variants-results').children('tr').each(function () {
+              console.log($(this).find(".mut-count").text());
+            if ($.isNumeric($(this).find(".mut-count").text())){
+             variant_count += parseInt($(this).find(".mut-count").text());
+           }
+            });
+            $("#current_count").html(variant_count);
+
+            $("#prot_current").html($("#variants-results .normal").length);
             $("#loader").remove();
             processing = false;
           },
@@ -150,33 +167,27 @@
 
         }
        });
-      $("#click-more").on("click", function(){
-        $("#click-more").html("<img src='./ajax-loader.gif'>");
-        $("#click-more").attr('disabled','disabled');
-      $.ajax({
-          url: "./variant_load.php",
-          type: "GET",
-          data: { is_ajax: "yes", tissue:tissues_selected, current_count:parseInt($("#current_count").text())+20},
-          success: function(results){
-            $("#current_count").html(parseInt($("#current_count").text())+20);
-            $("#variants-results").append(results);
-            $("#click-more").html("+");
-            $("#click-more").removeAttr('disabled');
-          },
-          error:function(){
-              alert("failure");
-          }
-      });        
-    });
-
 
       $("#total_num").html(mut_count);
       $("#prot_num").html(prot_count);
-      $("#prot_current").html($("#variants-results tr").length);
+      var variant_count = 0;
+      $('#variants-results').children('tr').each(function () {
+       if ($.isNumeric($(this).find(".mut-count").text())){
+         variant_count += parseInt($(this).find(".mut-count").text());
+       }
+      });
+      $("#current_count").html(variant_count);
+      $("#prot_current").html($("#variants-results .normal").length);
+
+
       $('#variant-table tbody').on("click", "tr", function() {
         window.location.href = './details.php?variant=' +$(this).data("protein") + '&tissues=' + tissues_selected;
-
       });
+
+      $("#download-current").on("click", function(){
+        window.location.href = './download.php?tissue=' + tissues_selected + '&source=' + '<?php echo json_encode($_GET["source"]);?>' + '&type=' + '<?php echo json_encode($_GET["mut_type"]);?>' + '&end=' + $('#prot_current').text() <?php if(isset($_GET['prot'])){ ?> + '&prot=' + "<?php echo $_GET['prot'];?>"<?php } ?>;
+      });
+
     });
 
 
@@ -209,36 +220,47 @@
       </div>
 
       <div class="form-group">
-        <label class="col-md-3 control-label" for="variant-effect">Interaction Effect</label>
+        <label class="col-md-3 control-label" for="variant-effect">Mutation Type</label>
         <div class="col-md-7">
+        <?php
+        //Get all database mutation types.
+        $query = "SELECT DISTINCT mut_description FROM T_Mutations;";
+        $query_params = array();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($query_params);
+
+        while ($row = $stmt->fetch())
+        {
+        ?>
         <div class="checkbox">
           <label for="variant-effect-0">
-            <input type="checkbox" checked name="variant-effect" id="variant-effect-0" value="gain">
-            Gain of Function
+            <input type="checkbox" checked name="mut_type[]" id="variant-effect-0" value="<?php echo $row[0] ?>">
+            <?php echo $row[0] ?>
           </label>
         </div>
-        <div class="checkbox">
-          <label for="variant-effect-1">
-            <input type="checkbox" checked name="variant-effect1" id="variant-effect-1" value="loss">
-            Loss of Function
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="variant-effect-2">
-            <input type="checkbox" checked name="variant-effect2" id="variant-effect-2" value="none">
-            Neutral (No Change)
-          </label>
-        </div>
+        <?php
+      }
+      ?>
         </div>
       </div>
-
       <div class="form-group">
         <label class="col-md-3 control-label" for="data-source-box">Variant Data Sources</label>
         <div class="col-md-7">
+              <?php
+      //Get all database sources.
+       $query = "SELECT DISTINCT Source FROM T_Mutations;";
+        $query_params = array();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($query_params);
+
+        while ($row = $stmt->fetch())
+        {
+      ?>
           <label class="checkbox-inline" for="data-source-box-0">
-            <input type="checkbox" checked name="source" id="data-source-box-0" value="COSMIC">
-            COSMIC
+            <input type="checkbox" checked name="source[]" id="data-source-box-0" value="<?php echo trim($row[0]); ?>">
+            <?php echo $row[0]; ?>
           </label>
+          <?php }?>
         </div>
       </div>
 

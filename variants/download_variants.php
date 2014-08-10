@@ -15,4 +15,10 @@ foreach ($variant_ids as $var)
 }
 
 echo $newfile;
+
+$File = 'variants.fasta';
+header("Content-Disposition: attachment; filename=\"" . basename($File) . "\"");
+header("Content-Type: application/force-download");
+header("Connection: close");
+
 ?>
