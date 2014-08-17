@@ -44,6 +44,8 @@
         <li id="downloads_li"><a href="#" id="downloads_btn">Download</a></li>
       </ul>
       <div id="filters_panel">
+      <p style="font-size:0.9em;margin-bottom:6px;padding-bottom:0;">Viewing <span id="prot_c_2"></span> out of <span id="prot_c_total"></span> total interactions. </p>
+      <div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_more"> Show more interactions</div>
       <table class="table table-striped table-hover ">
         <thead>
           <tr>
@@ -71,9 +73,14 @@
       <div id="downloads_panel">
       <p style="font-size:1.2em;">There are multiple formats in which the data in the current view can be downloaded.</p>
       <div class="list-group">
-        <span class="list-group-item download-list" style="background:#d6d6d6">Download as:</span>
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download view as:</span>
         <a href="#" class="list-group-item json-download">Raw JSON Data</a>
         <a href="#" class="list-group-item csv-download">Text Data (CSV)</a>
+      </div>
+
+      <div class="list-group">
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download ALL interaction data:</span>
+        <a href="#" class="list-group-item csv-download-all">Text Data (CSV)</a>
       </div>
       </div>
     </div>
@@ -87,10 +94,11 @@
             <h3 class="panel-title stats-title">Network Statistics</h3>
           </div>
           <div class="panel-body stats-body">
-            <p><b id="prot_c"></b> total proteins</p>
-            <p><b id="mut_c"></b> total mutations</p>
-            <p><b id="tumor_c"></b> tumor types</p>
-            <p><b>1</b> interaction domain</p>
+            <p>Viewing <b id="prot_c"></b> proteins</p>
+            <p>Viewing <b id="mut_c"></b> mutations</p>
+            <p>Viewing <b id="tumor_c"></b> tumor types</p>
+            <p><b>1</b> interaction domain:</p>
+            <p><b id="prot-name">Test</b>: <i id="prot-id">Testing</i></p>            
           </div>
         </div>
         <div class="list-group show-list">
@@ -126,6 +134,19 @@
   $(function() {
 
   <?php
+
+  //Visible node count
+  if (isset($_GET['limit']))
+  {
+  ?>
+  var net_limit = <?php echo $_GET['limit'];?>;
+  <?php
+  }
+  else{?>
+  var net_limit = 100;
+    <?php
+  }
+
   //Generate network data
   include_once('../search.php');
   ?>
@@ -134,9 +155,19 @@
   var net_edges = [];
   var protein_count1;
   var mutation_count1;
+  var protein_total_count;
   var tumor_count1;
   var networkData;
   var target_protein1;
+  var target_ids1;
+
+  $("#show_more").on("click", function(){
+    $("#show_more").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
+    net_limit = net_limit + 100;
+    var new_url = window.location.href.split("&")[0] + "&limit=" + net_limit;
+    window.location.href = new_url
+  });
+
 
   //for each protein, display
   if (all_proteins.length > 1)
@@ -160,7 +191,7 @@
           }
           j += 1
         }
-        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td>"+keys.length+"</td><td>" + mutation_count[i] + "</td>")
+        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td>"+total_count[i]+"</td><td>" + mutation_count[i] + "</td>")
     }
 
 
@@ -171,8 +202,10 @@
     networkData = networkData1[0];
     protein_count1 = protein_count[0];
     mutation_count1 = mutation_count[0];
+    protein_total_count = total_count[0];
     tumor_count1 = tumor_count[0];
     target_protein1 = target_protein[0];
+    target_ids1 = target_id_json[0];
     interaction_names1 = interaction_names[0];
     interaction_edges1 = interaction_edges[0];
     interaction_pwms1 = interaction_pwms[0];
@@ -192,8 +225,10 @@
     networkData = networkData1[$(this).index()];
     protein_count1 = protein_count[$(this).index()];
     mutation_count1 = mutation_count[$(this).index()];
+    protein_total_count = total_count[$(this).index()];
     tumor_count1 = tumor_count[$(this).index()];
     target_protein1 = target_protein[$(this).index()];
+    target_ids1 = target_id_json[$(this).index()];
     interaction_names1 = interaction_names[$(this).index()];
     interaction_edges1 = interaction_edges[$(this).index()];
     interaction_pwms1 = interaction_pwms[$(this).index()];
@@ -212,7 +247,19 @@
     $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein was not found in the database.</p></div>");
   }
   else{
-      $("#prot_c").text(protein_count1);
+      $("#prot_c").text(protein_count1-1);
+      $("#prot_c_2").text(protein_count1-1);
+      $("#prot_c_total").text(protein_total_count);
+
+      if ($("#prot_c_2").text() == $("#prot_c_total").text())
+      {
+        $("#show_more").hide();
+      }
+      else{
+        $("#show_more").show();
+      }
+      $("#prot-name").text(target_protein1);
+      $("#prot-id").text(target_ids1);
       $("#mut_c").text(mutation_count1);
       $("#tumor_c").text(tumor_count1);
       $("#cosmic-placeholder").text(protein_count1 - 1);
@@ -221,7 +268,7 @@
 
   //Create list of nodes
   net_nodes = [];
-  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 65, }} )
+  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 65, center: "true"}} )
     var l = 0;
     var prot_wt_count = 0;
     var prot_mut_count = 0;
@@ -423,9 +470,14 @@
 
     });
 
+    $(".csv-download-all").on("click", function(){
+      var new_url = './download_all.php?protein-id=' + target_ids1
+      window.location.href= new_url;
+    });
+
     $(".csv-download").on("click", function(){
       var csv_data = cy.json()['elements'];
-      var string = "SH3 binding protein,Interacting proteins,Average Interaction Score\n";
+      var string = "SH3 binding protein,Interacting proteins,Biological process,Disorder,Gene expression,Localization,Molecular function,Peptide conservation,Protein expression,Sequence signature,Surface accessibility,Average Interaction Score\n";
       var i = 0;
       for (csv in csv_data['nodes']){
         if (i == 0){
@@ -433,20 +485,19 @@
         }
         else
         {
-          var avg = "";
+          var data_content = [];
           for (csv2 in csv_data['edges']){
             if (csv_data['edges'][csv2]['data']['target'] == csv_data['nodes'][csv]['data']['id'])
             {
-              avg = csv_data['edges'][csv2]['data']['content']['Avg'];
+              avg = csv_data['edges'][csv2]['data']['content'];
               break;
             }
           }
-          string = string + source + "," + csv_data['nodes'][csv]['data']['id'] + "," + avg + "\n";
+          string = string + source + "," + csv_data['nodes'][csv]['data']['id'] + "," + avg['Biological_process'] + "," + avg['Disorder'] + "," + avg['Gene_expression'] + "," + avg['Localization'] + "," + avg["Molecular_function"] + "," + avg["Peptide_conservation"] + "," + avg["Protein_expression"] + "," + avg["Sequence_signature"] + "," + avg["Surface_accessibility"] + "," + avg['Avg'] + "\n";
 
         }
         i += 1;
       }
-        console.log(string);
         $.ajax({
         url:"./save_data.php",
         type: "POST",
@@ -588,6 +639,8 @@
         text: function(event, api) {
 
             //find the protein's interaction edge data
+            if (clickedNode.data("center") != "true")
+            {
             var this_edge;
             for (edge in interaction_edges1)
             {
@@ -654,6 +707,10 @@
             else 
             {
               return html + muts_string + "</tbody></table></div>";             
+            }
+            }
+            else{
+              return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>SH3 domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + target_ids1 + "'>" + target_ids1 + "</a></p></div>";
             }
           },
         title: function(event, api) {

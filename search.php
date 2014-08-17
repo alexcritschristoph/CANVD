@@ -20,9 +20,11 @@ $protein_json = array();
 $names_json = array();
 $mutation_json = array();
 $target_json = array();
+$target_id_json = array();
 $edges_json = array();
 $pwms_json = array();
 $networkData_json = array();
+$total_count_json = array();
 $gene_names = explode(",", $gene_name);
 foreach ($gene_names as $gene)
 {
@@ -32,6 +34,7 @@ $gene = trim($gene);
 	WHAT IS THE USER SEARCHING FOR?
 */
 $true_name = '';
+$target_id = '';
 $found = False;
 //Is this word a gene name?
 //Is this word a EnsID?
@@ -134,12 +137,30 @@ $diff_genes[] = $true_name;
 //Select all interactions with that Domain PID
 $plist = '\'' . implode('\',\'', $ens_ids) . '\'';
 
+$target_id_json[] = implode(",",$ens_ids);
+//Get total count
+$query = 'SELECT COUNT(DISTINCT Interaction_EnsPID)
+			  FROM T_Interaction
+			  WHERE Domain_EnsPID IN(' . $plist . ');';
+$query_params = array();
+$stmt = $dbh->prepare($query);
+$stmt->execute($query_params);
+$total_count_json[] = $stmt->fetch()[0];
+
+
 $query = 'SELECT Interaction_EnsPID, IID, PWM
 			  FROM T_Interaction
-			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT 100;';
+			  WHERE Domain_EnsPID IN(' . $plist . ') LIMIT :user_limit;';
 
 //Parametized SQL prevents SQL injection
-$query_params = array(':ens' => $plist);
+if (isset($_GET['limit']))
+{
+	$query_params = array(':user_limit' => $_GET['limit']);
+}
+else
+{
+	$query_params = array(':user_limit' => 100);
+}
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
@@ -157,7 +178,6 @@ while ($row = $stmt->fetch())
 	$pwms[$row[0]] = $row[2];
 	$pwms['quickpwm'] = $row[2];
 }
-
 //Find all gene names of the interaction partners
 //Organize results
 $results = array();
@@ -253,6 +273,19 @@ while ($row = $stmt->fetch())
 	//echo "console.log(" . var_dump($existing_syntaxes) . ");";
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
+
+
+	//Advanced Search narrows the options by removing some from the results.
+	foreach ($results as $k => $r){
+		foreach ($r as $t){
+			foreach ($t as $s){
+				if (in_array(1, $s)){
+					//unset($results[$k]);
+				}
+			}
+		}
+	}
+
 $tumor_json[] = count(array_keys($tumors));
 $protein_json[] = count(array_keys($proteins)) + 1;
 $mutation_json[] = $mut_counter;
@@ -264,13 +297,16 @@ $pwms_json[] = $pwms;
 }
 }
 ?>
+
+var total_count = <?php echo json_encode($total_count_json);?>;
 var interaction_pwms = <?php echo json_encode($pwms_json);?>;
 var interaction_names = <?php echo json_encode($names_json);?>;
 var interaction_edges = <?php echo json_encode($edges_json);?>;
 var tumor_count = <?php echo json_encode($tumor_json); ?>;
 var protein_count = <?php echo json_encode($protein_json); ?>;
 var mutation_count = <?php echo json_encode($mutation_json); ?>;
-var target_protein = <?php echo json_encode($target_json) ?>;
+var target_protein = <?php echo json_encode($target_json); ?>;
+var target_id_json = <?php echo json_encode($target_id_json); ?>;
 var networkData1 = <?php echo json_encode($networkData_json);?>;
 var all_proteins = <?php echo json_encode($diff_genes);?>;
 

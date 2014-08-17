@@ -70,6 +70,7 @@
 
     //get all effects
     $effects = array();
+    $mut_syntaxes_to_ids = array();
     $interactions = array();
     foreach($variants as $var)
     {
@@ -79,9 +80,11 @@
       $stmt->execute($query_params);
       while ($row = $stmt->fetch())
       {
-        $effects[$row[0]] = $row;
+        $effects[$row[0]][$row[4]] = $row[3];
+        $mut_syntaxes_to_ids[$row[4]] = $row[0];
       }
     }
+
 
     //get all sh3 interacting domains
     $query = 'SELECT Domain_EnsPID, Interaction_EnsPID, IID FROM T_Interaction WHERE Interaction_EnsPID=:ens;';
@@ -89,17 +92,30 @@
     $query_params = array(':ens'=> $_GET['variant']);
     $stmt->execute($query_params);
     $domains = array();
+    $domain_ids = array();
     while ($row = $stmt->fetch())
     {
       $query2 = 'SELECT GeneName FROM T_Domain WHERE EnsPID=:ens;';
       $stmt2 = $dbh->prepare($query2);
       $query_params2 = array(':ens'=> $row[0]);
       $stmt2->execute($query_params2);
-      $domains[$row[2]] = array($row[0],$stmt2->fetch()[0]);
+      //Get Mut syntax of this ID
+      if (isset($mut_syntaxes_to_ids[$row[2]])){
+        $mut_syntax_d = $mut_syntaxes_to_ids[$row[2]];
+        $domain_name = $stmt2->fetch()[0];
+        if (isset($domains[$mut_syntax_d])){
+          if (!in_array($domain_name, $domains[$mut_syntax_d])){
+          $domains[$mut_syntax_d][$row[2]] = $domain_name;
+          $domain_ids[$domain_name] = $row[0];          
+          }
+        }
+        else {
+          $domains[$mut_syntax_d][$row[2]] = $domain_name;
+          $domain_ids[$domain_name] = $row[0];         
+        }
+      }
     }
-
     ?>
-
 
     <div class="container">
    <div class="row">
@@ -114,6 +130,31 @@
       <li class="active"><a href="#"><?php echo $description;?></a></li>
 
 
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Interaction <b class="caret"></b></a>
+
+        <ul class="dropdown-menu" id="function-filter">
+          <li><a href="#" data-func="all">Show All</a></li>
+          <li><a href="#" data-func="gain">Gain of Function</a></li>
+          <li><a href="#" data-func="loss">Loss of Function</a></li>
+          <li><a href="#" data-func="neutral">Neutral Effect on Function</a></li>
+        </ul>
+      </li>
+      <script>
+      $(function(){
+              $("#function-filter").on("click", "a", function(){
+
+        if ($(this).data("func") == 'all'){
+          var new_url = window.location.href.split('&int-filter')[0];
+           window.location.href = new_url;
+        }
+        else{
+        var new_url = window.location.href.split('&int-filter')[0] + "&int-filter=" + $(this).data("func");
+        window.location.href = new_url;
+        }
+      });
+      });
+      </script>
     </ul>
     <ul class="nav navbar-nav navbar-right">
 
@@ -130,36 +171,80 @@
    </div>
 
     <div class="col-md-12">
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="variant-details-table">
     <thead>
         <tr>
           <th>Mutation ID</th>
           <th>Variant Syntax</th>  
           <th>Mutation Type</th>      
           <th>Tissues</th>
-          <th>Effect</th>
-          <th>SH3 Interacting Domain</th>
-          <th>Interaction Network</th>
+          <th>Effect On SH3 Interactions - <span class="g">Gain of Function</span>, <span class="r">Loss of Function</span>.<br> Click to view SH3 domain networks.</th>
           <th>Download Sequence</th>        
         </tr>
       </thead>
     <tbody>
     <?php
+
+    //If the int-filter option is set, restrict to that type only.
+    $filter_option = "N/A";
+    if (isset($_GET['int-filter']))
+    {
+      if ($_GET['int-filter'] == 'gain'){
+        $filter_option = "gain of function";
+      }
+      elseif ($_GET['int-filter'] == "loss"){
+        $filter_option = "loss of function";
+      }
+    }
+
     foreach($variants as $var)
     {
       $mut_id = $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
+
+      //If an effect filter is set, check to see if it's in this row's effects to show it.
+      if ((isset($_GET['int-filter']) && (isset($effects[$var[1]]) && in_array($filter_option,$effects[$var[1]]))) || (isset($_GET['int-filter']) && $_GET['int-filter'] == 'neutral' && !isset($effects[$var[1]])) || !isset($_GET['int-filter']))
+      {
       ?>
       <tr>
       <td><?php echo $mut_id;?></td>
       <td><?php echo explode(".",$var[1])[1];?></td>
       <td><?php echo $var[4];?></td>
       <td><?php echo ucwords(str_replace("_"," ", $var[2]));?></td>
-      <td><?php if (isset($effects[$var[1]][3])) {echo $effects[$var[1]][3]; } else { echo "None";}?></td>
-      <td><?php if (isset($effects[$var[1]][3])) {echo $domains[$effects[$var[1]][4]][1]; } else  { echo "None";}?></td>
-      <td><?php if (isset($effects[$var[1]][3])) {?><a href="../network/?genename=<?php echo $domains[$effects[$var[1]][4]][0];?>">Network Link</a><?php }?></td>
-      <td><a href="../proteins/wt/<?php echo $mut_id?>.fasta">Download</a></td>
+      <td>
+      <?php
+      if (isset($effects[$var[1]])){
+      $i = 0;
+      foreach($domains[$var[1]] as $k => $d){
+        if ($effects[$var[1]][$k] == "gain of function" && ($filter_option == 'gain of function' || $filter_option == "N/A")){
+          if ($i > 0){
+          echo ", <a href='../network/?genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";
+
+          }
+          else
+          {
+          echo "<a href='../network/?genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";            
+          }
+        }
+        elseif ($effects[$var[1]][$k] == "loss of function" && ($filter_option == 'loss of function' || $filter_option == "N/A")){
+          if ($i > 0){          
+          echo ", <a href='../network/?genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";
+          }
+          else{
+          echo "<a href='../network/?genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";            
+          }
+        }
+        $i += 1;
+      }
+      }
+      else{
+        echo "None";
+      }
+      ?>
+      </td>
+      <td><a href="../proteins/mt/<?php echo $mut_id?>.fasta">Download</a></td>
       </tr>
       <?php
+    }
     }
 
     ?>

@@ -78,55 +78,61 @@
 		</div>
 
 		<div class="col-md-9">
-		    <form id="search_form" class="input-group input-group-lg" action="./network/" method="get">
+		    <form id="search_form" action="./network/" method="get">
+        <div class="input-group input-group-lg">
 			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602">
 			  <span class="input-group-btn">
 		        <button type="submit" class="btn btn-danger" type="button" id="search_btn">Search</button>
             <button class="btn btn-default" type="button" id="advanced_btn">Advanced</button>
 		      </span>
-			</form>
-
+      </div>
       <div id="advanced-search-box" style="Display:none">
-      <form class="form-signin" role="form">
-        <div class="col-md-6">
-        <p class="form-signin-heading">Advanced Search Options:</p>        
-        <input type="email" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="Max # of Interactions" required autofocus>
-        <label class="checkbox" style="margin-top:15px;">
-          <input type="checkbox" value="remember-me"> Mutant Networks Only
+      <div class="form-signin">
+        <div class="col-md-6" style="padding-top:20px;">
+        <p class="form-signin-heading">Advanced Search Options:</p>     
+        <label class="input" style="font-size:1.1em;">  Max # of Interactions:
+        <input type="text" name="limit" value="100" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="default value: 100" required autofocus>
         </label>
+
+        <p style="font-size:1.1em;">Interactions to Show:</p>
         <label class="checkbox" style="margin-top:5px;">
-          <input type="checkbox" value="remember-me"> Gain of Interaction Only
+          <input type="checkbox" checked name="gain" value="true"> Gain of Function
         </label>
 
         <label class="checkbox" style="margin-top:5px;">
-          <input type="checkbox" value="remember-me"> Loss of Interaction Only
+          <input type="checkbox" checked name="loss" value="true"> Loss of Function
         </label>
+
+        <label class="checkbox" style="margin-top:5px;">
+          <input type="checkbox" checked name="neutral" value="true"> Neutral Function
+        </label>
+
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6" style="padding-top:20px;">
         <p>Interaction Evaluation Ranges</p>
 
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl1" ><span style="padding-left:15px;font-size:1em;">Gene Expression</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl1" name="gene"><span style="padding-left:15px;font-size:1em;">Gene Expression</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl2" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Protein Expression</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl2" name="protein"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Protein Expression</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;padding-left:25px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl3" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Disorder</span></div>
+        <input type="text" style="width:200px;padding-left:25px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl3" name="disorder"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Disorder</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl4" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Surface Accessibility</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl4" name="surface"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Surface Accessibility</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl5" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Peptide Conversation</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl5" name="peptide"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Peptide Conversation</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl6" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Molecular Function</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl6" name="molecular"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Molecular Function</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl7" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Biological Process</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl7" name="biological"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Biological Process</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl8" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Localization</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl8" name="localization"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Localization</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl9" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl9" name="sequence"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" ><span style="padding-left:15px;padding-top:10px;font-size:1em;">Average</span></div>
-             
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" name="average"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Average</span></div>
+        </div>    
         </div>
       </form>
       </div>
@@ -189,7 +195,6 @@
                       $("#protein-total").html(results[2]);
                     },
                     error:function(){
-                        alert("failure");
                     }
                 });  
 
@@ -222,7 +227,6 @@
                             $("#protein-table-body").html(results);
                         },
                         error:function(){
-                            alert("failure");
                         }
                     });                  
                 }
@@ -266,7 +270,6 @@
 
                         },
                         error:function(){
-                            alert("failure");
                         }
                     });                  
                 }
@@ -305,7 +308,6 @@
                           }
                         },
                         error:function(){
-                            alert("failure");
                         }
                     });                  
                 }

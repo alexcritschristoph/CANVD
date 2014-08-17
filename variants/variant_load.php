@@ -31,23 +31,27 @@
 
   if (!isset($_GET['prot']) || $_GET['prot'] == ''){
     $protein_name = "%";
+    $_GET['prot'] = '';
   }
   else{
     $protein_name = $_GET['prot'];
   }
 
-  if (isset($_GET['source'])){
+  if (isset($_GET['source']) && $_GET['source'] != ''){
     $source = implode("|", $_GET['source']);
   }
   else{
     $source = ".*";
+    $_GET['source'] = '';
   }
 
-  if (isset($_GET['mut_type'])){
+  if (isset($_GET['mut_type']) && $_GET['mut_type'] != ''){
     $type = implode("|", $_GET['mut_type']);
   }
   else{
     $type = ".*";
+    $_GET['mut_type'] = '';
+
   }
   //CREATE PENULTIMATE QUERIES
   if(isset($_GET['tissue']))

@@ -44,14 +44,7 @@
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
       <li class="active"><a href="#">Showing <span id="current_count"></span> out of <span id="total_num"></span> Variants in <span id="prot_current"></span> out of <span id="prot_num"></span> Proteins</a></li>
-<!--       <li class="dropdown">
-        <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Interaction <b class="caret"></b></a>
-
-        <ul class="dropdown-menu">
-          <li><a href="#">Gain of Interaction</a></li>
-          <li><a href="#">Loss of Interaction</a></li>
-        </ul>
-      </li> -->
+<!--        -->
 
       <li class="dropdown">
       <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Tissue <b class="caret"></b></a>
@@ -97,12 +90,13 @@
         }
       }
 
+
       $(".tissue-filter").on("click", function(){
         $("#current_count").text("0");
         $("#prot_current").text("0");
         $("#variants-results").empty();
         tissues_selected = [$(this).data("tissue")];
-        $("#variants-results").parent().after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+        $("#variants-results").parent().after("<div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
         $.ajax({
           url: "./variant_load.php",
           type: "GET",
@@ -122,15 +116,17 @@
             $("#prot_num").html($("#prot_c").data("count"));
 
             $("#prot_current").html($("#variants-results .normal").length);
-            $("#loader").remove();
+            $(".spinner").remove();
             processing = false;
           },
           error:function(){
-              alert("failure");
           }
         });  
 
       });
+
+
+
 
        $(document).scroll(function(e){
 
@@ -139,7 +135,7 @@
 
         if ($(window).scrollTop() >= ($(document).height() - $(window).height())*0.9){
           processing = true;
-          $("#variants-results").parent().after("<img id='loader' style='display:block;margin-left:500px;margin-right:auto;width:25px;' src='./ajax-loader.gif'>");
+          $("#variants-results").parent().after("<div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
           $.ajax({
           url: "./variant_load.php",
           type: "GET",
@@ -157,11 +153,10 @@
             $("#current_count").html(variant_count);
 
             $("#prot_current").html($("#variants-results .normal").length);
-            $("#loader").remove();
+            $(".spinner").remove();
             processing = false;
           },
           error:function(){
-              alert("failure");
           }
       });  
 
@@ -298,6 +293,14 @@ while ($row = $stmt->fetch())
   <div class="col-md-2">
       <div class="form-group">
     <button id="singlebutton" name="singlebutton" class="btn btn-danger" style="margin-top:135px;">Search</button>
+    <script>
+    $(function(){
+      $("#singlebutton").on("click", function(){
+          $("#singlebutton").html("<div class='spinner3'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");
+      });
+    });
+    </script>
+
     </div>
   </div>  
       </fieldset>
