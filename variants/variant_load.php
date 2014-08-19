@@ -41,23 +41,37 @@
     $source = implode("|", $_GET['source']);
   }
   else{
+    if (isset($_GET['variant_search'])){
+      $source = "";
+    }
+    else {
     $source = ".*";
-    $_GET['source'] = '';
+    $_GET['source'] = '';      
+    }
   }
 
   if (isset($_GET['mut_type']) && $_GET['mut_type'] != ''){
     $type = implode("|", $_GET['mut_type']);
   }
   else{
-    $type = ".*";
-    $_GET['mut_type'] = '';
-
+    if (isset($_GET['variant_search'])){
+      $type = "";
+    }
+    else{
+      $type = ".*";
+      $_GET['mut_type'] = '';      
+    }
   }
   //CREATE PENULTIMATE QUERIES
   if(isset($_GET['tissue']))
   {
   $tissues = $_GET['tissue'];
-  $plist = '\'' . implode('\',\'', $tissues) . '\'';
+  function sanitize($s) {
+    return htmlspecialchars($s);
+    }
+  $t = array_map('sanitize', $tissues);
+  $plist = '\'' . implode('\',\'', $t) . '\'';
+
   $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';    
   $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";    
   $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";    
@@ -231,7 +245,7 @@
   if (isset($_GET['download']))
   {
       ##Tissue Type, Protein ID, Variant #, Interaction #, Gain of Function (Count), Loss of Function(Count) 
-    echo implode('+',$tissues) . ", " . $name . ", " . $variant_names[$name] . ", " . count($data) . ", " . $int_num . ", " . $elist . "\n";
+    echo implode('+',$tissues) . "\t" . $name . "\t" . $variant_names[$name] . "\t" . count($data) . "\t" . $int_num . "\t" . $elist . "\n";
   }
   else 
     {

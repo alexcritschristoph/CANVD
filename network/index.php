@@ -46,6 +46,7 @@
       <div id="filters_panel">
       <p style="font-size:0.9em;margin-bottom:6px;padding-bottom:0;">Viewing <span id="prot_c_2"></span> out of <span id="prot_c_total"></span> total interactions. </p>
       <div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_more"> Show more interactions</div>
+      <div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_all"> Show all interactions</div>
       <table class="table table-striped table-hover ">
         <thead>
           <tr>
@@ -149,11 +150,13 @@
 
   //Generate network data
   include_once('../search.php');
+
   ?>
 
   var net_nodes = [];
   var net_edges = [];
   var protein_count1;
+  var protein_total1;
   var mutation_count1;
   var protein_total_count;
   var tumor_count1;
@@ -163,6 +166,13 @@
 
   $("#show_more").on("click", function(){
     $("#show_more").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
+    net_limit = net_limit + 100;
+    var new_url = window.location.href.replace("&limit", "&oldlimit") + "&limit=" + net_limit;
+    window.location.href = new_url
+  });
+
+  $("#show_all").on("click", function(){
+    $("#show_all").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
     net_limit = net_limit + 100;
     var new_url = window.location.href.split("&")[0] + "&limit=" + net_limit;
     window.location.href = new_url
@@ -174,7 +184,7 @@
   {
   $("#network-view-container").hide();
   $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
-    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Interaction Partners</th><th>Mutations</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
+    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Total Number of Interaction Partners for this Protein</th><th>Total Number of Mutations for this Protein</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
         var keys = [];
         var keystring = "";
@@ -201,6 +211,7 @@
   {
     networkData = networkData1[0];
     protein_count1 = protein_count[0];
+    protein_total1 = protein_total[0];
     mutation_count1 = mutation_count[0];
     protein_total_count = total_count[0];
     tumor_count1 = tumor_count[0];
@@ -224,6 +235,7 @@
     net_edges = [];
     networkData = networkData1[$(this).index()];
     protein_count1 = protein_count[$(this).index()];
+    protein_total1 = protein_total[$(this).index()];
     mutation_count1 = mutation_count[$(this).index()];
     protein_total_count = total_count[$(this).index()];
     tumor_count1 = tumor_count[$(this).index()];
@@ -251,8 +263,12 @@
       $("#prot_c_2").text(protein_count1-1);
       $("#prot_c_total").text(protein_total_count);
 
-      if ($("#prot_c_2").text() == $("#prot_c_total").text())
+      if (protein_total1 == $("#prot_c_total").text())
       {
+        if (parseInt($("#prot_c").text()) < parseInt($("#prot_c_total").text()))
+        {
+          $("#show_all").show();
+        }
         $("#show_more").hide();
       }
       else{
@@ -477,7 +493,7 @@
 
     $(".csv-download").on("click", function(){
       var csv_data = cy.json()['elements'];
-      var string = "SH3 binding protein,Interacting proteins,Biological process,Disorder,Gene expression,Localization,Molecular function,Peptide conservation,Protein expression,Sequence signature,Surface accessibility,Average Interaction Score\n";
+      var string = "SH3 binding protein\tInteracting proteins\tBiological process\tDisorder\tGene expression\tLocalization\tMolecular function\tPeptide conservation\tProtein expression\tSequence signature\tSurface accessibility\tAverage Interaction Score\n";
       var i = 0;
       for (csv in csv_data['nodes']){
         if (i == 0){
@@ -493,7 +509,7 @@
               break;
             }
           }
-          string = string + source + "," + csv_data['nodes'][csv]['data']['id'] + "," + avg['Biological_process'] + "," + avg['Disorder'] + "," + avg['Gene_expression'] + "," + avg['Localization'] + "," + avg["Molecular_function"] + "," + avg["Peptide_conservation"] + "," + avg["Protein_expression"] + "," + avg["Sequence_signature"] + "," + avg["Surface_accessibility"] + "," + avg['Avg'] + "\n";
+          string = string + source + "\t" + csv_data['nodes'][csv]['data']['id'] + "\t" + avg['Biological_process'] + "\t" + avg['Disorder'] + "\t" + avg['Gene_expression'] + "\t" + avg['Localization'] + "\t" + avg["Molecular_function"] + "\t" + avg["Peptide_conservation"] + "\t" + avg["Protein_expression"] + "\t" + avg["Sequence_signature"] + "\t" + avg["Surface_accessibility"] + "\t" + avg['Avg'] + "\n";
 
         }
         i += 1;

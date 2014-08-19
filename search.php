@@ -17,6 +17,7 @@ $counter = 0;
 $diff_genes = array();
 $tumor_json = array();
 $protein_json = array();
+$protein_total_json = array();
 $names_json = array();
 $mutation_json = array();
 $target_json = array();
@@ -232,14 +233,42 @@ while ($row = $stmt->fetch())
 
 
 $interaction_edges = array_values($interaction_edges);
+//Alright, Include Mutation Types and Data Source in this mutation list.
+if (isset($_GET['main_search'])){
+	if (isset($_GET['source'])){
+	    $source = implode("|", $_GET['source']);
+	}
+	else {
+		$source = "";
+	}
+  }
+else{
+$source = ".*";
+$_GET['source'] = '';
+}
+
+
+if (isset($_GET['main_search'])){
+	if (isset($_GET['mut_type'])){
+    $type = implode("|", $_GET['mut_type']);		
+	}
+	else{
+		$type = "";
+	}
+  }
+else{
+    $type = ".*";
+    $_GET['mut_type'] = '';
+}
+
 //Find all mutations of all interaction partners
 $query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site, mut_syntax_aa
 			  FROM T_Mutations
-			  WHERE EnsPID IN(' . $plist . ')';
+			  WHERE Source RLIKE :source AND mut_description RLIKE :type AND EnsPID IN(' . $plist . ')';
 //echo $query;
 //echo $query;
 //Parametized SQL prevents SQL injection
-$query_params = array();
+$query_params = array(':source' => $source, ':type' => $type);
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
@@ -252,6 +281,7 @@ while ($row = $stmt->fetch())
 	$tumors[$row[3]] = 1;
 	//find if any of these cause gain / loss
 	$mut_type = 0;
+	$type = "neutral";
 	foreach ($interaction_edges as $int_edge)
 	{
 		if (array_key_exists('Syntax', $int_edge))
@@ -259,11 +289,12 @@ while ($row = $stmt->fetch())
 			if ($int_edge['protein_id'] == $row[0] && $int_edge['Syntax'] == $row[4])
 			{
 				$mut_type = 1;
+				$type = $int_edge['Type'];
 			}			
 		}
 
 	}
-	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3], $row[4], $mut_type);
+	$results[$row['EnsPID']][$row[0]][] = array($row[1], $row[2], $row[3], $row[4], $mut_type, $type);
 	
 	if (!in_array($row[4], $existing_syntaxes))
 	{
@@ -276,18 +307,93 @@ while ($row = $stmt->fetch())
 
 
 	//Advanced Search narrows the options by removing some from the results.
-	foreach ($results as $k => $r){
+	if((isset($_GET['gain']) && $_GET['gain'] == "false") || (isset($_GET['loss']) && $_GET['loss'] == "false") || (isset($_GET['neutral']) && $_GET['neutral'] == "false")){
+		foreach ($results as $k => $r){
 		foreach ($r as $t){
+			$found = False;
 			foreach ($t as $s){
-				if (in_array(1, $s)){
-					//unset($results[$k]);
+				if (in_array("gain of function", $s, true)){
+					$found = True;
+					if (isset($_GET['gain']) && $_GET['gain'] == "false"){
+					unset($results[$k]);
+					}
+				}
+				if (in_array("loss of function", $s, true)){
+					$found = True;
+					if (isset($_GET['loss']) && $_GET['loss'] == "false"){
+					unset($results[$k]);
+					}					
 				}
 			}
+			if (isset($_GET['neutral']) && $_GET['neutral'] == "false" && !$found){
+				unset($results[$k]);
+			}
+		}
 		}
 	}
+	//Advanced search- narrow by interaction evaluations.
+	if(isset($_GET['gene']))
+	{
+	foreach($interaction_edges as $e)
+	{
+		$gene1 = floatval(explode(",",$_GET['gene'])[0]);
+		$gene2 = floatval(explode(",",$_GET['gene'])[1]);
+		$protein1 = floatval(explode(",",$_GET['protein'])[0]);
+		$protein2 = floatval(explode(",",$_GET['protein'])[1]);
+		$disorder1 = floatval(explode(",",$_GET['disorder'])[0]);
+		$disorder2 = floatval(explode(",",$_GET['disorder'])[1]);
+		$surface1 = floatval(explode(",",$_GET['surface'])[0]);
+		$surface2 = floatval(explode(",",$_GET['surface'])[1]);
+		$peptide1 = floatval(explode(",",$_GET['peptide'])[0]);
+		$peptide2 = floatval(explode(",",$_GET['peptide'])[1]);
+		$molecular1 = floatval(explode(",",$_GET['molecular'])[0]);
+		$molecular2 = floatval(explode(",",$_GET['molecular'])[1]);
+		$biological1 = floatval(explode(",",$_GET['biological'])[0]);
+		$biological2 = floatval(explode(",",$_GET['biological'])[1]);
+		$localization1 = floatval(explode(",",$_GET['localization'])[0]);
+		$localization2 = floatval(explode(",",$_GET['localization'])[1]);
+		$sequence1 = floatval(explode(",",$_GET['sequence'])[0]);
+		$sequence2 = floatval(explode(",",$_GET['sequence'])[1]);
+		$average1 = floatval(explode(",",$_GET['average'])[0]);
+		$average2 = floatval(explode(",",$_GET['average'])[1]);
+		if (!(floatval($e['Gene_expression']) >= $gene1 && floatval($e['Gene_expression']) <= $gene2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Protein_expression']) >= $protein1 && floatval($e['Protein_expression']) <= $protein2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Disorder']) >= $disorder1 && floatval($e['Disorder']) <= $disorder2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Surface_accessibility']) >= $surface1 && floatval($e['Surface_accessibility']) <= $surface2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Peptide_conservation']) >= $peptide1 && floatval($e['Peptide_conservation']) <= $peptide2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Molecular_function']) >= $molecular1 && floatval($e['Molecular_function']) <= $molecular2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Biological_process']) >= $biological1 && floatval($e['Biological_process']) <= $biological2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Localization']) >= $localization1 && floatval($e['Localization']) <= $localization2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Sequence_signature']) >= $sequence1 && floatval($e['Sequence_signature']) <= $sequence2)){
+			unset($results[$e['protein_id']]);
+		}
+		if (!(floatval($e['Avg']) >= $average1 && floatval($e['Avg']) <= $average2)){
+			unset($results[$e['protein_id']]);
+		}
+	}		
+	}
+
 
 $tumor_json[] = count(array_keys($tumors));
-$protein_json[] = count(array_keys($proteins)) + 1;
+$protein_total_json[] = count(array_keys($proteins));
+$protein_json[] = count(array_keys($results)) + 1;
+
 $mutation_json[] = $mut_counter;
 $target_json[] = $true_name;
 $networkData_json[] = $results;
@@ -309,5 +415,5 @@ var target_protein = <?php echo json_encode($target_json); ?>;
 var target_id_json = <?php echo json_encode($target_id_json); ?>;
 var networkData1 = <?php echo json_encode($networkData_json);?>;
 var all_proteins = <?php echo json_encode($diff_genes);?>;
-
+var protein_total = <?php echo json_encode($protein_total_json);?>;
 console.log(tumor_count);

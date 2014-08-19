@@ -1,7 +1,7 @@
 <?php
 //perform initial stuff
 
-echo "Tissue(s),Protein ID, Protein Name, Variants, Interactions, Effects\n";
+echo "Tissue(s)\tProtein ID\tProtein Name\tVariants\tInteractions\tEffects\n";
 //download variants
 $tissues = $_GET['tissue'];
 $_GET['tissue'] = explode(",", $tissues);

@@ -39,10 +39,10 @@ header("Content-Disposition: attachment; filename=\"" . basename($File) . "\"");
 header("Content-Type: application/force-download");
 header("Connection: close");
 
-echo "SH3 binding protein,Interacting proteins,Biological process,Disorder,Gene expression,Localization,Molecular function,Peptide conservation,Protein expression,Sequence signature,Surface accessibility,Average Interaction Score\n";
+echo "SH3 binding protein\tInteracting proteins\tBiological process\tDisorder\tGene expression\tLocalization\tMolecular function\tPeptide conservation\tProtein expression\tSequence signature\tSurface accessibility\tAverage Interaction Score\n";
 foreach($interactions as $i)
 {
-	echo $i[0] . "," . $i[1] . "," . $i['Biological_process'] . "," . $i['Disorder'] . "," . $i['Gene_expression'] . "," . $i['Localization'] . "," . $i['Molecular_function'] . "," . $i['Peptide_conservation'] . "," . $i['Protein_expression'] . "," . $i['Sequence_signature'] . "," . $i['Surface_accessibility'] . "," . $i['Avg'] . "\n";
+	echo $i[0] . "\t" . $i[1] . "\t" . $i['Biological_process'] . "\t" . $i['Disorder'] . "\t" . $i['Gene_expression'] . "\t" . $i['Localization'] . "\t" . $i['Molecular_function'] . "\t" . $i['Peptide_conservation'] . "\t" . $i['Protein_expression'] . "\t" . $i['Sequence_signature'] . "\t" . $i['Surface_accessibility'] . "\t" . $i['Avg'] . "\n";
 }
 //Output as file
 ?>

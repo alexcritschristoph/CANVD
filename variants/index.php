@@ -197,7 +197,7 @@
 
    ?>
      <form class="form-horizontal" id="target" method="get">
-
+     <input type='hidden' value='true' name="variant_search">
      <input type="hidden" name="search" value="yes">
       <fieldset>
 
@@ -228,7 +228,7 @@
         {
         ?>
         <div class="checkbox">
-          <label for="variant-effect-0">
+          <label>
             <input type="checkbox" checked name="mut_type[]" id="variant-effect-0" value="<?php echo $row[0] ?>">
             <?php echo $row[0] ?>
           </label>
@@ -239,7 +239,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-md-3 control-label" for="data-source-box">Variant Data Sources</label>
+        <label class="col-md-3 control-label">Variant Data Sources</label>
         <div class="col-md-7">
               <?php
       //Get all database sources.

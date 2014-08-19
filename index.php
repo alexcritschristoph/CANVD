@@ -96,16 +96,63 @@
 
         <p style="font-size:1.1em;">Interactions to Show:</p>
         <label class="checkbox" style="margin-top:5px;">
+          <input type='hidden' value='false' name="gain">
           <input type="checkbox" checked name="gain" value="true"> Gain of Function
         </label>
 
         <label class="checkbox" style="margin-top:5px;">
+          <input type='hidden' value='false' name="loss">
           <input type="checkbox" checked name="loss" value="true"> Loss of Function
         </label>
 
         <label class="checkbox" style="margin-top:5px;">
+          <input type='hidden' value='false' name="neutral">
           <input type="checkbox" checked name="neutral" value="true"> Neutral Function
         </label>
+
+        <div class="form-group">
+        <p style="font-size:1.1em;">Mutations</p>
+        <label class="control-label">Mutation Type</label>
+        <input type='hidden' value='true' name="main_search">
+        <?php
+        //Get all database mutation types.
+        $query = "SELECT DISTINCT mut_description FROM T_Mutations;";
+        $query_params = array();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($query_params);
+
+        while ($row = $stmt->fetch())
+        {
+        ?>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" checked name="mut_type[]" id="variant-effect-0" value="<?php echo $row[0] ?>">
+            <?php echo $row[0] ?>
+          </label>
+        </div>
+        <?php
+      }
+      ?>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Variant Data Sources</label><br>
+              <?php
+      //Get all database sources.
+       $query = "SELECT DISTINCT Source FROM T_Mutations;";
+        $query_params = array();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($query_params);
+
+        while ($row = $stmt->fetch())
+        {
+      ?>
+          <label class="checkbox-inline" for="data-source-box-0">
+            <input type="checkbox" checked name="source[]" id="data-source-box-0" value="<?php echo trim($row[0]); ?>">
+            <?php echo $row[0]; ?>
+          </label>
+          <?php }?>
+      </div>
 
         </div>
 
@@ -183,6 +230,10 @@
 
               <script>
               $(function() {
+
+                $("#search_form").on("submit", function(){
+                    $("#search_btn").html("<div class='spinner3' style='margin-left:10px;margin-right:10px;'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");
+                });
 
                 //Get total counts for the tables
                 $.ajax({

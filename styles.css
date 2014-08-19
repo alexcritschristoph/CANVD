@@ -425,6 +425,11 @@ li .active{
 	width:166px;
 }
 
+#show_all{
+	display:none;
+	width:166px;
+	
+}
 #singlebutton{
 	width:110px;
 }

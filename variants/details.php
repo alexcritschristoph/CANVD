@@ -51,7 +51,12 @@
     if(isset($_GET['tissues'])){
     $tissue = $_GET['tissues'];
     $tissues = explode(",",$tissue);
-    $plist = '\'' . implode('\',\'', $tissues) . '\'';
+    //
+    function sanitize($s) {
+    return htmlspecialchars($s);
+    }
+    $t = array_map('sanitize', $tissues);
+    $plist = '\'' . implode('\',\'', $t) . '\'';
     $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site, MUTATION_ID, mut_description FROM T_Mutations WHERE EnsPID=:ens AND tumour_site IN(' . $plist . ') ;';
     }
     //get all variants
