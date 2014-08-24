@@ -57,7 +57,7 @@
 
          <?php
                              $query = 'SELECT *
-                                      FROM announcements WHERE `show_homepage`=1 ORDER BY id DESC;';
+                                      FROM announcements WHERE `show_homepage`=1 AND `show`=1 ORDER BY id DESC;';
                              $query_params = array();
                              $stmt = $dbh->prepare($query);
                              $stmt->execute($query_params);
@@ -97,17 +97,17 @@
         <p style="font-size:1.1em;">Interactions to Show:</p>
         <label class="checkbox" style="margin-top:5px;">
           <input type='hidden' value='false' name="gain">
-          <input type="checkbox" checked name="gain" value="true"> Gain of Function
+          <input type="checkbox" checked name="gain" value="true"> Gain of Interaction
         </label>
 
         <label class="checkbox" style="margin-top:5px;">
           <input type='hidden' value='false' name="loss">
-          <input type="checkbox" checked name="loss" value="true"> Loss of Function
+          <input type="checkbox" checked name="loss" value="true"> Loss of Interaction
         </label>
 
         <label class="checkbox" style="margin-top:5px;">
           <input type='hidden' value='false' name="neutral">
-          <input type="checkbox" checked name="neutral" value="true"> Neutral Function
+          <input type="checkbox" checked name="neutral" value="true"> Neutral
         </label>
 
         <div class="form-group">

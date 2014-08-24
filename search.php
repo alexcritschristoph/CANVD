@@ -261,6 +261,103 @@ else{
     $_GET['mut_type'] = '';
 }
 
+//Advanced Search narrows the options by removing some from the results.
+if((isset($_GET['gain']) && $_GET['gain'] == "false") || (isset($_GET['loss']) && $_GET['loss'] == "false") || (isset($_GET['neutral']) && $_GET['neutral'] == "false")){
+
+	foreach ($interaction_edges as $edge) {
+		$int_prot = "";
+		$int_type = "n";
+		foreach ($results as $k => $r){
+		 if ($edge['protein_id'] == $k){
+		 	$int_prot = $k;
+		 	if (isset($edge['Type'])){
+		 		$int_type = $edge['Type'];
+		 	}
+		 	break;
+		 }
+		}
+		$found = False;
+		if ($int_type == "gain of function"){
+		$found = True;
+		if (isset($_GET['gain']) && $_GET['gain'] == "false"){
+			unset($results[$int_prot]);
+		}			
+		}
+
+		if ($int_type == "loss of function"){
+		$found = True;
+		if (isset($_GET['loss']) && $_GET['loss'] == "false"){
+			unset($results[$int_prot]);
+		}			
+		}		
+		if (isset($_GET['neutral']) && $_GET['neutral'] == "false" && !$found){
+			unset($results[$int_prot]);
+		}
+	}
+}
+
+//Advanced search- narrow by interaction evaluations.
+if(isset($_GET['gene']))
+{
+foreach($interaction_edges as $e)
+{
+	$gene1 = floatval(explode(",",$_GET['gene'])[0]);
+	$gene2 = floatval(explode(",",$_GET['gene'])[1]);
+	$protein1 = floatval(explode(",",$_GET['protein'])[0]);
+	$protein2 = floatval(explode(",",$_GET['protein'])[1]);
+	$disorder1 = floatval(explode(",",$_GET['disorder'])[0]);
+	$disorder2 = floatval(explode(",",$_GET['disorder'])[1]);
+	$surface1 = floatval(explode(",",$_GET['surface'])[0]);
+	$surface2 = floatval(explode(",",$_GET['surface'])[1]);
+	$peptide1 = floatval(explode(",",$_GET['peptide'])[0]);
+	$peptide2 = floatval(explode(",",$_GET['peptide'])[1]);
+	$molecular1 = floatval(explode(",",$_GET['molecular'])[0]);
+	$molecular2 = floatval(explode(",",$_GET['molecular'])[1]);
+	$biological1 = floatval(explode(",",$_GET['biological'])[0]);
+	$biological2 = floatval(explode(",",$_GET['biological'])[1]);
+	$localization1 = floatval(explode(",",$_GET['localization'])[0]);
+	$localization2 = floatval(explode(",",$_GET['localization'])[1]);
+	$sequence1 = floatval(explode(",",$_GET['sequence'])[0]);
+	$sequence2 = floatval(explode(",",$_GET['sequence'])[1]);
+	$average1 = floatval(explode(",",$_GET['average'])[0]);
+	$average2 = floatval(explode(",",$_GET['average'])[1]);
+	if (!(floatval($e['Gene_expression']) >= $gene1 && floatval($e['Gene_expression']) <= $gene2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Protein_expression']) >= $protein1 && floatval($e['Protein_expression']) <= $protein2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Disorder']) >= $disorder1 && floatval($e['Disorder']) <= $disorder2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Surface_accessibility']) >= $surface1 && floatval($e['Surface_accessibility']) <= $surface2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Peptide_conservation']) >= $peptide1 && floatval($e['Peptide_conservation']) <= $peptide2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Molecular_function']) >= $molecular1 && floatval($e['Molecular_function']) <= $molecular2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Biological_process']) >= $biological1 && floatval($e['Biological_process']) <= $biological2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Localization']) >= $localization1 && floatval($e['Localization']) <= $localization2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Sequence_signature']) >= $sequence1 && floatval($e['Sequence_signature']) <= $sequence2)){
+		unset($results[$e['protein_id']]);
+	}
+	if (!(floatval($e['Avg']) >= $average1 && floatval($e['Avg']) <= $average2)){
+		unset($results[$e['protein_id']]);
+	}
+}		
+}
+
+
+$temp_list = array_keys($results);
+$plist = '\'' . implode('\',\'', $temp_list) . '\'';
+
 //Find all mutations of all interaction partners
 $query = 'SELECT EnsPID, mut_nt, mut_aa, tumour_site, mut_syntax_aa
 			  FROM T_Mutations
@@ -305,89 +402,16 @@ while ($row = $stmt->fetch())
 	// . ',' . $row[1] . ',' . $row[2] . ',' . $row[3] . ',' . $row[4] . ',' . '<br>';
 }
 
+//Let's get the CORRECT counts.
+$mut_counter = 0;
+foreach($results as $r)
+{
+	foreach($r as $t)
+	{
+		$mut_counter += sizeof($t);
+	}
+}
 
-	//Advanced Search narrows the options by removing some from the results.
-	if((isset($_GET['gain']) && $_GET['gain'] == "false") || (isset($_GET['loss']) && $_GET['loss'] == "false") || (isset($_GET['neutral']) && $_GET['neutral'] == "false")){
-		foreach ($results as $k => $r){
-		foreach ($r as $t){
-			$found = False;
-			foreach ($t as $s){
-				if (in_array("gain of function", $s, true)){
-					$found = True;
-					if (isset($_GET['gain']) && $_GET['gain'] == "false"){
-					unset($results[$k]);
-					}
-				}
-				if (in_array("loss of function", $s, true)){
-					$found = True;
-					if (isset($_GET['loss']) && $_GET['loss'] == "false"){
-					unset($results[$k]);
-					}					
-				}
-			}
-			if (isset($_GET['neutral']) && $_GET['neutral'] == "false" && !$found){
-				unset($results[$k]);
-			}
-		}
-		}
-	}
-	//Advanced search- narrow by interaction evaluations.
-	if(isset($_GET['gene']))
-	{
-	foreach($interaction_edges as $e)
-	{
-		$gene1 = floatval(explode(",",$_GET['gene'])[0]);
-		$gene2 = floatval(explode(",",$_GET['gene'])[1]);
-		$protein1 = floatval(explode(",",$_GET['protein'])[0]);
-		$protein2 = floatval(explode(",",$_GET['protein'])[1]);
-		$disorder1 = floatval(explode(",",$_GET['disorder'])[0]);
-		$disorder2 = floatval(explode(",",$_GET['disorder'])[1]);
-		$surface1 = floatval(explode(",",$_GET['surface'])[0]);
-		$surface2 = floatval(explode(",",$_GET['surface'])[1]);
-		$peptide1 = floatval(explode(",",$_GET['peptide'])[0]);
-		$peptide2 = floatval(explode(",",$_GET['peptide'])[1]);
-		$molecular1 = floatval(explode(",",$_GET['molecular'])[0]);
-		$molecular2 = floatval(explode(",",$_GET['molecular'])[1]);
-		$biological1 = floatval(explode(",",$_GET['biological'])[0]);
-		$biological2 = floatval(explode(",",$_GET['biological'])[1]);
-		$localization1 = floatval(explode(",",$_GET['localization'])[0]);
-		$localization2 = floatval(explode(",",$_GET['localization'])[1]);
-		$sequence1 = floatval(explode(",",$_GET['sequence'])[0]);
-		$sequence2 = floatval(explode(",",$_GET['sequence'])[1]);
-		$average1 = floatval(explode(",",$_GET['average'])[0]);
-		$average2 = floatval(explode(",",$_GET['average'])[1]);
-		if (!(floatval($e['Gene_expression']) >= $gene1 && floatval($e['Gene_expression']) <= $gene2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Protein_expression']) >= $protein1 && floatval($e['Protein_expression']) <= $protein2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Disorder']) >= $disorder1 && floatval($e['Disorder']) <= $disorder2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Surface_accessibility']) >= $surface1 && floatval($e['Surface_accessibility']) <= $surface2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Peptide_conservation']) >= $peptide1 && floatval($e['Peptide_conservation']) <= $peptide2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Molecular_function']) >= $molecular1 && floatval($e['Molecular_function']) <= $molecular2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Biological_process']) >= $biological1 && floatval($e['Biological_process']) <= $biological2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Localization']) >= $localization1 && floatval($e['Localization']) <= $localization2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Sequence_signature']) >= $sequence1 && floatval($e['Sequence_signature']) <= $sequence2)){
-			unset($results[$e['protein_id']]);
-		}
-		if (!(floatval($e['Avg']) >= $average1 && floatval($e['Avg']) <= $average2)){
-			unset($results[$e['protein_id']]);
-		}
-	}		
-	}
 
 
 $tumor_json[] = count(array_keys($tumors));

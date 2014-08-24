@@ -98,7 +98,7 @@
             <p>Viewing <b id="prot_c"></b> proteins</p>
             <p>Viewing <b id="mut_c"></b> mutations</p>
             <p>Viewing <b id="tumor_c"></b> tumor types</p>
-            <p><b>1</b> interaction domain:</p>
+            <p><b>1</b> interaction domain in:</p>
             <p><b id="prot-name">Test</b>: <i id="prot-id">Testing</i></p>            
           </div>
         </div>
@@ -184,7 +184,7 @@
   {
   $("#network-view-container").hide();
   $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
-    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Total Number of Interaction Partners for this Protein</th><th>Total Number of Mutations for this Protein</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
+    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Number of Interaction Partners</th><th>Number of Variants of Interaction Partners</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
     for (var i = 0; i < all_proteins.length; i++) {
         var keys = [];
         var keystring = "";
@@ -201,7 +201,7 @@
           }
           j += 1
         }
-        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td>"+total_count[i]+"</td><td>" + mutation_count[i] + "</td>")
+        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:1.6em'>"+protein_count[i]+"</td><td style='font-size:1.6em'>" + mutation_count[i] + "</td>")
     }
 
 
@@ -395,7 +395,7 @@
       {
         if (isNaN(tissues[networkData[net][n][m][2]]))
         {
-          tissues[networkData[net][n][m][2]] = 1;
+          tissues[networkData[net][n][m][2]] = 0;
         }
 
         if ($.inArray(networkData[net][n][m][2], arr) == -1)
@@ -408,13 +408,11 @@
     }
   }
 
-
   var sortable = [];
   for (var tissue in tissues)
       sortable.push([tissue, tissues[tissue]])
 
   var sorted_tissues = sortable.sort(function(a, b) {return a[1] - b[1]}).reverse();
-
   var counter = 0;
   $("#tissues_filter_table").html('');
   for (var tissue in sorted_tissues)
@@ -469,6 +467,11 @@
     $(this).addClass("active");
     loadCy();
 
+    //Reset all filters
+    $(".tissue_filter").find(".badge").addClass("alert-success");
+    $( ".show-item" ).each(function( index ) {
+        $(this).find(".badge").addClass($(this).find(".badge").data("color"));
+    });
     $('#cy').cytoscape(options);
 
     }
@@ -476,10 +479,16 @@
   });
 
     $(".json-download").on("click", function(){
+      var json_data = {}
+      $.each(cy.elements(":visible").jsons(), function(index, value) {
+        delete value.data.weight;
+        delete value.data.color;
+        json_data[index] = value.data;
+      });
       $.ajax({
         url:"./save_data.php",
         type: "POST",
-        data: {download_data:JSON.stringify(cy.json()['elements'])},
+        data: {download_data:JSON.stringify(json_data)},
         success:function(result){
       window.location.href = './download.php';         
       }});
@@ -492,6 +501,13 @@
     });
 
     $(".csv-download").on("click", function(){
+      var json_data = {}
+      $.each(cy.elements(":visible").jsons(), function(index, value) {
+        delete value.data.weight;
+        delete value.data.color;
+        json_data[index] = value.data;
+      });
+
       var csv_data = cy.json()['elements'];
       var string = "SH3 binding protein\tInteracting proteins\tBiological process\tDisorder\tGene expression\tLocalization\tMolecular function\tPeptide conservation\tProtein expression\tSequence signature\tSurface accessibility\tAverage Interaction Score\n";
       var i = 0;
@@ -501,7 +517,17 @@
         }
         else
         {
-          var data_content = [];
+
+          //Is this node in the visible data? 
+          var found_right = false;
+          for (nd in json_data){
+            if (csv_data['nodes'][csv]['data']['id'] == json_data[nd]['id'])
+            {
+              found_right = true;
+              break;
+            }
+          }
+          if (found_right){
           for (csv2 in csv_data['edges']){
             if (csv_data['edges'][csv2]['data']['target'] == csv_data['nodes'][csv]['data']['id'])
             {
@@ -510,7 +536,7 @@
             }
           }
           string = string + source + "\t" + csv_data['nodes'][csv]['data']['id'] + "\t" + avg['Biological_process'] + "\t" + avg['Disorder'] + "\t" + avg['Gene_expression'] + "\t" + avg['Localization'] + "\t" + avg["Molecular_function"] + "\t" + avg["Peptide_conservation"] + "\t" + avg["Protein_expression"] + "\t" + avg["Sequence_signature"] + "\t" + avg["Surface_accessibility"] + "\t" + avg['Avg'] + "\n";
-
+          }
         }
         i += 1;
       }
@@ -607,7 +633,8 @@
           'opacity':'0.4',
           'width':'data(width)',
           'target-arrow-shape': 'triangle',
-          'target-arrow-color': 'data(func)'
+          'target-arrow-color': 'data(func)',
+          
         })
     ,
 

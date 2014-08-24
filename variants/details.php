@@ -183,7 +183,7 @@
           <th>Variant Syntax</th>  
           <th>Mutation Type</th>      
           <th>Tissues</th>
-          <th>Effect On SH3 Interactions - <span class="g">Gain of Function</span>, <span class="r">Loss of Function</span>.<br> Click to view SH3 domain networks.</th>
+          <th>Rewiring Effects - <span class="g">Gain of Function</span>, <span class="r">Loss of Function</span>.<br></th>
           <th>Download Sequence</th>        
         </tr>
       </thead>
