@@ -727,6 +727,7 @@
             
 
             for (m in clickedNode.data("muts")){
+              console.log(clickedNode.data("muts")[m]);
               if (clickedNode.data("muts")[m][4] == 1){
                 var row_string = "<tr class='highlighted_mut'><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
                 muts_string = row_string + muts_string;
