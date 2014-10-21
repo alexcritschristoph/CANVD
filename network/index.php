@@ -15,8 +15,8 @@
 
     <script src="<?php echo $root_path;?>site.js" ></script>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
-    <script src="https://rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape.js-qtip.js"></script>
+    <script src="<?php echo $root_path;?>cytoscape.min.js"></script>
+    <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape-qtip.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
 
   </head>
@@ -675,7 +675,6 @@
         var ele = e.cyTarget;
         clickedEdge = ele;
       });
-
 
       cy.elements('node').qtip({
       content: {
