@@ -24,12 +24,13 @@
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
-	    <p>Contact Information for CANVD and the CANVD website:</p>
-      <p>Mohamed Helmy (mohamed.attiashahata AT utoronto.ca) </p>      
-      <p>Alex Crits-Christoph (acritsc1 AT jhu.edu)</p>
+		<p>Contact Information for Can-VD database and Can-VD website:</p><br><br>
+		<p align="justify"><span style="color:#ea2f10">Can-VD</span> is developed at the laboratory of Professor Gary Bader (<a href='baderlab.org'>Bader Lab</a>) at The <a href='http://tdccbr.med.utoronto.ca/'> Donnelly Centre </a> for Cellular and Biomolecular Research (CCBR) at <a href='http://utoronto.ca/'> The University of Toronto</a>.</p>      
+           <p align="justify">The web interface of <span style="color:#ea2f10">Can-VD</span> is developed by <a href='mailto:acritsc1@jhu.edu'>Alex Crits-Christoph</a>, John's Hopkins University, as part of <a href='http://www.google-melange.com/gsoc/homepage/google/gsoc2014'>Google Summer of Code 2014</a>.</p>      
+      <p align="justify">For questions and bugs reporting please contact <a href='mailto:mohamed.attiashahata@utoronto.ca'>Mohamed Helmy</a>, The Donnelly Centre, University of Toronto. <br></p>
 	  </div>
 	<div class="container">
-	
+	<br><br><br><br><br>
   <?php
       include $root_path. 'footer.php';
     ?>

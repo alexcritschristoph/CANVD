@@ -9,7 +9,7 @@
 <html>
 	<head>
 		<title>
-			Cancer Variants Database
+			Cancer Variants Database :: Main
 		</title>
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -31,7 +31,7 @@
       <span id="title_fix"></span>
 	    <h1 id="title_h1"><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 	    
-	    <p>The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>). <span style="color:#ea2f10">Can-VD</span> stores the PPI interactions mediated by wildtype and variants protein sequences to build and compare the PPI network in the two conditions and understand the effects of mutations on the network and, consequently, the cellular and biological functions of the cancer system.</p>
+	    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) is an online resource for the assessment of cancer mutations impact on protein-protein interactions (PPI). <span style="color:#ea2f10">Can-VD</span> stores the PPI interaction networks mediated by wildtype and cancer variants and the overlay of the two networks, to understand the effects of mutations on the network and, consequently, it’s the cellular and biological impact. The effects of over 800,000 cancer missense mutations are analyzed and stored in <span style="color:#ea2f10">Can-VD</span>. Further, <span style="color:#ea2f10">Can-VD</span> provides the full sequences of the wildtype and cancer variant proteins, with comprehensive search and download interface to easily build a customized protein databases for cancer genomics and proteomics. </p>
 
 	  </div>
 	<div class="container">

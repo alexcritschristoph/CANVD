@@ -15,8 +15,8 @@
 
     <script src="<?php echo $root_path;?>site.js" ></script>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
-    <script src="https://rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape.js-qtip.js"></script>
+    <script src="<?php echo $root_path;?>cytoscape.min.js"></script>
+    <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape-qtip.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
 
   </head>
@@ -31,7 +31,7 @@
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
-      <p id="main-top-text">The effects of over 800,000 missense mutations are analyzed and stored in the <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>).</p>
+      <p id="main-top-text">The impacts of <b id="mut_c" style="color:#ea2f10"></b> missense mutations on <b id="prot-name" style="color:#ea2f10"></b>  protein interaction in <b id="tumor_c" style="color:#ea2f10"></b> tumor types.</p>
 
     </div>
   <div class="test" id="network-selection-container" >
@@ -676,7 +676,6 @@
         clickedEdge = ele;
       });
 
-
       cy.elements('node').qtip({
       content: {
         text: function(event, api) {
@@ -727,6 +726,7 @@
             
 
             for (m in clickedNode.data("muts")){
+              console.log(clickedNode.data("muts")[m]);
               if (clickedNode.data("muts")[m][4] == 1){
                 var row_string = "<tr class='highlighted_mut'><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
                 muts_string = row_string + muts_string;
