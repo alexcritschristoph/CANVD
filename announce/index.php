@@ -25,7 +25,8 @@
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
-	    <p style="margin-bottom:50px;margin-top:30px;" class="lead"><b>Can-VD: News and Announcements</b></p>
+	    		<p><h2 style="margin-bottom:30px;"> News and Announcements of <span style="color:#ea2f10">Can-VD</span> database and <span style="color:#ea2f10">Can-VD</span> website:</h2></p><br><br>
+
 
       <?php
                              $query = 'SELECT *
