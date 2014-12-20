@@ -8,6 +8,7 @@
 		<title>
 			Cancer Variant Database
 		</title>
+		<link rel="shortcut icon" href="../canvd.ico">
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <script src="<?php echo $root_path;?>site.js" ></script>
@@ -222,20 +223,20 @@
       foreach($domains[$var[1]] as $k => $d){
         if ($effects[$var[1]][$k] == "gain of function" && ($filter_option == 'gain of function' || $filter_option == "N/A")){
           if ($i > 0){
-          echo ", <a href='../network/?genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";
+          echo ", <a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";
 
           }
           else
           {
-          echo "<a href='../network/?genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";            
+          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";            
           }
         }
         elseif ($effects[$var[1]][$k] == "loss of function" && ($filter_option == 'loss of function' || $filter_option == "N/A")){
           if ($i > 0){          
-          echo ", <a href='../network/?genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";
+          echo ", <a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";
           }
           else{
-          echo "<a href='../network/?genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";            
+          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";            
           }
         }
         $i += 1;

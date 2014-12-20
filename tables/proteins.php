@@ -21,13 +21,15 @@ while ($row = $stmt->fetch())
 foreach ($proteins as $protein)
 {
 
-	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='loss of function';";
+	#$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='loss of function';";
+	$query = "SELECT COUNT(*) FROM canvd.T_Interaction_MT WHERE T_Interaction_MT.IID IN (SELECT T_Interaction.IID FROM canvd.T_Interaction WHERE T_Interaction.Domain_EnsPID=:protid) AND T_Interaction_MT.Eval='loss of function'";
 	$query_params = array(':protid' => $protein[2]);
 	$stmt = $dbh->prepare($query);
 	$stmt->execute($query_params);
 	$loss_num = $stmt->fetch()[0];
 
-	$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='gain of function';";
+	#$query = "SELECT COUNT(*) FROM T_Interaction_MT WHERE Int_EnsPID=:protid AND Eval='gain of function';";
+	$query = "SELECT COUNT(*) FROM canvd.T_Interaction_MT WHERE T_Interaction_MT.IID IN (SELECT T_Interaction.IID FROM canvd.T_Interaction WHERE T_Interaction.Domain_EnsPID=:protid) AND T_Interaction_MT.Eval='gain of function'";
 	$query_params = array(':protid' => $protein[2]);
 	$stmt = $dbh->prepare($query);
 	$stmt->execute($query_params);
@@ -48,7 +50,7 @@ foreach ($proteins as $protein)
         <td><?php echo $gain_num;?></td>
         <td><?php echo $loss_num;?></td>
         <td><?php echo $mut_num;?></td>
-        <td><a href="./network/?genename=<?php echo $protein[0]; ?>">Network</a></td>
+        <td><a href="./network/?limit=50&genename=<?php echo $protein[0];?>">Network</a></td>
 	</tr>
 
 	<?php

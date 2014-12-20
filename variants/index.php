@@ -6,8 +6,9 @@
 <html>
 	<head>
 		<title>
-			Cancer Variant Database
+			Cancer Variant Database: Variants
 		</title>
+		<link rel="shortcut icon" href="../canvd.ico">
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <script src="<?php echo $root_path;?>site.js" ></script>

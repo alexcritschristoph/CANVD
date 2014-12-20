@@ -11,6 +11,7 @@
 		<title>
 			Cancer Variants Database :: Main
 		</title>
+		<link rel="shortcut icon" href="canvd.ico">
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
@@ -68,7 +69,11 @@
                                 ?>
         <div style="margin-bottom:15px;">
         <span  style="display:block;margin-bottom:1px;"><a href="./announce/"><b style="display:block;"><?php echo $row[2];?></b></a><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></span>
-        <?php echo $row[3];?>
+        <?php #echo '<p align='justify'>';
+        echo substr($row[3], 0, strpos($row[3], ".") + 1);
+        
+        ?>
+        <br><a href='announce/'>Read more...</a>
         </div>
         <?php
       }
@@ -91,7 +96,7 @@
         <div class="col-md-6" style="padding-top:20px;">
         <p class="form-signin-heading">Advanced Search Options:</p>     
         <label class="input" style="font-size:1.1em;">  Max # of Interactions:
-        <input type="text" name="limit" value="100" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="default value: 100" required autofocus>
+        <input type="text" name="limit" value="50" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="default value: 50" required autofocus>
         </label>
 
         <p style="font-size:1.1em;">Interactions to Show:</p>
@@ -196,8 +201,8 @@
                   <tr>
                     <th>Tissue</th>
                     <th>Total Variants</th>
-                    <th>Gain of Function</th>
-                    <th>Loss of Function</th>
+                    <th>Gain of Interaction</th>
+                    <th>Loss of Interaction</th>
                     <th>Total Proteins</th>
                     <th>Details</th>
                   </tr>
@@ -218,9 +223,9 @@
                     <th>Ensembl ID</th>
                     <th>Protein Name</th>
                     <th>Type/Domain</th>
-                    <th>Gain of Function</th>
-                    <th>Loss of Function</th>
-                    <th>Total Variants</th>
+                    <th>Gain of Interactions</th>
+                    <th>Loss of Interactions</th>
+                    <th>Total Interactions</th>
                     <th>Details</th>
                   </tr>
                 </thead>
@@ -305,7 +310,7 @@
                 {
                   var test = $("#pwm-page").data("page");
                   $("#pwm-start").html(test);
-                  $("#pwm-end").html(test+10);
+                  $("#pwm-end").html(test+5);
                 $.ajax({
                         url: "./tables/pwm.php",
                         type: "post",
@@ -330,13 +335,13 @@
                 $("#pwm-back").on( "click", function() {
                   if ($("#pwm-page").data("page") != 0)
                   {
-                $("#pwm-page").data("page", $("#pwm-page").data("page")- 10);
+                $("#pwm-page").data("page", $("#pwm-page").data("page")- 5);
                     update_pwm_view();
                   }
                 });
 
                 $("#pwm-forward").on( "click", function() {
-                  $("#pwm-page").data("page", $("#pwm-page").data("page")+ 10);
+                  $("#pwm-page").data("page", $("#pwm-page").data("page")+ 5);
                   update_pwm_view();
                 });
 

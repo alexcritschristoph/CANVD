@@ -6,8 +6,9 @@
 <html>
   <head>
     <title>
-      Cancer Variants Database
+      Cancer Variants Database: Network
     </title>
+    <link rel="shortcut icon" href="../canvd.ico">
     <link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
@@ -30,8 +31,7 @@
       <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
       </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-
-      <p id="main-top-text">The impacts of <b id="mut_c" style="color:#ea2f10"></b> missense mutations on <b id="prot-name" style="color:#ea2f10"></b>  protein interaction in <b id="tumor_c" style="color:#ea2f10"></b> tumor types.</p>
+      <p id="main-top-text">The impacts of missense mutations on <b id="prot-name" style="color:#ea2f10"></b>  protein interactions in <b id="tumor_c2" style="color:#ea2f10"></b> tumor types.</p>
 
     </div>
   <div class="test" id="network-selection-container" >
@@ -95,11 +95,9 @@
             <h3 class="panel-title stats-title">Network Statistics</h3>
           </div>
           <div class="panel-body stats-body">
-            <p>Viewing <b id="prot_c"></b> proteins</p>
-            <p>Viewing <b id="mut_c"></b> mutations</p>
-            <p>Viewing <b id="tumor_c"></b> tumor types</p>
-            <p><b>1</b> interaction domain in:</p>
-            <p><b id="prot-name">Test</b>: <i id="prot-id">Testing</i></p>            
+            <p> <b id="prot_c"></b> proteins interact with <b>1</b> domain of <b id="prot-name2">Test</b> In <b id="tumor_c"></b> tumor types</p>
+            <!--<p>With total of <b id="mut_c"></b> mutations</p>  (<i id="prot-id">Testing</i>) 	-->
+                        
           </div>
         </div>
         <div class="list-group show-list">
@@ -108,7 +106,7 @@
           <a class="list-group-item show-item m-prot m-int"><span data-color="alert-warning" class="badge alert-warning">14</span> Mutant Proteins </a>
         </div>
         <div class="list-group show-list">
-          <span class="list-group-item"><b>Mutation Type</b></span>
+          <span class="list-group-item"><b>Mutation Effect</b></span>
           <a class="list-group-item show-item g-prot no-int"><span data-color="alert-info" class="badge alert-info">14</span>No Change </a>
           <a class="list-group-item show-item g-prot gain-int"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Interaction </a>
           <a class="list-group-item show-item l-prot loss-int"><span data-color="alert-danger" class="badge alert-danger">14</span> Loss of Interaction </a>
@@ -144,7 +142,7 @@
   <?php
   }
   else{?>
-  var net_limit = 100;
+  var net_limit = 50;
     <?php
   }
 
@@ -166,14 +164,14 @@
 
   $("#show_more").on("click", function(){
     $("#show_more").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
-    net_limit = net_limit + 100;
+    net_limit = net_limit + 50;
     var new_url = window.location.href.replace("&limit", "&oldlimit") + "&limit=" + net_limit;
     window.location.href = new_url
   });
 
   $("#show_all").on("click", function(){
     $("#show_all").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
-    net_limit = net_limit + 100;
+    net_limit = net_limit + 50;
     var new_url = window.location.href.split("&")[0] + "&limit=" + net_limit;
     window.location.href = new_url
   });
@@ -275,16 +273,18 @@
         $("#show_more").show();
       }
       $("#prot-name").text(target_protein1);
+      $("#prot-name2").text(target_protein1);
       $("#prot-id").text(target_ids1);
       $("#mut_c").text(mutation_count1);
       $("#tumor_c").text(tumor_count1);
+      $("#tumor_c2").text(tumor_count1);
       $("#cosmic-placeholder").text(protein_count1 - 1);
 
   }
 
   //Create list of nodes
   net_nodes = [];
-  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 65, center: "true"}} )
+  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 100, center: "true"}} )
     var l = 0;
     var prot_wt_count = 0;
     var prot_mut_count = 0;
@@ -324,7 +324,7 @@
         mut_type = 'norm';
         }
       }
-      net_nodes.push( { data: { id: n, name: interaction_names1[n][0], description: interaction_names1[n][1], color: "#292929", gene_id: net, weight: 65, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
+      net_nodes.push( { data: { id: n, name: interaction_names1[n][0], description: interaction_names1[n][1], color: "#292929", gene_id: net, weight: 100, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
       l += 1;
     }
 
@@ -368,12 +368,14 @@
         edge_style = "dashed";
         loss_count += 1;
       }
-      else {
-        if (Object.keys(networkData[net][n]).length != 0){
+       else if (this_interaction_edge['Type'] == 'no change')
+      {
+        edge_color = "hsla(600, 89%, 52%, 1)";
+        edge_style = "dotted";
         norm_count += 1;
-        }
       }
-      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*20), feature: "mut", type: edge_style, func:edge_color } });
+      
+      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*5), feature: "mut", type: edge_style, func:edge_color } });
       l += 1;
     }
     k += 1;
@@ -630,7 +632,7 @@
           'width': 3,
           'line-color': 'data(func)',
           'line-style': 'data(type)',
-          'opacity':'0.4',
+          'opacity':'0.9',
           'width':'data(width)',
           'target-arrow-shape': 'triangle',
           'target-arrow-color': 'data(func)',
@@ -781,7 +783,7 @@
         text: function(event, api) {
             var html = "<div style='overflow-y:scroll;max-height:200px;'><h5 style='margin-left:10px;'>Interaction Evaluation:</h5>"
             var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>";
-            muts_string += "<h6><b>Average: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
+            muts_string += "<h6><b>Evaluation Score: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
             for (m in clickedEdge.data("content")){
               if (isNaN(m) && m != 'IID'  && m != 'Avg'  && m != 'protein_id'  && m != 'Syntax'  && m != 'Type'){
                 muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";
@@ -793,17 +795,24 @@
                 if (clickedEdge.data("content")[m] == 'loss of function'){
                   the_color = '#d43a3a';
                 }
-                else{
+                else if (clickedEdge.data("content")[m] == 'gain of function'){
                   the_color = '#66da49';
+                }
+                else if (clickedEdge.data("content")[m] == 'no change'){
+                  the_color = '#bd49da';
                 }
                 var int_type_var = '';
                 if (clickedEdge.data("content")[m] == "loss of function")
                 {
                   int_type_var = "Loss of interaction";
                 }
-                else
+                else if (clickedEdge.data("content")[m] == "gain of function")
                 {
                   int_type_var = "Gain of interaction";
+                }
+                else if (clickedEdge.data("content")[m] == "no change")
+                {
+                  int_type_var = "No Change";
                 }
                 muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + int_type_var + "</b></h6>";
               }

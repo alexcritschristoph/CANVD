@@ -8,6 +8,7 @@
 		<title>
 			Cancer Variant Database: Announcements
 		</title>
+		<link rel="shortcut icon" href="../canvd.ico">
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
     <script src="<?php echo $root_path;?>site.js" ></script>
@@ -39,10 +40,10 @@
                               {
 
                                 ?>
-        <div style="margin-top:25px;margin-left:40px;">
-        <h4  style="display:block;margin-bottom:4px;"><a href="#" style="display:block;padding-bottom:4px;margin-bottom:3px;"><?php echo $row[2];?></a><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></h4>
-        <p><?php echo $row[3];?></p>
-        </div>
+        <div style="margin-top:25px;">
+        <h3  style="display:block;color:#ea2f10"><?php echo $row[2];?></h3><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i>
+        <p align='justify'><?php echo $row[3];?></p>
+        </div> <br>
         <?php
       }
       ?>
