@@ -346,7 +346,7 @@
                               </div>
                               <div class="col-md-8">
                               <div class="panel panel-default">
-                                <div class="panel-heading" id="table-name-header">Select A Table To The Left....</div>
+                                <div class="panel-heading" id="table-name-header">Select a table from the Left panel to be updated or <a href="update_table.php">Click here to update the tissues table.</a></div>
                                 <div class="panel-body">
                                   <div id="panel-content" style="display:none"> <!-- style="display:none"-->
                                     <p id="table-name"></p>

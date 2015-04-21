@@ -52,6 +52,9 @@ font-size:1em !important;
 	display:none;
 }
 
+#tissue-table{
+}
+
 #browse-tabs li a:hover{
 	cursor:pointer;
 }
@@ -247,10 +250,6 @@ li .active{
 	background-color: #d3d3d3 !important;
 }
 
-.navbar-nav > .open > a, a:focus{
-	background: #f04124 !important;
-	color: #ffffff;
-}
 
 .navbar-nav > .open > .filter-dropdown, .filter-dropdown:focus{
 	background:#d3d3d3 !important;
@@ -432,4 +431,24 @@ li .active{
 }
 #singlebutton{
 	width:110px;
+}
+
+.label_d3{
+	color:black;
+}
+
+.wt-pt{
+	background:#fdb863;
+}
+.mu-pt{
+	background:#ffffbf;
+}
+.noch-pt{
+	background:#e9a3c9;;
+}
+.gn-pt{
+	background:#2c7bb6;
+}
+.ls-pt{
+	background:#d7191c;
 }

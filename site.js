@@ -51,6 +51,7 @@ $(function() {
    			$("#tissue-table").hide();
    			$("#pwm-table").show();
    		}
+
    });
 
    //Catches when user presses Enter on Search input
@@ -64,12 +65,13 @@ $(function() {
    //For handling the "Show" buttons to show edges / nodes of the network.
    $(".show-item").on( "click", function() {
    		//Check to see if already active
-   		if ($(this).find(".badge").hasClass("alert-info") || $(this).find(".badge").hasClass("alert-danger") || $(this).find(".badge").hasClass("alert-success") || $(this).find(".badge").hasClass("alert-warning")  ){
+   		if ($(this).find(".badge").hasClass("wt-pt") || $(this).find(".badge").hasClass("mu-pt") || $(this).find(".badge").hasClass("noch-pt") || $(this).find(".badge").hasClass("gn-pt") || $(this).find(".badge").hasClass("ls-pt")  ){
    			//inactivate
-   			$(this).find(".badge").removeClass("alert-info");
-   			$(this).find(".badge").removeClass("alert-danger");
-   			$(this).find(".badge").removeClass("alert-warning");
-   			$(this).find(".badge").removeClass("alert-success");
+   			$(this).find(".badge").removeClass("wt-pt");
+   			$(this).find(".badge").removeClass("mu-pt");
+   			$(this).find(".badge").removeClass("noch-pt");
+   			$(this).find(".badge").removeClass("gn-pt");
+            $(this).find(".badge").removeClass("ls-pt");
 
    			//If disabling mutant interactions
    			if($(this).hasClass("m-int")){

@@ -3,7 +3,7 @@
 $root_path = "../";
 include_once('../common.php');
 
-echo "STARTING<br>";
+//echo "STARTING<br>";
 
 //if ($_GET["pass"] == 'changecanvd7')
 //{
@@ -22,7 +22,7 @@ $tissues = array();
 while ($row = $stmt->fetch())
 {
 	$tissue = $row[0];
-	echo $row[0] . "<br>";
+	//echo $row[0] . "<br>";
 	$query = "SELECT COUNT(ID) FROM T_Mutations use index (ID) WHERE tumour_site=:tissue;";
 	$query_params = array(":tissue" => $tissue);
 	$stmt2 = $dbh->prepare($query);
@@ -75,4 +75,6 @@ while ($row = $stmt->fetch())
 //else{
 //	echo "Unauthorized.";
 //}
+header("Location: index.php?submit=true");
+exit;
 ?>

@@ -40,7 +40,7 @@
     <div class="col-md-12">
     <div class="navbar navbar-inverse">
   <div class="navbar-header">
-    <a class="navbar-brand" href="#">Variant Browser</a>
+    <a class="navbar-brand" href="#">Variants Browser</a>
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
@@ -270,6 +270,7 @@
           <select id="selectmultiple" name="tissue[]" class="form-control" multiple="multiple" style="height:160px;">
 <?php
 $query = "SELECT * FROM tissue_table_browser;";
+//$query = "Select Distinct tumour_site From canvd.T_Mutations;";
 $query_params = array();
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);

@@ -30,13 +30,23 @@ $query = 'SELECT COUNT(IID)
 	$stmt->execute($query_params);
 	$interaction_count = $stmt->fetch()[0];
 
-//Count # of Interactions
+//Count # of Mutations
 $query = 'SELECT COUNT(ID)
 			  FROM T_Mutations;';
   	$query_params = array();
 	$stmt = $dbh->prepare($query);
 	$stmt->execute($query_params);
 	$mutation_count = $stmt->fetch()[0];
+
+//Count # of Rewiring Effects
+$query = 'SELECT COUNT(IID)
+                          FROM T_Interaction_MT;';
+
+	$query_params = array();
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($query_params);
+
+	$rewire_count = $stmt->fetch()[0];
 
 //Count # of PWMs
 $query = 'SELECT COUNT(PWM)

@@ -102,14 +102,14 @@
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Networks</b></span>
-          <a class="list-group-item show-item w-prot w-int"><span data-color="alert-info" class="badge alert-info">14</span>Wildtype Proteins </a>
-          <a class="list-group-item show-item m-prot m-int"><span data-color="alert-warning" class="badge alert-warning">14</span> Mutant Proteins </a>
+          <a class="list-group-item show-item w-prot w-int"><span data-color="wt-pt" class="badge wt-pt">14</span>Wildtype Proteins </a>
+          <a class="list-group-item show-item m-prot m-int"><span data-color="mu-pt" class="badge mu-pt">14</span> Mutant Proteins </a>
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Mutation Effect</b></span>
-          <a class="list-group-item show-item g-prot no-int"><span data-color="alert-info" class="badge alert-info">14</span>No Change </a>
-          <a class="list-group-item show-item g-prot gain-int"><span data-color="alert-success" class="badge alert-success">14</span>Gain of Interaction </a>
-          <a class="list-group-item show-item l-prot loss-int"><span data-color="alert-danger" class="badge alert-danger">14</span> Loss of Interaction </a>
+          <a class="list-group-item show-item g-prot no-int"><span data-color="noch-pt" class="badge noch-pt" >14</span>No Change </a>
+          <a class="list-group-item show-item g-prot gain-int"><span data-color="gn-pt" class="badge gn-pt" >14</span>Gain of Interaction </a>
+          <a class="list-group-item show-item l-prot loss-int"><span data-color="ls-pt" class="badge ls-pt" >14</span> Loss of Interaction </a>
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Layout Options</b></span>
@@ -345,8 +345,10 @@
   {
     for (n in networkData[net])
     {
-      var edge_color = "hsla(193, 59%, 45%, 0.78)";
-      var edge_style = "solid";
+      console.log(n);
+      console.log(networkData[net][n]);
+      var edge_color = "#fdb863";
+      var edge_style = "dotted";
       var this_interaction_edge = {};
       //find the correct interaction_edge
       for (j in interaction_edges1)
@@ -356,27 +358,36 @@
           this_interaction_edge = interaction_edges1[j];
         }
       }
+      console.log(this_interaction_edge);
       if (this_interaction_edge['Type'] == 'gain of function')
       {
-        edge_color = "hsla(129, 93%, 34%, 1)";
+        edge_color = "#2c7bb6";
         edge_style = "dashed";
         gain_count += 1;
       }
       else if (this_interaction_edge['Type'] == 'loss of function')
       {
-        edge_color = "hsla(352, 89%, 52%, 1)";
+        edge_color = "#d7191c";
         edge_style = "dashed";
         loss_count += 1;
       }
        else if (this_interaction_edge['Type'] == 'no change')
       {
-        edge_color = "hsla(600, 89%, 52%, 1)";
+        edge_color = "#e9a3c9";
         edge_style = "dotted";
         norm_count += 1;
       }
       
-      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*parseFloat(this_interaction_edge['Avg'])*5), feature: "mut", type: edge_style, func:edge_color } });
+      if (this_interaction_edge['Avg'] >= 0.5)
+      {
+      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*5), feature: "mut", type: edge_style, func:edge_color } });
       l += 1;
+      }
+      else if ((this_interaction_edge['Avg'] < 0.5))
+      {
+    	net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*15), feature: "mut", type: edge_style, func:edge_color } });
+      	l += 1;
+      }
     }
     k += 1;
   }
@@ -786,7 +797,31 @@
             muts_string += "<h6><b>Evaluation Score: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
             for (m in clickedEdge.data("content")){
               if (isNaN(m) && m != 'IID'  && m != 'Avg'  && m != 'protein_id'  && m != 'Syntax'  && m != 'Type'){
-                muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";
+                if(m != 'WT' && m != 'MT' && m != 'WTscore' && m != 'MTscore')
+                {
+                  var scale = parseFloat(clickedEdge.data("content")[m]);
+                  var col = '';
+                  if (scale < 0.2){
+                    col = '#ffffb2';
+                  }
+                  else if (scale < 0.4){
+                    col = '#fecc5c';
+                  }
+                  else if (scale < 0.6){
+                    col = '#fd8d3c';
+                  }
+                  else if (scale < 0.8){
+                    col = '#f03b20';
+                  }
+                  else if (scale <= 1){
+                    col = '#bd0026';
+                  }
+                  muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td style='background:" + col + "'></td></tr>";                                    
+                }
+                else
+                {  
+                  muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";                  
+                }
               }
 
               if (m == "Type")
@@ -815,6 +850,9 @@
                   int_type_var = "No Change";
                 }
                 muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + int_type_var + "</b></h6>";
+                muts_string += "<div style='margin-left:20px;'><span>lower</span> <span style='margin-left:50px;'>greater</span></div>";
+                muts_string += "<svg width='120' height='24' style='margin-left:20px;'><rect fill='#ffffb2' width='24' height='24' x='0'></rect><rect fill='#fecc5c' width='24' height='24' x='24'></rect><rect fill='#fd8d3c' width='24' height='24' x='48'></rect><rect fill='#f03b20' width='24' height='24' x='72'></rect><rect fill='#bd0026' width='24' height='24' x='96'></rect></svg>";
+
               }
             }
             return html + muts_string +  "</tbody></table></div>";

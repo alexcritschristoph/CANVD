@@ -13,13 +13,64 @@
 		</title>
 		<link rel="shortcut icon" href="canvd.ico">
 		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
-		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
 		<script src="<?php echo $root_path;?>site.js" ></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
     <link href="./slider.css" rel="stylesheet">
     <script src="<?php echo $root_path;?>bootstrap.js"></script>
     <script src="./bootstrap-slider.js"></script>
+
+    <style>
+        .footer {
+            z-index: 1;
+            display: block;
+            font-size: 26px;
+            font-weight: 200;
+            text-shadow: 0 1px 0 #fff;
+        }
+
+        svg {
+            overflow: hidden;
+        }
+
+        rect {
+            pointer-events: all;
+            cursor: pointer;
+            stroke: #EEEEEE;
+        }
+
+        .chart {
+            display: block;
+            margin: auto;
+        }
+
+        .label {
+            stroke: 'white';
+            fill: 'white';
+            stroke-width: 0;
+            margin: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .parent .label {
+            font-size: 12px;
+            stroke: 'white';
+            fill: 'white';
+        }
+
+        .child .label {
+            font-size: 11px;
+        }
+
+        .cell {
+            font-size: 11px;
+            cursor: pointer
+        }
+
+
+    </style>
 	</head>
 
 	<body style="background:#fafafa">
@@ -27,12 +78,12 @@
 	  <div class="container">
     <p class="pull-right" id="top_btns"><a class="btn btn-danger" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
       <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
+      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-database"></i> Contact</a>
       </p>
       <span id="title_fix"></span>
 	    <h1 id="title_h1"><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 	    
-	    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) is an online resource for the assessment of the impact of cancer mutations on protein-protein interactions (PPI). <span style="color:#ea2f10">Can-VD</span> stores the PPI interaction networks mediated by wildtype and cancer variants and the overlay of the two networks to understand the effects of mutations on the network and consequently their cellular and biological impact. The effects of over 800,000 cancer missense mutations are analyzed and stored in <span style="color:#ea2f10">Can-VD</span>. Furthermore, <span style="color:#ea2f10">Can-VD</span> provides the full sequences of the wildtype and cancer variant proteins, with a comprehensive search and download interface to easily build a customized protein databases for cancer genomics and proteomics. </p>
+	    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) is an online resource for the assessment of the impact of cancer mutations on protein-protein interactions (PPI) networks. <a href='faqs/'>Read more...</a></p>
 
 	  </div>
 	<div class="container">
@@ -43,10 +94,10 @@
 			    Can-VD Statistics
 			  </li>
 			  <li class="list-group-item">Proteins <span data-color="alert-info" class="badge "><?php echo number_format(intval($protein_count));?></span></li>			  
-        <li class="list-group-item">Domains <span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?></span></li>
-			  <li class="list-group-item">Interactions <span data-color="alert-info" class="badge "><?php echo number_format(intval($interaction_count));?></span></li>
+        <li class="list-group-item">Domains/PWMs<span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?> / <?php echo number_format(intval($pwm_count));?></span></li>
+		<li class="list-group-item">Interactions <span data-color="alert-info" class="badge "><?php echo number_format(intval($interaction_count));?></span></li>
         <li class="list-group-item">Variants <span data-color="alert-info" class="badge "><?php echo number_format(intval($mutation_count));?></span></li>
-        <li class="list-group-item">PWMs <span data-color="alert-info" class="badge "><?php echo number_format(intval($pwm_count));?></span></li>
+        <li class="list-group-item">Rewiring Effects <span data-color="alert-info" class="badge "><?php echo number_format(intval($rewire_count));?></span></li>
 
 			</div>
 
@@ -83,9 +134,9 @@
 		</div>
 
 		<div class="col-md-9">
-		    <form id="search_form" action="./network/" method="get">
+		    <form id="search_form" action="./network/" method="get" >
         <div class="input-group input-group-lg">
-			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602">
+			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602" >
 			  <span class="input-group-btn">
 		        <button type="submit" class="btn btn-danger" type="button" id="search_btn">Search</button>
             <button class="btn btn-default" type="button" id="advanced_btn">Advanced</button>
@@ -181,16 +232,16 @@
         <div style="padding-top:10px;">
         <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl8" name="localization"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Localization</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl9" name="sequence"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
+        <input type="text" style="width:200px;" value="-1,1" data-slider-min="-1" data-slider-max="1" data-slider-step="0.25" data-slider-value="[-1,1]" id="sl9" name="sequence"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
         <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" name="average"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Average</span></div>
+        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" name="average"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Evaluation Score</span></div>
         </div>    
         </div>
       </form>
       </div>
       <div id="browse-and-tabs">
 			<ul class="nav nav-tabs" id="browse-tabs">
-			  <li class="active" ><a data-tab="protein">Tissues</a></li>
+			  <li class="active" ><a data-tab="protein">Tissues/Cancer Types</a></li>
 			  <li><a data-tab="cancer">Proteins</a></li>
 			  <li><a data-tab="tumor">PWMs</a></li>
 			</ul>
@@ -200,7 +251,7 @@
                 <thead>
                   <tr>
                     <th>Tissue</th>
-                    <th>Total Variants</th>
+                    <th>Total Variants (Mutations)</th>
                     <th>Gain of Interaction</th>
                     <th>Loss of Interaction</th>
                     <th>Total Proteins</th>
@@ -212,7 +263,7 @@
               </table>
               <ul class="pager" id="tissue-page" data-page=0>
                 <li><a id="tissue-back">Previous</a></li>
-                <span class='num-viewer'> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">20</span> of <span id="tissue-total">40</span></span>
+                <span class='num-viewer'> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">10</span> of <span id="tissue-total">40</span></span>
                 <li><a id="tissue-forward">Next</a></li>
               </ul>
       </div>    
@@ -236,19 +287,33 @@
               <script>
               $(function() {
 
-                $("#search_form").on("submit", function(){
-                    $("#search_btn").html("<div class='spinner3' style='margin-left:10px;margin-right:10px;'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");
+                $("#search_form").on("submit", function( event ){
+                    if ($("#search_input").val() == ''){
+                      event.preventDefault();
+                    }
+                    else 
+                    {
+                      $("#search_btn").html("<div class='spinner3' style='margin-left:10px;margin-right:10px;'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");                      
+                    }
                 });
 
                 //Get total counts for the tables
+		var tissue_total = 0;
+		var pwm_total = 0;
+		var protein_total = 0;
                 $.ajax({
                     url: "./tables/get_totals.php",
                     type: "post",
                     dataType: 'json',
+		    async: false,
                     success: function(results){
                       $("#tissue-total").html(results[0]);
+		      tissue_total = results[0];
+		      //alert(tissue_total);
                       $("#pwm-total").html(results[1]);
+		      pwm_total = results[1];
                       $("#protein-total").html(results[2]);
+		      protein_total = results[2];
                     },
                     error:function(){
                     }
@@ -269,7 +334,12 @@
                 $("#protein-table").fadeOut('fast');
                   var test = $("#protein-page").data("page");
                   $("#protein-start").html(test);
-                  $("#protein-end").html(test+10);
+                  if ($("#protein-page").data("page") +10 < protein_total){
+		  $("#protein-end").html(test+10);
+		  }
+		  else{
+		 $("#protein-end").html(protein_total);
+		 }
                 $.ajax({
                         url: "./tables/proteins.php",
                         type: "post",
@@ -300,9 +370,13 @@
 
                 $("#protein-forward").on( "click", function() {
                   onTheClick = true;
+		  if($("#protein-page").data("page") +10< protein_total){
+		  //alert($("#protein-page").data("page") +10);
+		  //alert(protein_total);
                   $("#protein-page").data("page", $("#protein-page").data("page")+ 10);
 
                   update_protein_view();
+		  }
                 });
 
 
@@ -310,7 +384,12 @@
                 {
                   var test = $("#pwm-page").data("page");
                   $("#pwm-start").html(test);
-                  $("#pwm-end").html(test+5);
+		  if($("#pwm-page").data("page") +10< pwm_total){
+                  $("#pwm-end").html(test+10);
+		  }
+		  else{
+		  $("#pwm-end").html(pwm_total);
+		  }
                 $.ajax({
                         url: "./tables/pwm.php",
                         type: "post",
@@ -335,22 +414,32 @@
                 $("#pwm-back").on( "click", function() {
                   if ($("#pwm-page").data("page") != 0)
                   {
-                $("#pwm-page").data("page", $("#pwm-page").data("page")- 5);
+                $("#pwm-page").data("page", $("#pwm-page").data("page")- 10);
                     update_pwm_view();
                   }
                 });
 
                 $("#pwm-forward").on( "click", function() {
-                  $("#pwm-page").data("page", $("#pwm-page").data("page")+ 5);
+		if($("#pwm-page").data("page") +10< pwm_total){
+                  $("#pwm-page").data("page", $("#pwm-page").data("page")+ 10);
                   update_pwm_view();
+		}
                 });
 
 
                 function update_tissue_view()
                 {
                   var test = $("#tissue-page").data("page");
-                  $("#tissue-start").html(test);
-                  $("#tissue-end").html(test+10);
+                  ///alert($("#tissue-page").data("page") + 10);
+		  //alert(tissue_total);
+		  $("#tissue-start").html(test);
+		  if($("#tissue-page").data("page") +10 < tissue_total){
+                  $("#tissue-end").html($("#tissue-page").data("page") +10);
+		  //alert(test+10);
+		  }
+	   	  else{
+		  $("#tissue-end").html(tissue_total);
+		  }
                 $.ajax({
                         url: "./tables/tissues.php",
                         type: "post",
@@ -379,8 +468,10 @@
                 });
 
                 $("#tissue-forward").on( "click", function() {
+		 if ($("#tissue-page").data("page")+ 10 < tissue_total){
                   $("#tissue-page").data("page", $("#tissue-page").data("page")+ 10);
                   update_tissue_view();
+		}
                 });
 
                 $("#advanced_btn").on( "click", function() {
@@ -430,11 +521,9 @@
                 <thead>
                   <tr>
                     <th>PWM</th>
-                    <th>Domain/Pattern</th>
-                    <th>Protein</th>
-                    <th>Type</th>
                     <th>Logo</th>
-                    <th>Files</th>
+                    <th>PWM</th>
+                    <th>Logo</th>
                   </tr>
                 </thead>
                 <tbody id="pwm-table-body">

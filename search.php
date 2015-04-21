@@ -6,10 +6,11 @@ $root_path = "../";
 include_once($root_path . './common.php');
 
 //Select Domain EnsPID from the gene name entered
-if(isset($_GET['genename'])) {
+if(isset($_GET['genename']) && $_GET['genename'] != '') {
 	$gene_name = $_GET['genename'];
 }
 else{
+	echo "$('#cy').append('<h2> Please enter a valid domain name.</h2>'); });</script></body></html>";
 	exit();
 }
 
