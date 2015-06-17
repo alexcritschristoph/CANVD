@@ -1,6 +1,7 @@
 <?php
   $root_path = "../";
   include_once('../common.php');
+  error_reporting(0);
 ?>
 
 <html>
@@ -29,7 +30,7 @@
 
       <p id="main-top-text">Variant(s) of <span style="color:#ea2f10"><?php echo $_GET['variant']?> </span>protein.</p>
 
-    </div>  
+    </div>
 
    <?php
      /* Is this the search page, or the results page, or the details page? */
@@ -61,7 +62,7 @@
     $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site, MUTATION_ID, mut_description FROM T_Mutations WHERE EnsPID=:ens AND tumour_site IN(' . $plist . ') ;';
     }
     //get all variants
-    else 
+    else
     {
       $query = 'SELECT EnsPID, mut_syntax_aa, tumour_site, MUTATION_ID, mut_description FROM T_Mutations WHERE EnsPID=:ens;';
     }
@@ -112,12 +113,12 @@
         if (isset($domains[$mut_syntax_d])){
           if (!in_array($domain_name, $domains[$mut_syntax_d])){
           $domains[$mut_syntax_d][$row[2]] = $domain_name;
-          $domain_ids[$domain_name] = $row[0];          
+          $domain_ids[$domain_name] = $row[0];
           }
         }
         else {
           $domains[$mut_syntax_d][$row[2]] = $domain_name;
-          $domain_ids[$domain_name] = $row[0];         
+          $domain_ids[$domain_name] = $row[0];
         }
       }
     }
@@ -181,11 +182,11 @@
     <thead>
         <tr>
           <th>Mutation ID</th>
-          <th>Variant Syntax</th>  
-          <th>Mutation Type</th>      
+          <th>Variant Syntax</th>
+          <th>Mutation Type</th>
           <th>Tissues</th>
           <th>Rewiring Effects - <span class="g">Gain of Function</span>, <span class="r">Loss of Function</span>.<br></th>
-          <th>Download Sequence</th>        
+          <th>Download Sequence</th>
         </tr>
       </thead>
     <tbody>
@@ -228,15 +229,15 @@
           }
           else
           {
-          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";            
+          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='g'>" . $d . "</a>";
           }
         }
         elseif ($effects[$var[1]][$k] == "loss of function" && ($filter_option == 'loss of function' || $filter_option == "N/A")){
-          if ($i > 0){          
+          if ($i > 0){
           echo ", <a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";
           }
           else{
-          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";            
+          echo "<a href='../network/?limit=50&genename=" .  $domain_ids[$d] . "' class='r'>" . $d . "</a>";
           }
         }
         $i += 1;
@@ -278,7 +279,7 @@
       if ($i > 0){
         $var_list = $var_list . "," . $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
       }
-      else 
+      else
       {
       $var_list = $_GET['variant'] . '-' . strtoupper(explode(".",$var[1])[1]);
       }

@@ -1,36 +1,9 @@
 <?php
   $root_path = "../";
   include_once('../common.php');
+  include_once('../header.php');
 ?>
 
-<html>
-  <head>
-    <title>
-      Cancer Variants Database: Network
-    </title>
-    <link rel="shortcut icon" href="../canvd.ico">
-    <link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-    <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
-    <script type="text/javascript" src="<?php echo $root_path;?>jquery.qtip.js"></script>
-
-    <script src="<?php echo $root_path;?>site.js" ></script>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <script src="<?php echo $root_path;?>cytoscape.min.js"></script>
-    <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/master/cytoscape-qtip.js"></script>
-    <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
-
-  </head>
-
-  <body style="background:#fafafa;">
-
-  <div class="jumbotron" style="margin-bottom:0px;height:100%">
-    <div class="container" style="margin-bottom:15px;">
-    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
-      </p>
-      <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
       <p id="main-top-text">The impacts of missense mutations on <b id="prot-name" style="color:#ea2f10"></b>  protein interactions in <b id="tumor_c2" style="color:#ea2f10"></b> tumor types.</p>
 
     </div>
@@ -44,44 +17,35 @@
         <li id="downloads_li"><a href="#" id="downloads_btn">Download</a></li>
       </ul>
       <div id="filters_panel">
-      <p style="font-size:0.9em;margin-bottom:6px;padding-bottom:0;">Viewing <span id="prot_c_2"></span> out of <span id="prot_c_total"></span> total interactions. </p>
-      <div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_more"> Show more interactions</div>
-      <div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_all"> Show all interactions</div>
-      <table class="table table-striped table-hover ">
-        <thead>
-          <tr>
-            <th>Tissues</th>
-          </tr>
-        </thead>
-        <tbody id="tissues_filter_table">
-        </tbody>
-      </table>
+          <div class="list-group show-list" id="domains_list">
+            <span class="list-group-item"><b>Domains</b></span>
 
-      <table class="table table-striped table-hover ">
-        <thead>
-          <tr>
-            <th>Data Sources</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td id="cosmic-id">COSMIC <span  id="cosmic-placeholder" data-color='alert-success' class='badge alert-success pull-right'></span></td>
-          </tr>
+          </div>
 
-        </tbody>
-      </table>
+          <div class="list-group show-list" id="sources_list">
+            <span class="list-group-item"><b>Mutation Sources:</b></span>
+          </div>
+
+      <div class="list-group show-list" id="tissue_list">
+        <span class="list-group-item"><b>Mutations in Tissues:</b></span>
+
+      </div>
+
       </div>
       <div id="downloads_panel">
-      <p style="font-size:1.2em;">There are multiple formats in which the data in the current view can be downloaded.</p>
+      <p style="font-size:1.2em;">There are multiple datasets which can be downloaded for this domain's network.</p>
       <div class="list-group">
-        <span class="list-group-item download-list" style="background:#d6d6d6">Download view as:</span>
-        <a href="#" class="list-group-item json-download">Raw JSON Data</a>
-        <a href="#" class="list-group-item csv-download">Text Data (CSV)</a>
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download current view (csv):</span>
+        <a href="#" class="list-group-item vd interaction-download">Download Interactions</a>
+        <a href="#" class="list-group-item vd effects-download">Download Mutation Effects</a>
+        <a href="#" class="list-group-item vd mutation-download">Download Mutation List</a>
       </div>
 
       <div class="list-group">
-        <span class="list-group-item download-list" style="background:#d6d6d6">Download ALL interaction data:</span>
-        <a href="#" class="list-group-item csv-download-all">Text Data (CSV)</a>
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download ALL interaction data (csv):</span>
+        <a href="#" class="list-group-item ad interaction-download">Download Interactions</a>
+        <a href="#" class="list-group-item ad effects-download">Download Mutation Effects</a>
+        <a href="#" class="list-group-item ad mutation-download">Download Mutation List</a>
       </div>
       </div>
     </div>
@@ -95,26 +59,27 @@
             <h3 class="panel-title stats-title">Network Statistics</h3>
           </div>
           <div class="panel-body stats-body">
-            <p> <b id="prot_c"></b> proteins interact with <b>1</b> domain of <b id="prot-name2">Test</b> In <b id="tumor_c"></b> tumor types</p>
+            <p> <b id="prot_c"></b> proteins interact with the <b id="dm_c"></b> domain of <b id="prot-name2"></b> In <b id="tumor_c"></b> tumor types.</p>
+            <p style="font-size:0.7em !important;">Click on protein nodes to view mutations and interaction effects.</p>
             <!--<p>With total of <b id="mut_c"></b> mutations</p>  (<i id="prot-id">Testing</i>) 	-->
-                        
+
           </div>
         </div>
-        <div class="list-group show-list">
-          <span class="list-group-item"><b>Networks</b></span>
-          <a class="list-group-item show-item w-prot w-int"><span data-color="wt-pt" class="badge wt-pt">14</span>Wildtype Proteins </a>
-          <a class="list-group-item show-item m-prot m-int"><span data-color="mu-pt" class="badge mu-pt">14</span> Mutant Proteins </a>
-        </div>
+
+
         <div class="list-group show-list">
           <span class="list-group-item"><b>Mutation Effect</b></span>
-          <a class="list-group-item show-item g-prot no-int"><span data-color="noch-pt" class="badge noch-pt" >14</span>No Change </a>
-          <a class="list-group-item show-item g-prot gain-int"><span data-color="gn-pt" class="badge gn-pt" >14</span>Gain of Interaction </a>
-          <a class="list-group-item show-item l-prot loss-int"><span data-color="ls-pt" class="badge ls-pt" >14</span> Loss of Interaction </a>
+          <a class="list-group-item show-item no-prot no-int"><span data-color="noch-pt" class="badge noch-pt" ></span>Neutral </a>
+          <a class="list-group-item show-item g-prot gain-int"><span data-color="gn-pt" class="badge gn-pt" ></span>Gain of Interaction </a>
+          <a class="list-group-item show-item l-prot loss-int"><span data-color="ls-pt" class="badge ls-pt" ></span> Loss of Interaction
+              <a class="list-group-item show-item bo-prot bo-int"><span data-color="bo-pt" class="badge bo-pt" ></span>Both Gain and Loss </a>
+
+          </a>
         </div>
         <div class="list-group show-list">
           <span class="list-group-item"><b>Layout Options</b></span>
-          <a class="list-group-item layout-select show-item active">Circle</a>
-          <a class="list-group-item layout-select show-item">Grid</a>          
+          <a class="list-group-item layout-select layout-circle show-item active">Circle</a>
+          <a class="list-group-item layout-select layout-grid show-item">Grid</a>
 
         </div>
     </div>
@@ -147,746 +112,519 @@
   }
 
   //Generate network data
-  include_once('../search.php');
+  include_once('../search2.php');
 
   ?>
+  console.log(networkData);
 
-  var net_nodes = [];
-  var net_edges = [];
-  var protein_count1;
-  var protein_total1;
-  var mutation_count1;
-  var protein_total_count;
-  var tumor_count1;
-  var networkData;
-  var target_protein1;
-  var target_ids1;
+  //Update statistics
+  function update() {
 
-  $("#show_more").on("click", function(){
-    $("#show_more").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
-    net_limit = net_limit + 50;
-    var new_url = window.location.href.replace("&limit", "&oldlimit") + "&limit=" + net_limit;
-    window.location.href = new_url
-  });
+      //reset tissue filters
+      $('.tissue-item').find(".badge").addClass("tissue_active");
 
-  $("#show_all").on("click", function(){
-    $("#show_all").html("<div class='spinner2'><div class='cube1'></div><div class='cube2'></div></div>");
-    net_limit = net_limit + 50;
-    var new_url = window.location.href.split("&")[0] + "&limit=" + net_limit;
-    window.location.href = new_url
-  });
-
-
-  //for each protein, display
-  if (all_proteins.length > 1)
-  {
-  $("#network-view-container").hide();
-  $("#network-view-container").prepend("<button class='btn btn-primary btn-sm' id='protein-selection-btn' style='margin-bottom:10px;'>Choose network to display</button>");
-    $("#network-selection-container").html("<div class=\"row\"> <div class=\"col-md-12\" style='padding-left:50px;padding-right:50px;'><h4 style='padding-right:30px;'>Several SH3 domain containing proteins were found. Select one to view the network:</h4><table class='table table-striped table-hover'><thead><tr><th>Protein Name</th><th>Number of Interaction Partners</th><th>Number of Variants of Interaction Partners</th></tr></thead><tbody id='protein-choice-list'></tbody></table></div></div>");
-    for (var i = 0; i < all_proteins.length; i++) {
-        var keys = [];
-        var keystring = "";
-        var j = 0;
-        for(var k in networkData1[i]) {
-          if (j > 0) {
-          keys.push(k);
-          keystring = keystring+ ", " + k;
-
+      var domain_type = networkData[active_domain].domain_info.Type;
+      var prot_num = Object.keys(networkData[active_domain].gene_info).length;
+      var gene_name = networkData[active_domain].domain_info.DomainName;
+      $("#prot_c").text(prot_num);
+      $("#dm_c").text(domain_type);
+      $("#prot-name2").text(gene_name);
+      $("#prot-name").text(gene_name);
+      //count mutation effects
+      var gain_count = 0;
+      var loss_count = 0;
+      var neutral_count = 0;
+      var both_count = 0;
+      for (int in networkData[active_domain].mut_int)
+      {
+          interaction = networkData[active_domain].mut_int[int];
+          if (interaction == "gain")
+          {
+              gain_count = gain_count + 1;
           }
-          else{
-          keys.push(k);
-          keystring = k;
+          else if (interaction == "loss") {
+              loss_count = loss_count + 1;
           }
-          j += 1
-        }
-        $("#protein-choice-list").append("<tr><td><span style='font-size:1.6em'>" + all_proteins[i].charAt(0).toUpperCase() + all_proteins[i].slice(1) + "</span></td><td style='font-size:1.6em'>"+protein_count[i]+"</td><td style='font-size:1.6em'>" + mutation_count[i] + "</td>")
-    }
-
-
-  }
-
-  else
-  {
-    networkData = networkData1[0];
-    protein_count1 = protein_count[0];
-    protein_total1 = protein_total[0];
-    mutation_count1 = mutation_count[0];
-    protein_total_count = total_count[0];
-    tumor_count1 = tumor_count[0];
-    target_protein1 = target_protein[0];
-    target_ids1 = target_id_json[0];
-    interaction_names1 = interaction_names[0];
-    interaction_edges1 = interaction_edges[0];
-    interaction_pwms1 = interaction_pwms[0];
-    protein_page_setup();
-  }
-
-
-
-  $('#protein-selection-btn').on("click", function(){
-    $("#network-view-container").hide();
-    $("#network-selection-container").show();
-  });
-  $('#protein-choice-list').on( "click", "tr", function() {
-
-    net_nodes = [];
-    net_edges = [];
-    networkData = networkData1[$(this).index()];
-    protein_count1 = protein_count[$(this).index()];
-    protein_total1 = protein_total[$(this).index()];
-    mutation_count1 = mutation_count[$(this).index()];
-    protein_total_count = total_count[$(this).index()];
-    tumor_count1 = tumor_count[$(this).index()];
-    target_protein1 = target_protein[$(this).index()];
-    target_ids1 = target_id_json[$(this).index()];
-    interaction_names1 = interaction_names[$(this).index()];
-    interaction_edges1 = interaction_edges[$(this).index()];
-    interaction_pwms1 = interaction_pwms[$(this).index()];
-    protein_page_setup();
-    loadCy();
-    $('#cy').cytoscape(options);
-    $("#network-selection-container").hide();
-    $("#network-view-container").show();
-  });
-
-
-
-  function protein_page_setup()
-  {
-  if (target_protein.length < 1){
-    $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein was not found in the database.</p></div>");
-  }
-  else{
-      $("#prot_c").text(protein_count1-1);
-      $("#prot_c_2").text(protein_count1-1);
-      $("#prot_c_total").text(protein_total_count);
-
-      if (protein_total1 == $("#prot_c_total").text())
+          else if (interaction == "neutral") {
+              neutral_count = neutral_count + 1;
+          }
+          else if (interaction == "both") {
+              both_count = both_count + 1;
+          }
+      }
+      $(".noch-pt").text(neutral_count);
+      $(".gn-pt").text(gain_count);
+      $(".ls-pt").text(loss_count);
+      $(".bo-pt").text(both_count);
+      //get tissue unique list
+      tissues = [];
+      mutations = networkData[active_domain].muts;
+      sources = {};
+      for (mut in mutations)
       {
-        if (parseInt($("#prot_c").text()) < parseInt($("#prot_c_total").text()))
-        {
-          $("#show_all").show();
-        }
-        $("#show_more").hide();
-      }
-      else{
-        $("#show_more").show();
-      }
-      $("#prot-name").text(target_protein1);
-      $("#prot-name2").text(target_protein1);
-      $("#prot-id").text(target_ids1);
-      $("#mut_c").text(mutation_count1);
-      $("#tumor_c").text(tumor_count1);
-      $("#tumor_c2").text(tumor_count1);
-      $("#cosmic-placeholder").text(protein_count1 - 1);
+          if ($.inArray(mutations[mut].Tissue, tissues) == -1)
+          {
+              tissues.push(mutations[mut].Tissue);
+          }
 
-  }
-
-  //Create list of nodes
-  net_nodes = [];
-  net_nodes.push({ data: { id: target_protein1, color: "#d12e2e", name: target_protein1, weight: 100, center: "true"}} )
-    var l = 0;
-    var prot_wt_count = 0;
-    var prot_mut_count = 0;
-  for(net in networkData)
-  {
-    for (n in networkData[net])
-    {
-      var n_feature = "wt";
-      if (Object.keys(networkData[net][n]).length != 0){
-        n_feature = "mut";
-        prot_mut_count += 1;
-      }  
-      else {
-        prot_wt_count += 1;
+          if ($.inArray(mutations[mut].Source, Object.keys(sources)) != -1)
+          {
+              sources[mutations[mut].Source] =  sources[mutations[mut].Source] + 1;
+          }
+          else {
+              sources[mutations[mut].Source] = 1;
+          }
       }
-      var mut_type = '';
-      var this_interaction_edge = {};
-      //find the correct interaction_edge
-      for (j in interaction_edges1)
+      $("#tumor_c").text(tissues.length);
+      $("#tumor_c2").text(tissues.length);
+
+      for (source in Object.keys(sources))
       {
-        if (interaction_edges1[j]["protein_id"] == n)
-        {
-          this_interaction_edge = interaction_edges1[j];
-        }
+          sour = Object.keys(sources)[source]
+          $("#sources_list").find(".show-item").remove();
+          $("#sources_list").append('<span class="list-group-item show-item source-item"><span class="badge">'  + sources[sour] + '</span>'+ sour + '</span>');
       }
 
-      if (this_interaction_edge['Type'] == 'gain of function')
+      //Count proteins per tissue; sort tissues
+      tissue_to_protein = {};
+      tissue_proteins = {};
+      for (tissue in tissues)
       {
-        mut_type = 'gain';
+          //add all proteins with mutations in this tissue to {tissue_name: [array]}
+          tissue_to_protein[tissues[tissue]] = [];
+          tissue_proteins[tissues[tissue]] = 0;
+          for (mut in mutations)
+          {
+              if (tissues[tissue] == mutations[mut].Tissue)
+              {
+                  if ($.inArray(mutations[mut].EnsPID, tissue_to_protein[tissues[tissue]]) == -1)
+                  {
+                      tissue_to_protein[tissues[tissue]].push(mutations[mut].EnsPID);
+                      tissue_proteins[tissues[tissue]] += 1;
+                  }
+              }
+          }
       }
-      else if (this_interaction_edge['Type'] == 'loss of function')
-      {
-        mut_type = 'loss';
-      }
-      else {
-        if (Object.keys(networkData[net][n]).length != 0){
-        mut_type = 'norm';
-        }
-      }
-      net_nodes.push( { data: { id: n, name: interaction_names1[n][0], description: interaction_names1[n][1], color: "#292929", gene_id: net, weight: 100, muts: networkData[net][n], feature : n_feature, mut_type: mut_type}} );
-      l += 1;
-    }
 
-  }
+      //sort tissues by size
+      tissues_sorted = Object.keys(tissue_proteins).sort(function(a,b){ return tissue_proteins[a] - tissue_proteins[b]}).reverse();
+      //Create tissue list
 
-  //Assign 
-  $(".m-int").find("span").text(prot_mut_count);
-  $(".w-int").find("span").text(prot_wt_count);
-
-  //Create list of edges
-  net_edges = [];
-  var l = 0;
-  var k = 0;
-  var gain_count = 0;
-  var loss_count = 0;
-  var norm_count = 0;
-  for(net in networkData)
-  {
-    for (n in networkData[net])
-    {
-      console.log(n);
-      console.log(networkData[net][n]);
-      var edge_color = "#fdb863";
-      var edge_style = "dotted";
-      var this_interaction_edge = {};
-      //find the correct interaction_edge
-      for (j in interaction_edges1)
-      {
-        if (interaction_edges1[j]["protein_id"] == n)
-        {
-          this_interaction_edge = interaction_edges1[j];
-        }
-      }
-      console.log(this_interaction_edge);
-      if (this_interaction_edge['Type'] == 'gain of function')
-      {
-        edge_color = "#2c7bb6";
-        edge_style = "dashed";
-        gain_count += 1;
-      }
-      else if (this_interaction_edge['Type'] == 'loss of function')
-      {
-        edge_color = "#d7191c";
-        edge_style = "dashed";
-        loss_count += 1;
-      }
-       else if (this_interaction_edge['Type'] == 'no change')
-      {
-        edge_color = "#e9a3c9";
-        edge_style = "dotted";
-        norm_count += 1;
-      }
-      
-      if (this_interaction_edge['Avg'] >= 0.5)
-      {
-      net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*5), feature: "mut", type: edge_style, func:edge_color } });
-      l += 1;
-      }
-      else if ((this_interaction_edge['Avg'] < 0.5))
-      {
-    	net_edges.push( { data: { source: target_protein1, target: n, content: this_interaction_edge, width:(parseFloat(this_interaction_edge['Avg'])*15), feature: "mut", type: edge_style, func:edge_color } });
-      	l += 1;
-      }
-    }
-    k += 1;
-  }
-
-  //Assign
-  $(".gain-int").find("span").text(gain_count);
-  $(".loss-int").find("span").text(loss_count);
-  $(".no-int").find("span").text(norm_count);
-
-  //Create list of tissues for filter list
-  var tissues = {};
-  for (net in networkData)
-  {
-    for (n in networkData[net])
-    {
-      var arr = [];
-      for (m in networkData[net][n])
-      {
-        if (isNaN(tissues[networkData[net][n][m][2]]))
-        {
-          tissues[networkData[net][n][m][2]] = 0;
-        }
-
-        if ($.inArray(networkData[net][n][m][2], arr) == -1)
-        {
-        tissues[networkData[net][n][m][2]] += 1;
-        arr.push(networkData[net][n][m][2]);
-        }
-
-      }
-    }
-  }
-
-  var sortable = [];
-  for (var tissue in tissues)
-      sortable.push([tissue, tissues[tissue]])
-
-  var sorted_tissues = sortable.sort(function(a, b) {return a[1] - b[1]}).reverse();
-  var counter = 0;
-  $("#tissues_filter_table").html('');
-  for (var tissue in sorted_tissues)
-  {
-    sorted_tissues[tissue][0] = sorted_tissues[tissue][0].replace("_"," ").replace("_"," ").replace("_"," ");
-    if (counter < 9){
-    $("#tissues_filter_table").append("<tr><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
-    counter += 1;
-    }
-    else if (counter == 9)
-    {
-      $("#tissues_filter_table").append("<tr id='tissue-load-more'><td><a><i>Show More</i></a></tr></td");
-      $("#tissues_filter_table").append("<tr class='hidden_tr'><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
-    counter += 1;
-
-    }
-    else
-    {
-     $("#tissues_filter_table").append("<tr class='hidden_tr'><td class='tissue_filter' data-name='"+sorted_tissues[tissue][0].replace("_"," ")+"'>"+sorted_tissues[tissue][0].replace("_"," ")+"<span data-color='alert-success' class='badge alert-success pull-right'>"+sorted_tissues[tissue][1]+"</span></td></tr>");
-
-    }
-  }
-
-  $("#tissues_filter_table").append("<tr id='tissue-load-less'><td><a><i>Show Less</i></a></tr></td");
-
-  }
- //
-
-  $('body').on( "click", "#cosmic-id", function() {
-    if ( $(this).find(".badge").hasClass("alert-success"))
-         {
-          $(this).find(".badge").removeClass("alert-success");
-          cy.$("node[id!='" + target_protein1 + "']").hide();
-        }
-        else
-        {
-          $(this).find(".badge").addClass("alert-success");
-          cy.$("node[id!='" + target_protein1 + "']").show();
-        }
-  });
-
-    $(".layout-select").on("click", function(){
-    if ($(this).hasClass("active")) {
-    }
-    else {
-      layout_type = $(this).html().toLowerCase();
-    if (layout_type == "circle")
-    {
-      layout_type = "concentric";
-    }
-    $(".layout-select").removeClass("active");
-    $(this).addClass("active");
-    loadCy();
-
-    //Reset all filters
-    $(".tissue_filter").find(".badge").addClass("alert-success");
-    $( ".show-item" ).each(function( index ) {
-        $(this).find(".badge").addClass($(this).find(".badge").data("color"));
-    });
-    $('#cy').cytoscape(options);
-
-    }
-
-  });
-
-    $(".json-download").on("click", function(){
-      var json_data = {}
-      $.each(cy.elements(":visible").jsons(), function(index, value) {
-        delete value.data.weight;
-        delete value.data.color;
-        json_data[index] = value.data;
-      });
-      $.ajax({
-        url:"./save_data.php",
-        type: "POST",
-        data: {download_data:JSON.stringify(json_data)},
-        success:function(result){
-      window.location.href = './download.php';         
-      }});
-
-    });
-
-    $(".csv-download-all").on("click", function(){
-      var new_url = './download_all.php?protein-id=' + target_ids1
-      window.location.href= new_url;
-    });
-
-    $(".csv-download").on("click", function(){
-      var json_data = {}
-      $.each(cy.elements(":visible").jsons(), function(index, value) {
-        delete value.data.weight;
-        delete value.data.color;
-        json_data[index] = value.data;
-      });
-
-      var csv_data = cy.json()['elements'];
-      var string = "SH3 binding protein\tInteracting proteins\tBiological process\tDisorder\tGene expression\tLocalization\tMolecular function\tPeptide conservation\tProtein expression\tSequence signature\tSurface accessibility\tAverage Interaction Score\n";
+      $("#tissue_list").find(".show-item").remove();
       var i = 0;
-      for (csv in csv_data['nodes']){
-        if (i == 0){
-          source = csv_data['nodes'][csv]['data']['name'];
+      for (tissue in tissues_sorted)
+      {
+          if (i < 4)
+          {
+              $("#tissue_list").append('<a class="list-group-item tissue-a show-item "><span class="badge tissue-item tissue_active">'  + tissue_to_protein[tissues_sorted[tissue]].length.toString() + '</span><span class="tissue_name">'+ tissues_sorted[tissue] + '</span></a>');
+          }
+          else
+          {
+              $("#tissue_list").append('<a class="list-group-item show-item tissue_load_more" style="background:#E7E7E7">Load More</a>');
+              break;
+          }
+          i += 1;
+      }
+
+      //Add nodes and edges
+      net_nodes = [];
+      net_edges = [];
+      net_nodes.push({ data: { id: gene_name, color: "#d12e2e", name: gene_name, weight: 100, center: "true"}} )
+      var interactions = networkData[active_domain].mut_int;
+      var interaction_data = networkData[active_domain].gene_info;
+      for (node in interaction_data)
+      {
+          //Add nodes
+          net_nodes.push( { data: { id: node, name: interaction_data[node].GeneName, description: interaction_data[node].Description, color: "#292929", gene_id: node, weight: 100, muts: "", mut_type: interactions[node]}} );
+
+          //Add edges
+          var edge_color, edge_style;
+          if (interactions[node] == "loss")
+            edge_color = "#d7191c", edge_style = "dashed";
+          if (interactions[node] == "gain")
+            edge_color = "#2c7bb6", edge_style = "dashed";
+          if (interactions[node] == "both")
+          {
+              edge_color = "#c13e86", edge_style = "solid";
+          }
+          if (interactions[node] == "neutral")
+            edge_color = "#fdb863", edge_style = "solid";
+
+          net_edges.push( { data: { source: gene_name, target: node, content: "Interaction", width:3, type: interactions[node], color: edge_color, style: edge_style } });
+      }
+        options = {
+          layout: { name: layoutType },
+          name: 'circle',
+          showOverlay: false,
+          fit:true,
+          hideEdgesOnViewport: true,
+          hideLabelsOnViewport: true,
+          boxSelectionEnabled: false,
+
+          style: cytoscape.stylesheet()
+            .selector('node')
+              .css({
+                'background-color': 'data(color)',
+                'content': 'data(name)',
+                'font-size': 14,
+                'text-valign': 'center',
+                'color': 'white',
+                'text-outline-color': 'data(color)',
+                'text-outline-width':'3',
+                'height': '40',
+                'width':'40',
+                'border-color': '#fff',
+                'shadow-blur': 0
+              })
+            .selector(':selected')
+              .css({
+                'background-opacity':'0.9',
+                'text-outline-opacity':'0',
+                'line-color': '#000',
+                'target-arrow-color': '#000',
+                'border-color':'#398bc6',
+                'border-opacity':'0.8',
+                'border-width':'2',
+                'shadow-blur': 0
+              })
+            .selector('edge')
+              .css({
+                'width': 3,
+                'line-color': 'data(color)',
+                'line-style': 'data(style)',
+                'opacity':'0.9',
+                'width':'data(width)',
+                'target-arrow-shape': 'triangle',
+                'target-arrow-color': 'data(color)',
+
+              })
+          ,
+
+          elements: {
+            nodes: net_nodes,
+            edges: net_edges,
+
+          },
+
+          ready: function(){
+            cy = this;
+            cy.userZoomingEnabled(0);
+            cy.boxSelectionEnabled(0);
+            cy.userPanningEnabled(0);
+            var clickedNode = null;
+            var clickedEdge = null;
+            cy.$('node').on('click', function(e){
+              var ele = e.cyTarget;
+              clickedNode = ele;
+
+            });
+
+            //Popups
+            cy.elements('node').qtip({
+            content: {
+              text: function(event, api) {
+
+
+                  //find the protein's interaction edge data
+                  if (clickedNode.data("center") != "true")
+                  {
+                  var html = "";
+
+                    //Show information
+                    html = "<div style='overflow-y:scroll;max-height:300px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6>";
+
+                    //Show PWM
+
+                    //Show mutation effects
+                    for (enspid in networkData[active_domain].mut_effects)
+                    {
+                        if (enspid == clickedNode.data("gene_id"))
+                        {
+                            for (mut_effect in networkData[active_domain].mut_effects[enspid])
+                            {
+                                var effects = networkData[active_domain].mut_effects[enspid][mut_effect];
+
+                                if (effects[6] == "gain of function")
+                                {
+                                    var color = "#2C7BB6";
+                                }
+                                else {
+                                    var color = "#D7191C";
+                                }
+
+                                var wt_seq = "";
+                                var mt_seq = "";
+                                for ( var i = 0; i < effects[1].length; i++ )
+                                {
+                                  if (effects[0].charAt(i) != effects[1].charAt(i))
+                                  {
+                                    wt_seq = wt_seq + "<span class='wt'>" + effects[0].charAt(i) + "</span>";
+                                    mt_seq = mt_seq + "<span class='mt'>" + effects[1].charAt(i) + "</span>";
+                                  }
+                                  else
+                                  {
+                                    wt_seq += effects[0].charAt(i);
+                                    mt_seq += effects[1].charAt(i);
+                                  }
+                                }
+
+                                html = html + "<p><div style='padding-bottom:4px;margin-bottom:0;'><b>Mutation Effect</b></div><div style='padding-bottom:2px;'><i>Mut Syntax: " + effects[4] + "</i> <b style='color:" + color + "'> (" + effects[6] + ") </b> </div>WT Sequence: "+  wt_seq + "<br>MT Sequence: " + mt_seq + "<br>WT Score: " + effects[2].toString() + ", MT Score: " + effects[3].toString() + "<br>DeltaScore: "+ effects[7].toString() + ", LOG2 Score: "+ effects[5].toString() + "</p>";
+                            }
+                            break;
+                        }
+                    }
+
+                    //get the mutation effects for this protein
+                        //for each one, create new table
+                    //Show mutation list
+                    var muts_string ="<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>Source</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>";
+
+
+                    for (mut in networkData[active_domain].muts)
+                    {
+                        if (networkData[active_domain].muts[mut].EnsPID == clickedNode.data("gene_id"))
+                        {
+                            var this_mut = networkData[active_domain].muts[mut];
+                            if (this_mut.Impact == -1)
+                            {
+                                var row_string = "<tr class='highlighted_mut_l'><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                            }
+                            else if (this_mut.Impact == 1) {
+                                var row_string = "<tr  class='highlighted_mut_g'><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                            }
+                            else {
+                                var row_string = "<tr><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                            }
+                            muts_string += row_string;
+                        }
+                    }
+
+
+                    return html + muts_string + "</tbody></table></div>";
+                  }
+                  else{
+                    return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>SH3 domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + networkData[active_domain].domain_info.EnsPID + "'>" + networkData[active_domain].domain_info.EnsPID + "</a></p></div>";
+                  }
+                },
+              title: function(event, api) {
+                return clickedNode.data("id");
+              }
+            },
+            show: {
+              ready: false
+            },
+            position: {
+              my: 'top center',
+              at: 'bottom center'
+            },
+            style: {
+              classes: 'qtip-light',
+              tip: {
+                width: 10,
+                height: 8
+              }
+            }
+            });
+
+          }
+        };
+
+        $('#cy').cytoscape(options);
+    }
+
+    var active_domain = "";
+    for (active_domain in networkData) break;
+
+    //Create domain list
+    for (domain in networkData)
+    {
+        if (domain == active_domain)
+        {
+            $("#domains_list").append('<a data-domain="' + domain + '" class="list-group-item show-item active"><span class="badge domain">' + Object.keys(networkData[domain].gene_info).length + '</span>'+ networkData[domain].domain_info.DomainName + ' : ' + networkData[domain].domain_info.Type + ' </a>');
+        }
+        else {
+            $("#domains_list").append('<a data-domain="' + domain + '" class="list-group-item show-item"><span class="badge domain">'  + Object.keys(networkData[domain].gene_info).length + '</span>'+ networkData[domain].domain_info.DomainName + ' : ' + networkData[domain].domain_info.Type + ' </a>');
+        }
+    }
+
+
+
+    if (networkData.length != 0)
+    {
+
+          if (Object.keys(networkData[active_domain].gene_info).length > 50){
+              layoutType = "grid";
+              $(".layout-grid").addClass("active");
+              $(".layout-circle").removeClass("active");
+          }
+          else {
+              layoutType = "concentric";
+              $(".layout-grid").removeClass("active");
+              $(".layout-circle").addClass("active");
+          }
+
+        update();
+    }
+
+    else {
+        $("#main_network_column").prepend("<div class=\"alert alert-warning\" style='margin-right:50px;margin-left:50px;'><p class='lead' style='color:white;'>Error: That protein name or ID was not found in the database.</p></div>");
+    }
+
+    //On clicking domain
+    $("#domains_list a").on('click', function(){
+        active_domain = $(this).data("domain");
+        $("#domains_list a").removeClass("active");
+        $(this).addClass("active");
+
+          if (Object.keys(networkData[active_domain].gene_info).length > 50){
+              layoutType = "grid";
+              $(".layout-circle").removeClass("active");
+              $(".layout-grid").addClass("active");
+          }
+          else {
+              layoutType = "concentric";
+              $(".layout-grid").removeClass("active");
+              $(".layout-circle").addClass("active");
+          }
+
+        update();
+    });
+
+    //On changing layout
+    $(".layout-select").on("click", function(){
+        $(".layout-select").removeClass("active");
+        $(this).addClass("active");
+        if ($(this).text() == "Circle"){
+            layoutType = "concentric";
+        }
+        else {
+            layoutType = "grid";
+        }
+
+        update();
+    })
+
+    //Tissue load more
+    $("#tissue_list").on("click", ".tissue_load_more", function(){
+        $(".tissue_load_more").hide();
+        var i = 0;
+        for (tissue in tissues_sorted)
+        {
+            if (i >= 4)
+            {
+                $("#tissue_list").append('<a class="list-group-item tissue-a show-item"><span class="badge tissue-item tissue_active">'  + tissue_to_protein[tissues_sorted[tissue]].length.toString() + '</span><span class="tissue_name">'+ tissues_sorted[tissue] + '</span> </a>');
+            }
+            i += 1;
+        }
+    });
+
+    //Tissue filtering
+    $("#tissue_list").on("click", ".tissue-a", function(){
+        if ( $(this).find(".badge").hasClass("tissue_active"))
+        {
+           $(this).find(".badge").removeClass("tissue_active");
+           var turn_on = 0;
         }
         else
         {
-
-          //Is this node in the visible data? 
-          var found_right = false;
-          for (nd in json_data){
-            if (csv_data['nodes'][csv]['data']['id'] == json_data[nd]['id'])
-            {
-              found_right = true;
-              break;
-            }
-          }
-          if (found_right){
-          for (csv2 in csv_data['edges']){
-            if (csv_data['edges'][csv2]['data']['target'] == csv_data['nodes'][csv]['data']['id'])
-            {
-              avg = csv_data['edges'][csv2]['data']['content'];
-              break;
-            }
-          }
-          string = string + source + "\t" + csv_data['nodes'][csv]['data']['id'] + "\t" + avg['Biological_process'] + "\t" + avg['Disorder'] + "\t" + avg['Gene_expression'] + "\t" + avg['Localization'] + "\t" + avg["Molecular_function"] + "\t" + avg["Peptide_conservation"] + "\t" + avg["Protein_expression"] + "\t" + avg["Sequence_signature"] + "\t" + avg["Surface_accessibility"] + "\t" + avg['Avg'] + "\n";
-          }
+            $(this).find(".badge").addClass("tissue_active");
+            var turn_on = 1;
         }
-        i += 1;
-      }
+
+        var tissue_type = $(this).find(".tissue_name").html();
+        for (tissue in tissue_to_protein)
+        {
+            tis = tissue_to_protein[tissue];
+            if (tissue == tissue_type)
+            {
+                for (protein in tis)
+                {
+                    prot = tis[protein];
+
+                    if (turn_on)
+                    {
+                        cy.$("node[id='"+prot+"']").show();
+                    }
+                    else
+                    {
+                        cy.$("node[id='"+prot+"']").hide();
+                    }
+                }
+
+            }
+        }
+    })
+
+    //handles downloads
+    $("#downloads_panel").on("click","a", function(){
+        var download_proteins = [];
+        if ($(this).hasClass("vd"))
+        {
+            //get list of visible ids
+            $.each(cy.nodes(":visible").jsons(), function(index, value) {
+                download_proteins.push(value.data.id);
+                console.log(value.data.id);
+            })
+        }
+        else {
+            //get list of all ids
+            download_proteins = Object.keys(networkData[active_domain].gene_info);
+        }
+
+        console.log(download_proteins);
+        //get information depending on type.
+        var netdata = networkData[active_domain];
+        var data = "";
+        if ($(this).hasClass("interaction-download"))
+        {
+            data = "Domain,InteractionPartner,Score,Start,End\n";
+            for (inter in netdata.raw_interactions)
+            {
+                var int = netdata.raw_interactions[inter];
+                if ($.inArray(int.interaction, download_proteins) != -1)
+                {
+                    data = data + int.domain + "," + int.interaction + "," + int.score + "," + int.start + "," + int.end + "\n";
+                }
+            }
+        }
+        else if ($(this).hasClass("effects-download")) {
+            data = "Domain,InteractionPartner,WT,MT,WTscore,MTscore,Mut_Syntax,DeltaScore,Log2Score,Eval\n";
+            for (inter in netdata.mut_effects)
+            {
+                if ($.inArray(inter, download_proteins) != -1)
+                {
+
+                    var effects = netdata.mut_effects[inter];
+                    for (eff in effects)
+                    {
+                        effect = effects[eff];
+                        data = data + netdata.domain_info.EnsPID +","+inter+","+effect[0]+","+effect[1]+","+effect[2]+","+effect[3]+","+effect[4]+","+effect[7]+","+effect[5]+","+effect[6]+ "\n";
+                    }
+                }
+            }
+        }
+
+        else if ($(this).hasClass("mutation-download")) {
+            data = "EnsPID,Syntax,Tissue,Source\n";
+            for (mut in netdata.muts)
+            {
+                var mutation = netdata.muts[mut];
+                if ($.inArray(mutation.EnsPID, download_proteins) != -1)
+                {
+                    data = data + mutation.EnsPID + "," + mutation.Syntax + "," + mutation.Tissue + "," + mutation.Source + "\n";
+                }
+            }
+        }
         $.ajax({
         url:"./save_data.php",
         type: "POST",
-        data: {download_data:string},
+        data: {download_data:data},
         success:function(result){
-      window.location.href = './download.php';         
+      window.location.href = './download.php';
        }});
-          
+
+
     });
-   $('body').on( "click", ".tissue_filter", function() {
-    
-         if ( $(this).find(".badge").hasClass("alert-success"))
-         {
-            $(this).find(".badge").removeClass("alert-success");
-            for (net in networkData)
-              {
-                var found = 0;
-                for (n in networkData[net])
-                {
-                  for (m in networkData[net][n])
-                  {
-                     var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
-                     if ($(this).data('name') == temp)
-                     {
-                        cy.$("node[id='"+Object.keys(networkData[net])[0]+"']").hide();
-                     }
-                  }
-                }
-              }
-         }
-         else
-         {
-            $(this).find(".badge").addClass("alert-success");
-            for (net in networkData)
-              {
-                var found = 0;
-                for (n in networkData[net])
-                {
-                  for (m in networkData[net][n])
-                  {
-                     var temp = networkData[net][n][m][2].replace("_"," ").replace("_"," ").replace("_"," ");
-                     if ($(this).data('name') == temp)
-                     {
-                        cy.$("node[id='"+Object.keys(networkData[net])[0]+"']").show();
-                     }
-                  }
-                }
-              }
-         }
-
-   });
-
-  var layout_type = "concentric";
-  $(loadCy = function(){
-
-  options = {
-    layout: { name: layout_type },
-    name: 'circle',
-    showOverlay: true,
-    fit:true,
-
-    style: cytoscape.stylesheet()
-      .selector('node')
-        .css({
-          'background-color': 'data(color)',
-          'content': 'data(name)',
-          'font-size': 14,
-          'text-valign': 'center',
-          'color': 'white',
-          'text-outline-color': 'data(color)',
-          'text-outline-width':'3',
-          'height': '40',
-          'width':'40',
-          'border-color': '#fff'
-        })
-      .selector(':selected')
-        .css({
-          'background-opacity':'0.9',
-          'text-outline-opacity':'0',
-          'line-color': '#000',
-          'target-arrow-color': '#000',
-          'border-color':'#398bc6',
-          'border-opacity':'0.8',
-          'border-width':'5',
-        })
-      .selector('edge')
-        .css({
-          'width': 3,
-          'line-color': 'data(func)',
-          'line-style': 'data(type)',
-          'opacity':'0.9',
-          'width':'data(width)',
-          'target-arrow-shape': 'triangle',
-          'target-arrow-color': 'data(func)',
-          
-        })
-    ,
-
-    elements: {
-      nodes: net_nodes,
-
-      edges: net_edges,
-
-      /*[
-        { data: { source: 'j', target: 'e', feature: "mut", type: 'dashed', func:'hsla(37, 98%, 46%, 0.69)' } },
-        { data: { source: 'j', target: 'k', feature: "mut", type: 'dashed', func:'#f04124' } },
-        { data: { source: 'j', target: 'g', func:'hsla(37, 98%, 46%, 0.69)', func: 'hsla(37, 98%, 46%, 0.69)' }  },
-
-        { data: { source: 'e', target: 'j', func:'#5bc0de' }  },
-        { data: { source: 'e', target: 'k', feature: "mut", type: 'dashed', func:'hsla(37, 98%, 46%, 0.69)' } },
-
-        { data: { source: 'k', target: 'j' , func:'#5bc0de'}  },
-        { data: { source: 'k', target: 'e', feature: "mut", type: 'dashed', func: '#f04124' } },
-        { data: { source: 'k', target: 'g', feature: "mut", type: 'dashed', func: '#f04124' } },
-
-        { data: { source: 'g', target: 'j' , func:'#39b3d7' } }
-      ],*/
-    },
-
-    ready: function(){
-      cy = this;
-      cy.userZoomingEnabled(0);
-      cy.boxSelectionEnabled(0);
-      cy.userPanningEnabled(0);
-      var clickedNode = null;
-      var clickedEdge = null;
-      cy.$('node').on('click', function(e){
-        var ele = e.cyTarget;
-        clickedNode = ele;
-      });
-
-      cy.$('edge').on('click', function(e){
-        var ele = e.cyTarget;
-        clickedEdge = ele;
-      });
-
-      cy.elements('node').qtip({
-      content: {
-        text: function(event, api) {
-
-            //find the protein's interaction edge data
-            if (clickedNode.data("center") != "true")
-            {
-            var this_edge;
-            for (edge in interaction_edges1)
-            {
-              if (interaction_edges1[edge]['protein_id'] == clickedNode.data("gene_id"))
-              {
-                this_edge = interaction_edges1[edge];
-                console.dir(this_edge['WT']);
-              }
-            }
-
-            var mut_found = false;
-            for (m in clickedNode.data("muts")){
-              if (clickedNode.data("muts")[m][4] == 1){
-                mut_found = true;
-              }
-            }
-
-            var html = "";
-            if (mut_found)
-            {
-              var wt_seq = "";
-              var mt_seq = "";
-              for ( var i = 0; i < this_edge['WT'].length; i++ )
-              {
-                if (this_edge['WT'].charAt(i) != this_edge['MT'].charAt(i))
-                {
-                  wt_seq = wt_seq + "<span class='wt'>" + this_edge['WT'].charAt(i) + "</span>";
-                  mt_seq = mt_seq + "<span class='mt'>" + this_edge['MT'].charAt(i) + "</span>";
-                }
-                else
-                {
-                  wt_seq += this_edge['WT'].charAt(i);
-                  mt_seq += this_edge['MT'].charAt(i);
-                }
-              }
-            html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><p style='margin-left:10px;font-size:1.2em;font-family:monospace;margin-top:12px;margin-right:10px;'>WT: " + wt_seq + " | Score: " + this_edge['WTscore'].slice(0,4) + "</p><p style='margin-left:10px;font-size:1.2em;font-family:monospace;'> MT: " + mt_seq + " | Score: " + this_edge['MTscore'].slice(0,4) + "<img src='../pwms/logos/"+interaction_pwms1[clickedNode.data("gene_id")]+".png' height='60px' style='margin-top:10px;display:block;' class='pwm-img'>" + "<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>";
-
-            }
-
-            var muts_string = "";
-            
-
-            for (m in clickedNode.data("muts")){
-              console.log(clickedNode.data("muts")[m]);
-              if (clickedNode.data("muts")[m][4] == 1){
-                var row_string = "<tr class='highlighted_mut'><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
-                muts_string = row_string + muts_string;
-              }
-              else
-              {
-                var row_string = "<tr><td>" + clickedNode.data("muts")[m][0] + "</td><td>" + clickedNode.data("muts")[m][3] + "</td><td>" + clickedNode.data("muts")[m][2] + "</td></tr>";
-                muts_string += row_string;
-              }
-            }
-
-            if (html == "" && muts_string != ""){
-              html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>DNA</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>";
-              return html + muts_string + "</tbody></table></div>";
-
-            }
-            else if (html == "" && muts_string == ""){
-              html = "<div style='overflow-y:scroll;max-height:200px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6><h6 style='margin-top:0;'>No mutations in this protein.</h6>";             
-              return html + "</div>";
-            }
-            else 
-            {
-              return html + muts_string + "</tbody></table></div>";             
-            }
-            }
-            else{
-              return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>SH3 domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + target_ids1 + "'>" + target_ids1 + "</a></p></div>";
-            }
-          },
-        title: function(event, api) {
-          return clickedNode.data("id");
-        }
-      },
-      show: {
-        ready: false
-      },
-      position: {
-        my: 'top center',
-        at: 'bottom center'
-      },
-      style: {
-        classes: 'qtip-light',
-        tip: {
-          width: 10,
-          height: 8
-        }
-      }
-     });
-
-    cy.elements('edge').qtip({
-      content: {
-        text: function(event, api) {
-            var html = "<div style='overflow-y:scroll;max-height:200px;'><h5 style='margin-left:10px;'>Interaction Evaluation:</h5>"
-            var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>";
-            muts_string += "<h6><b>Evaluation Score: " + clickedEdge.data("content")['Avg'] + "</b></h6>";
-            for (m in clickedEdge.data("content")){
-              if (isNaN(m) && m != 'IID'  && m != 'Avg'  && m != 'protein_id'  && m != 'Syntax'  && m != 'Type'){
-                if(m != 'WT' && m != 'MT' && m != 'WTscore' && m != 'MTscore')
-                {
-                  var scale = parseFloat(clickedEdge.data("content")[m]);
-                  var col = '';
-                  if (scale < 0.2){
-                    col = '#ffffb2';
-                  }
-                  else if (scale < 0.4){
-                    col = '#fecc5c';
-                  }
-                  else if (scale < 0.6){
-                    col = '#fd8d3c';
-                  }
-                  else if (scale < 0.8){
-                    col = '#f03b20';
-                  }
-                  else if (scale <= 1){
-                    col = '#bd0026';
-                  }
-                  muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td style='background:" + col + "'></td></tr>";                                    
-                }
-                else
-                {  
-                  muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td>" + clickedEdge.data("content")[m] + "</td></tr>";                  
-                }
-              }
-
-              if (m == "Type")
-              {
-                var the_color = '';
-                if (clickedEdge.data("content")[m] == 'loss of function'){
-                  the_color = '#d43a3a';
-                }
-                else if (clickedEdge.data("content")[m] == 'gain of function'){
-                  the_color = '#66da49';
-                }
-                else if (clickedEdge.data("content")[m] == 'no change'){
-                  the_color = '#bd49da';
-                }
-                var int_type_var = '';
-                if (clickedEdge.data("content")[m] == "loss of function")
-                {
-                  int_type_var = "Loss of interaction";
-                }
-                else if (clickedEdge.data("content")[m] == "gain of function")
-                {
-                  int_type_var = "Gain of interaction";
-                }
-                else if (clickedEdge.data("content")[m] == "no change")
-                {
-                  int_type_var = "No Change";
-                }
-                muts_string = muts_string + "<h6 style='color:"+ the_color + "; margin-bottom:5px;'><b>" + int_type_var + "</b></h6>";
-                muts_string += "<div style='margin-left:20px;'><span>lower</span> <span style='margin-left:50px;'>greater</span></div>";
-                muts_string += "<svg width='120' height='24' style='margin-left:20px;'><rect fill='#ffffb2' width='24' height='24' x='0'></rect><rect fill='#fecc5c' width='24' height='24' x='24'></rect><rect fill='#fd8d3c' width='24' height='24' x='48'></rect><rect fill='#f03b20' width='24' height='24' x='72'></rect><rect fill='#bd0026' width='24' height='24' x='96'></rect></svg>";
-
-              }
-            }
-            return html + muts_string +  "</tbody></table></div>";
-          },
-      },
-      show: {
-        ready: false
-      },
-      position: {
-        my: 'top center',
-        at: 'bottom center'
-      },
-      style: {
-        classes: 'qtip-light',
-        tip: {
-          width: 10,
-          height: 8
-        }
-      }
-     });
-
-    }
-  };
-
-
-  if (all_proteins.length == 1){
-    $('#cy').cytoscape(options);
-  }
-
-
-});
-
-
-
 });
   </script>
   </body>

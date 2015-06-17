@@ -6,7 +6,7 @@ include_once('../common.php');
 //POST variable is starting position
 $start = $_POST['start'];
 $end = (int) $start + 10;
-$query = 'SELECT GeneName, Type, EnsPID FROM T_Domain LIMIT ' . strval($start) . ",10;";
+$query = 'SELECT GeneName, Type, EnsPID FROM T_Domain ORDER BY GeneName LIMIT ' . strval($start) . ",10;";
 
 $query_params = array();
 $stmt = $dbh->prepare($query);

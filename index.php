@@ -82,7 +82,7 @@
       </p>
       <span id="title_fix"></span>
 	    <h1 id="title_h1"><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
-	    
+
 	    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) is an online resource for the assessment of the impact of cancer mutations on protein-protein interactions (PPI) networks. <a href='faqs/'>Read more...</a></p>
 
 	  </div>
@@ -93,7 +93,7 @@
 			  <li class="list-group-item" style="background:#f04124;color:white;font-size:1.1em;">
 			    Can-VD Statistics
 			  </li>
-			  <li class="list-group-item">Proteins <span data-color="alert-info" class="badge "><?php echo number_format(intval($protein_count));?></span></li>			  
+			  <li class="list-group-item">Proteins <span data-color="alert-info" class="badge "><?php echo number_format(intval($protein_count));?></span></li>
         <li class="list-group-item">Domains/PWMs<span data-color="alert-info" class="badge "><?php echo number_format(intval($domain_count));?> / <?php echo number_format(intval($pwm_count));?></span></li>
 		<li class="list-group-item">Interactions <span data-color="alert-info" class="badge "><?php echo number_format(intval($interaction_count));?></span></li>
         <li class="list-group-item">Variants <span data-color="alert-info" class="badge "><?php echo number_format(intval($mutation_count));?></span></li>
@@ -122,7 +122,7 @@
         <span  style="display:block;margin-bottom:1px;"><a href="./announce/"><b style="display:block;"><?php echo $row[2];?></b></a><i style="padding-right:5px;font-size:0.75em;"><?php echo $row[1];?> </i></span>
         <?php #echo '<p align='justify'>';
         echo substr($row[3], 0, strpos($row[3], ".") + 1);
-        
+
         ?>
         <br><a href='announce/'>Read more...</a>
         </div>
@@ -136,7 +136,7 @@
 		<div class="col-md-9">
 		    <form id="search_form" action="./network/" method="get" >
         <div class="input-group input-group-lg">
-			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: CRK, ENSP00000348602" >
+			  <input type="search" id="search_input" name="genename" class="form-control" placeholder="Enter a protein name or Ensembl ID. Examples: LYN, CRK, ENSP00000348602" >
 			  <span class="input-group-btn">
 		        <button type="submit" class="btn btn-danger" type="button" id="search_btn">Search</button>
             <button class="btn btn-default" type="button" id="advanced_btn">Advanced</button>
@@ -144,30 +144,11 @@
       </div>
       <div id="advanced-search-box" style="Display:none">
       <div class="form-signin">
-        <div class="col-md-6" style="padding-top:20px;">
-        <p class="form-signin-heading">Advanced Search Options:</p>     
-        <label class="input" style="font-size:1.1em;">  Max # of Interactions:
-        <input type="text" name="limit" value="50" style="display:block;margin-top:15px;margin-bottom:15px;" placeholder="default value: 50" required autofocus>
-        </label>
 
-        <p style="font-size:1.1em;">Interactions to Show:</p>
-        <label class="checkbox" style="margin-top:5px;">
-          <input type='hidden' value='false' name="gain">
-          <input type="checkbox" checked name="gain" value="true"> Gain of Interaction
-        </label>
-
-        <label class="checkbox" style="margin-top:5px;">
-          <input type='hidden' value='false' name="loss">
-          <input type="checkbox" checked name="loss" value="true"> Loss of Interaction
-        </label>
-
-        <label class="checkbox" style="margin-top:5px;">
-          <input type='hidden' value='false' name="neutral">
-          <input type="checkbox" checked name="neutral" value="true"> Neutral
-        </label>
-
+	<div class="col-md-12" style="margin-bottom:10px;">        <h3 style="">Mutation Types</h3 >
+	</div>
+	<div class="col-md-4">
         <div class="form-group">
-        <p style="font-size:1.1em;">Mutations</p>
         <label class="control-label">Mutation Type</label>
         <input type='hidden' value='true' name="main_search">
         <?php
@@ -190,7 +171,8 @@
       }
       ?>
       </div>
-
+</div>
+<div class="col-md-3" >
       <div class="form-group">
         <label class="control-label">Variant Data Sources</label><br>
               <?php
@@ -211,31 +193,6 @@
       </div>
 
         </div>
-
-        <div class="col-md-6" style="padding-top:20px;">
-        <p>Interaction Evaluation Ranges</p>
-
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl1" name="gene"><span style="padding-left:15px;font-size:1em;">Gene Expression</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl2" name="protein"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Protein Expression</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;padding-left:25px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl3" name="disorder"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Disorder</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl4" name="surface"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Surface Accessibility</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl5" name="peptide"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Peptide Conversation</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl6" name="molecular"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Molecular Function</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl7" name="biological"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Biological Process</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl8" name="localization"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Localization</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="-1,1" data-slider-min="-1" data-slider-max="1" data-slider-step="0.25" data-slider-value="[-1,1]" id="sl9" name="sequence"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Sequence Signature</span></div>
-        <div style="padding-top:10px;">
-        <input type="text" style="width:200px;" value="0,1" data-slider-min="0" data-slider-max="1" data-slider-step="0.25" data-slider-value="[0,1]" id="sl10" name="average"><span style="padding-left:15px;padding-top:10px;font-size:1em;">Evaluation Score</span></div>
-        </div>    
         </div>
       </form>
       </div>
@@ -266,7 +223,7 @@
                 <span class='num-viewer'> Viewing <span id="tissue-start">1</span>-<span id="tissue-end">10</span> of <span id="tissue-total">40</span></span>
                 <li><a id="tissue-forward">Next</a></li>
               </ul>
-      </div>    
+      </div>
           <div  id="protein-table">
               <table class="table table-striped table-hover">
                 <thead>
@@ -291,9 +248,9 @@
                     if ($("#search_input").val() == ''){
                       event.preventDefault();
                     }
-                    else 
+                    else
                     {
-                      $("#search_btn").html("<div class='spinner3' style='margin-left:10px;margin-right:10px;'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");                      
+                      $("#search_btn").html("<div class='spinner3' style='margin-left:10px;margin-right:10px;'><div class='cube1 cube3'></div><div class='cube2 cube3'></div></div>");
                     }
                 });
 
@@ -317,7 +274,7 @@
                     },
                     error:function(){
                     }
-                });  
+                });
 
                 $('#sl1').slider();
                 $('#sl2').slider();
@@ -354,7 +311,7 @@
                         },
                         error:function(){
                         }
-                    });                  
+                    });
                 }
 
                 update_protein_view();
@@ -400,13 +357,13 @@
                             }
                             else{
                             $("#pwm-table-body").html('');
-                            $("#pwm-table-body").html(results);                              
+                            $("#pwm-table-body").html(results);
                             }
 
                         },
                         error:function(){
                         }
-                    });                  
+                    });
                 }
 
                 update_pwm_view();
@@ -454,7 +411,7 @@
                         },
                         error:function(){
                         }
-                    });                  
+                    });
                 }
 
                 update_tissue_view();
@@ -496,14 +453,14 @@
                   $("#actual-image-content").html($(this).clone().css("height", "200px"));
                   $("#actual-image-content").append($(this).data("content"));
                 });
-                
+
 
               });
               </script>
 
               <ul class="pager" id="protein-page" data-page=0>
                 <li><a id="protein-back">Previous</a></li>
-                <span class='num-viewer'> Viewing <span id="protein-start">1</span>-<span id="protein-end">20</span> of <span id="protein-total">40</span></span>                
+                <span class='num-viewer'> Viewing <span id="protein-start">1</span>-<span id="protein-end">20</span> of <span id="protein-total">40</span></span>
                 <li><a id="protein-forward">Next</a></li>
               </ul>
 
@@ -527,13 +484,13 @@
                   </tr>
                 </thead>
                 <tbody id="pwm-table-body">
-                                   
+
                 </tbody>
               </table>
 
               <ul class="pager" id="pwm-page" data-page=0>
                 <li><a id="pwm-back">Previous</a></li>
-                <span  class='num-viewer'> Viewing <span id="pwm-start">1</span>-<span id="pwm-end">20</span> of <span id="pwm-total">40</span></span>                                
+                <span  class='num-viewer'> Viewing <span id="pwm-start">1</span>-<span id="pwm-end">20</span> of <span id="pwm-total">40</span></span>
                 <li><a id="pwm-forward">Next</a></li>
               </ul>
               <script>

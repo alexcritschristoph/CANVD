@@ -9,21 +9,6 @@ $(function() {
 
    });
 
-   //Tissue load more button on network page
-   $('body').on( "click", "#tissue-load-more", function() {
-         $(".hidden_tr").show();
-         $(this).hide()
-         $("#tissue-load-less").show();
-   });
-
-   $('body').on( "click", "#tissue-load-less", function() {
-         $(".hidden_tr").hide();
-         $(this).hide()
-         $("#tissue-load-more").show();
-   });
-
-
-   
    //Selecting Download button on network page
    $("#downloads_btn").on( "click", function() {
    		$("#downloads_li").addClass("active");
@@ -58,16 +43,17 @@ $(function() {
    $('#search_input').keypress(function (e) {
 	  if (e.which == 13) {
 	    $('#search_form').submit();
-	    return false;    
+	    return false;
 	  }
 	});
 
    //For handling the "Show" buttons to show edges / nodes of the network.
    $(".show-item").on( "click", function() {
    		//Check to see if already active
-   		if ($(this).find(".badge").hasClass("wt-pt") || $(this).find(".badge").hasClass("mu-pt") || $(this).find(".badge").hasClass("noch-pt") || $(this).find(".badge").hasClass("gn-pt") || $(this).find(".badge").hasClass("ls-pt")  ){
+   		if ($(this).find(".badge").hasClass("bo-pt") || $(this).find(".badge").hasClass("mu-pt") || $(this).find(".badge").hasClass("noch-pt") || $(this).find(".badge").hasClass("gn-pt") || $(this).find(".badge").hasClass("ls-pt")  ){
+
    			//inactivate
-   			$(this).find(".badge").removeClass("wt-pt");
+   			$(this).find(".badge").removeClass("bo-pt");
    			$(this).find(".badge").removeClass("mu-pt");
    			$(this).find(".badge").removeClass("noch-pt");
    			$(this).find(".badge").removeClass("gn-pt");
@@ -75,10 +61,10 @@ $(function() {
 
    			//If disabling mutant interactions
    			if($(this).hasClass("m-int")){
-   				cy.elements("node[feature = 'mut']").hide();
+   				cy.elements("node[mut_type = 'mut']").hide();
    			}
-            else if ($(this).hasClass("w-int")){
-               cy.elements("node[feature = 'wt']").hide();
+            else if ($(this).hasClass("bo-int")){
+               cy.elements("node[mut_type = 'both']").hide();
             }
             else if ($(this).hasClass("gain-int")){
                cy.elements("node[mut_type = 'gain']").hide();
@@ -87,7 +73,7 @@ $(function() {
                cy.elements("node[mut_type = 'loss']").hide();
             }
             else if ($(this).hasClass("no-int")){
-               cy.elements("node[mut_type = 'norm']").hide();
+               cy.elements("node[mut_type = 'neutral']").hide();
             }
 
    		}
@@ -96,10 +82,10 @@ $(function() {
 
    			//If enabling mutant interactions
    			if($(this).hasClass("m-int")){
-   				cy.elements("node[feature = 'mut']").show();
+   				cy.elements("node[mut_type = 'mut']").show();
    			}
-            else if ($(this).hasClass("w-int")){
-               cy.elements("node[feature = 'wt']").show();
+            else if ($(this).hasClass("bo-int")){
+               cy.elements("node[mut_type = 'both']").show();
             }
             else if ($(this).hasClass("gain-int")){
                cy.elements("node[mut_type = 'gain']").show();
@@ -108,7 +94,7 @@ $(function() {
                cy.elements("node[mut_type = 'loss']").show();
             }
             else if ($(this).hasClass("no-int")){
-               cy.elements("node[mut_type = 'norm']").show();
+               cy.elements("node[mut_type = 'neutral']").show();
             }
    		}
    });
