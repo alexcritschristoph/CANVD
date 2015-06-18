@@ -25,16 +25,33 @@ $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 
 $domains = array();
+$domain_names = array();
 $domain_info = array();
 while ($row = $stmt->fetch())
 {
 	$domains[] = $row["EnsPID"];
+	$domain_names[$row['EnsPID']] = $row['GeneName'];
 	$domain_info[] = ["EnsPID" => $row["EnsPID"],"DomainName" => $row['GeneName'],"Type" => $row["Type"]];
 }
 
 //For each domain, get interaction data
 $i = 0;
 foreach ($domains as $domain) {
+
+	//get pwm
+
+	$query = 'SELECT PWM
+				FROM T_PWM
+				WHERE Domain=:ens_pid;';
+	$query_params = array(':ens_pid' => $domain_names[$domain]);;
+	$stmt = $dbh->prepare($query);
+	$stmt->execute($query_params);
+	while ($row = $stmt->fetch())
+	{
+		$pwm = $row['PWM'];
+	}
+
+	//now get interaction data
 	$query = 'SELECT *
 				FROM T_Interaction
 				WHERE Domain_EnsPID=:ens_pid;';
@@ -44,6 +61,7 @@ foreach ($domains as $domain) {
 
 	$interactions = array();
 	$interaction_raw_data = array();
+	$interaction_scores = array();
 	$partners = array();
 	$mut_interaction_types = array();
 	while ($row = $stmt->fetch())
@@ -52,6 +70,7 @@ foreach ($domains as $domain) {
 		$partners[] = $row['Interaction_EnsPID'];
 		$mut_interaction_types[$row['Interaction_EnsPID']] = [];
 		$interaction_raw_data[] = ['domain' => $row['Domain_EnsPID'], 'interaction' => $row['Interaction_EnsPID'], 'start' => $row['Start'], 'end' => $row['End'], 'score'=> $row['Score']];
+		$interaction_scores[$row['Interaction_EnsPID']] = $row['Score'];
 	}
 
 	//Get all Interaction_MT for all Interactions
@@ -173,7 +192,7 @@ foreach ($domains as $domain) {
 	}
 
 	//our info
-	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data];
+	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data, "interaction_scores" => $interaction_scores, "pwm" => $pwm];
 
 	$i = $i + 1;
 }

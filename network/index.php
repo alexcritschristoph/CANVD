@@ -250,7 +250,11 @@
           if (interactions[node] == "neutral")
             edge_color = "#fdb863", edge_style = "solid";
 
-          net_edges.push( { data: { source: gene_name, target: node, content: "Interaction", width:3, type: interactions[node], color: edge_color, style: edge_style } });
+          var edge_width = parseFloat(networkData[active_domain].interaction_scores[node])*7;
+          if (edge_width < 1){
+              edge_width = 1;
+          }
+          net_edges.push( { data: { source: gene_name, target: node, content: "Interaction", width:3, type: interactions[node], width:(edge_width), color: edge_color, style: edge_style } });
       }
         options = {
           layout: { name: layoutType },
@@ -334,6 +338,7 @@
                     html = "<div style='overflow-y:scroll;max-height:300px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6>";
 
                     //Show PWM
+                    html = html + "<img src='../pwms/logos/"+networkData[active_domain].pwm+".png' height='60px' style='margin-top:10px;display:block;' class='pwm-img'>"
 
                     //Show mutation effects
                     for (enspid in networkData[active_domain].mut_effects)
