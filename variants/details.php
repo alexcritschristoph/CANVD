@@ -5,7 +5,6 @@
   error_reporting(0);
 ?>
 
-      <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
       <p id="main-top-text">Variant(s) of <span style="color:#ea2f10"><?php echo $_GET['variant']?> </span>protein.</p>
 

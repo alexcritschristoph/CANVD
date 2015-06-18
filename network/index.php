@@ -120,11 +120,60 @@
   //Update statistics
   function update() {
 
+      limit = start + 100;
+      //Get the jth to ith proteins (gene_info)
+      i = 0;
+      var gene_info = {}
+      for (gene in networkData[active_domain].gene_info)
+      {
+          console.log(i);
+          console.log(start);
+          console.log(limit);
+          if (i >= start && i < limit){
+             gene_info[gene] = networkData[active_domain].gene_info[gene];
+          }
+          i += 1;
+      }
+
+      //get mut_int with just those protein ids (mut_int)
+      var mut_ints = {}
+      for (mut_int in networkData[active_domain].mut_int)
+      {
+          if ($.inArray(mut_int, Object.keys(gene_info)) != -1)
+          {
+              mut_ints[mut_int] = networkData[active_domain].mut_int[mut_int];
+          }
+      }
+
+      //get mut with just those protein ids (muts)
+      var muts = {}
+      for (mut in networkData[active_domain].muts)
+      {
+         var mut_prot = networkData[active_domain].muts[mut].EnsPID;
+         if ($.inArray(mut_prot, Object.keys(gene_info)) != -1)
+         {
+             muts[mut] = networkData[active_domain].muts[mut];
+         }
+      }
+
+
+
+      $("#filters_panel").find(".viewing_more").remove();
+      //add viewing more
+      if (parseInt(Object.keys(networkData[active_domain].gene_info).length) > limit)
+      {
+          $("#filters_panel").prepend('<div class="viewing_more"><p style="font-size:0.9em;margin-bottom:6px;padding-bottom:0;">Viewing ' + start.toString() + '-'+ limit.toString() + ' out of ' + Object.keys(networkData[active_domain].gene_info).length + ' total interactions. </p><div class="btn btn-default btn-sm" style="margin-bottom:10px;" id="show_more"> Show more interactions</div></div>');
+      }
+      else if (parseInt(Object.keys(networkData[active_domain].gene_info).length) > 100) {
+          $("#filters_panel").prepend('<div class="viewing_more"><p style="font-size:0.9em;margin-bottom:6px;padding-bottom:0;">Viewing ' + start.toString() + '-'+ Object.keys(networkData[active_domain].gene_info).length + ' out of ' + Object.keys(networkData[active_domain].gene_info).length + ' total interactions. </p></div>');
+      }
+
+
       //reset tissue filters
       $('.tissue-item').find(".badge").addClass("tissue_active");
 
       var domain_type = networkData[active_domain].domain_info.Type;
-      var prot_num = Object.keys(networkData[active_domain].gene_info).length;
+      var prot_num = Object.keys(gene_info).length;
       var gene_name = networkData[active_domain].domain_info.DomainName;
       $("#prot_c").text(prot_num);
       $("#dm_c").text(domain_type);
@@ -135,9 +184,9 @@
       var loss_count = 0;
       var neutral_count = 0;
       var both_count = 0;
-      for (int in networkData[active_domain].mut_int)
+      for (int in mut_ints)
       {
-          interaction = networkData[active_domain].mut_int[int];
+          interaction = mut_ints[int];
           if (interaction == "gain")
           {
               gain_count = gain_count + 1;
@@ -158,7 +207,7 @@
       $(".bo-pt").text(both_count);
       //get tissue unique list
       tissues = [];
-      mutations = networkData[active_domain].muts;
+      mutations = muts;
       sources = {};
       for (mut in mutations)
       {
@@ -230,8 +279,10 @@
       net_nodes = [];
       net_edges = [];
       net_nodes.push({ data: { id: gene_name, color: "#d12e2e", name: gene_name, weight: 100, center: "true"}} )
-      var interactions = networkData[active_domain].mut_int;
-      var interaction_data = networkData[active_domain].gene_info;
+      var interactions = mut_ints;
+      var interaction_data = gene_info;
+      console.log("%%%%");
+      console.log(Object.keys(gene_info).length);
       for (node in interaction_data)
       {
           //Add nodes
@@ -471,6 +522,8 @@
               $(".layout-circle").addClass("active");
           }
 
+      var start = 0;
+
         update();
     }
 
@@ -498,6 +551,11 @@
         update();
     });
 
+    //Show more variants
+    $("body").on("click", "#show_more", function(){
+        start += 100;
+        update();
+    });
     //On changing layout
     $(".layout-select").on("click", function(){
         $(".layout-select").removeClass("active");

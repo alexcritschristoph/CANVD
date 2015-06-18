@@ -5,7 +5,6 @@
 
 ?>
 
-      <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
       <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins.</p>
 
@@ -30,6 +29,7 @@
       <li class="dropdown">
       <a href="#" class="dropdown-toggle filter-dropdown" data-toggle="dropdown">Filter Tissue <b class="caret"></b></a>
         <ul class="dropdown-menu" id="filter-tissue-list">
+            <li><a href='#' class='tissue-filter' data-tissue='ALL'>All Tissues</a></li>
         </ul>
       </li>
     </ul>
@@ -59,6 +59,7 @@
 
     <script>
     var tissues_selected = <?php echo json_encode($_GET['tissue']);?>;
+    var tissues_original = <?php echo json_encode($_GET['tissue']);?>;
     var mut_types = <?php echo json_encode($_GET['mut_type']);?>;
     var prot_name = <?php echo json_encode($_GET['prot']);?>;
     var prot_source = <?php echo json_encode($_GET['source']);?>;
@@ -76,7 +77,12 @@
         $("#current_count").text("0");
         $("#prot_current").text("0");
         $("#variants-results").empty();
-        tissues_selected = [$(this).data("tissue")];
+        if ($(this).data("tissue") == "ALL"){
+            tissues_selected = tissues_original;
+        }
+        else {
+            tissues_selected = [$(this).data("tissue")];
+        }
         $("#variants-results").parent().after("<div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
         $.ajax({
           url: "./variant_load.php",

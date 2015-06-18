@@ -192,7 +192,7 @@ foreach ($domains as $domain) {
 	}
 
 	//our info
-	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data, "interaction_scores" => $interaction_scores, "pwm" => $pwm];
+	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data, "interaction_scores" => $interaction_scores, "pwm" => $pwm, "int_start" => 0, "int_limit" => 100];
 
 	$i = $i + 1;
 }

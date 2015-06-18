@@ -46,7 +46,7 @@
     }
     else {
     $source = ".*";
-    $_GET['source'] = '';      
+    $_GET['source'] = '';
     }
   }
 
@@ -59,7 +59,7 @@
     }
     else{
       $type = ".*";
-      $_GET['mut_type'] = '';      
+      $_GET['mut_type'] = '';
     }
   }
   //CREATE PENULTIMATE QUERIES
@@ -72,15 +72,15 @@
   $t = array_map('sanitize', $tissues);
   $plist = '\'' . implode('\',\'', $t) . '\'';
 
-  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';    
-  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";    
-  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";    
+  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';
+  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
+  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
   }
   else
   {
-  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type LIMIT "  . $start . ',' . $end . ';';    
-  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";    
-  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";    
+  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type LIMIT "  . $start . ',' . $end . ';';
+  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
+  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
   }
 
 
@@ -101,12 +101,12 @@
     $stmt = $dbh->prepare($query2);
     $stmt->execute($query_params);
     $prot_count = $stmt->fetch()[0];
-    echo "<script>var prot_count = '" . number_format($prot_count) . "';</script>"; 
+    echo "<script>var prot_count = '" . number_format($prot_count) . "';</script>";
 
     //Count total variant #
     $stmt = $dbh->prepare($query3);
     $stmt->execute($query_params);
-    $mut_count = $stmt->fetch()[0];     
+    $mut_count = $stmt->fetch()[0];
     echo "<script>var mut_count = '" . number_format($mut_count) . "';</script>";
   }
   //If reloading tissue type, update totals
@@ -120,7 +120,7 @@
     //Count total variant #
     $stmt = $dbh->prepare($query3);
     $stmt->execute($query_params);
-    $mut_count = $stmt->fetch()[0];     
+    $mut_count = $stmt->fetch()[0];
     echo "<tr id='mut_c' data-count=". number_format($mut_count). "></tr>";
   }
 
@@ -129,11 +129,11 @@
   $query_params = array(":source" => $source, ":type" => $type);
   if(isset($_GET['tissue']))
   {
-    $query4 = "SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE Source RLIKE :source AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") AND EnsPID IN (" . $elist . ");";    
+    $query4 = "SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE Source RLIKE :source AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") AND EnsPID IN (" . $elist . ");";
   }
   else
   {
-    $query4 = "SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE Source RLIKE :source AND mut_description RLIKE :type AND EnsPID IN (" . $elist . ");";    
+    $query4 = "SELECT EnsPID, tumour_site, `gene name`, mut_syntax_aa FROM T_Mutations WHERE Source RLIKE :source AND mut_description RLIKE :type AND EnsPID IN (" . $elist . ");";
   }
   $stmt = $dbh->prepare($query4);
   $stmt->execute($query_params);
@@ -171,7 +171,7 @@
       }
       else
       {
-      $interactions[$row[1]][] = $row[0];   
+      $interactions[$row[1]][] = $row[0];
       }
     }
 
@@ -244,15 +244,15 @@
 
   if (isset($_GET['download']))
   {
-      ##Tissue Type, Protein ID, Variant #, Interaction #, Gain of Function (Count), Loss of Function(Count) 
+      ##Tissue Type, Protein ID, Variant #, Interaction #, Gain of Function (Count), Loss of Function(Count)
     echo implode('+',$tissues) . "\t" . $name . "\t" . $variant_names[$name] . "\t" . count($data) . "\t" . $int_num . "\t" . $elist . "\n";
   }
-  else 
+  else
     {
     ?>
   <tr data-protein="<?php echo $name;?>" class="normal">
         <?php  ?>
-        
+
         <td><?php echo implode(', ',$tissues);?></td>
         <td class="selectable"><?php echo $name;?></td>
         <td class="selectable"><?php echo $variant_names[$name];?></td>
