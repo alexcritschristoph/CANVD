@@ -335,10 +335,8 @@
                   var html = "";
 
                     //Show information
-                    html = "<div style='overflow-y:scroll;max-height:300px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6>";
+                    html = "<div style='overflow-y:scroll;max-height:320px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6>";
 
-                    //Show PWM
-                    html = html + "<img src='../pwms/logos/"+networkData[active_domain].pwm+".png' height='75px' style='margin-top:10px;display:block;' class='pwm-img'>"
 
                     //Show mutation effects
                     for (enspid in networkData[active_domain].mut_effects)
@@ -373,18 +371,20 @@
                                   }
                                 }
 
-                                html = html + "<p><div style='padding-bottom:4px;margin-bottom:0;'><b>Mutation Effect</b></div><div style='padding-bottom:2px;'><i>Mut Syntax: " + effects[4] + "</i> <b style='color:" + color + "'> (" + effects[6] + ") </b> </div>WT Sequence: "+  wt_seq + "<br>MT Sequence: " + mt_seq + "<br>WT Score: " + effects[2].toString() + ", MT Score: " + effects[3].toString() + "<br>DeltaScore: "+ effects[7].toString() + ", LOG2 Score: "+ effects[5].toString() + "</p>";
+                                html = html + "<p><div style='padding-bottom:4px;margin-bottom:0;'><b>Mutation Effect</b></div><div style='padding-bottom:2px;'><i>Mut Syntax: " + effects[4] + "</i> <b style='color:" + color + "'> (" + effects[6] + ") </b> </div><span style=font-size:1.4em;'>WT Sequence: "+  wt_seq + "</span><br><span style=font-size:1.4em;'>MT Sequence: " + mt_seq + "<img src='../pwms/logos/"+networkData[active_domain].pwm+".png' height='75px' style='margin-top:10px;display:block;margin-left:auto;margin-right:auto;' class='pwm-img'>" + "</span><br>WT Score: " + effects[2].toString() + ", MT Score: " + effects[3].toString() + "<br>DeltaScore: "+ effects[7].toString() + ", LOG2 Score: "+ effects[5].toString() + "</p>";
                             }
                             break;
                         }
                     }
+
+                    //Show PWM
 
                     //get the mutation effects for this protein
                         //for each one, create new table
                     //Show mutation list
                     var muts_string ="<h6 style='margin-top:0;'>Mutations in this protein:</h6><table class='table table-striped muts-table'><thead><tr><th>Source</th><th>AA Syntax</th><th>Tumor</th></tr></thead><tbody>";
 
-
+                    extra_rows = "";
                     for (mut in networkData[active_domain].muts)
                     {
                         if (networkData[active_domain].muts[mut].EnsPID == clickedNode.data("gene_id"))
@@ -393,18 +393,21 @@
                             if (this_mut.Impact == -1)
                             {
                                 var row_string = "<tr class='highlighted_mut_l'><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                                muts_string += row_string;
                             }
                             else if (this_mut.Impact == 1) {
                                 var row_string = "<tr  class='highlighted_mut_g'><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                                muts_string += row_string;
                             }
                             else {
                                 var row_string = "<tr><td>" + this_mut.Source + "</td><td>" + this_mut.Syntax + "</td><td>" + this_mut.Tissue + "</td></tr>";
+                                extra_rows += row_string;
                             }
-                            muts_string += row_string;
+
                         }
                     }
 
-
+                    muts_string += extra_rows;
                     return html + muts_string + "</tbody></table></div>";
                   }
                   else{

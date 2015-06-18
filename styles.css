@@ -83,6 +83,10 @@ li .active{
 	padding-bottom:0px;
 }
 
+.qtip-light{
+	max-width: 300 !important;
+}
+
 .qtip-content h6{
 	margin-left:10px;
 }
