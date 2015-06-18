@@ -338,7 +338,7 @@
                     html = "<div style='overflow-y:scroll;max-height:300px;'><h6 style='margin-top:0;margin-bottom:8px;'><a href='http://ensembl.org/id/"+clickedNode.data("gene_id")+"' target=\"_blank\">" + clickedNode.data("gene_id") + "</a><p style='margin-top:6px;margin-bottom:0;font-style:italic;'>" + clickedNode.data("description") + "</p></h6>";
 
                     //Show PWM
-                    html = html + "<img src='../pwms/logos/"+networkData[active_domain].pwm+".png' height='60px' style='margin-top:10px;display:block;' class='pwm-img'>"
+                    html = html + "<img src='../pwms/logos/"+networkData[active_domain].pwm+".png' height='75px' style='margin-top:10px;display:block;' class='pwm-img'>"
 
                     //Show mutation effects
                     for (enspid in networkData[active_domain].mut_effects)
