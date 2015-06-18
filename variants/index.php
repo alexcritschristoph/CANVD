@@ -1,35 +1,15 @@
 <?php
   $root_path = "../";
   include_once('../common.php');
+  include_once('../header.php');
+
 ?>
 
-<html>
-	<head>
-		<title>
-			Cancer Variant Database: Variants
-		</title>
-		<link rel="shortcut icon" href="../canvd.ico">
-		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-    <script src="<?php echo $root_path;?>site.js" ></script>
-		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
-    <script src="<?php echo $root_path;?>bootstrap.js"></script>
-	</head>
-
-	<body style="background:#fafafa;height:110%;">
-	<div class="jumbotron" style="margin-bottom:0px;height:100%">
-    <div class="container" style="margin-bottom:15px;">
-    <p class="pull-right" style="margin-left:10px;margin-top:25px;"><a class="btn btn-danger" id="test" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-envelope-o"></i> Contact</a>
-      </p>
       <h1><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
       <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins.</p>
 
-    </div>  
+    </div>
 	<div class="container">
 	 <div class="row">
    <?php
@@ -66,7 +46,7 @@
   <table class="table table-striped table-hover" id="variant-table">
       <thead>
         <tr>
-          <th>Tissue</th>        
+          <th>Tissue</th>
           <th>Protein ID</th>
           <th>Protein Name</th>
           <th>Variants in Tissue(s)</th>
@@ -122,7 +102,7 @@
           },
           error:function(){
           }
-        });  
+        });
 
       });
 
@@ -159,7 +139,7 @@
           },
           error:function(){
           }
-      });  
+      });
 
         }
        });
@@ -187,7 +167,7 @@
     });
 
 
-    </script>    
+    </script>
       </tbody>
     </table>
 </div>
@@ -208,10 +188,10 @@
       <!-- Text input-->
       <div class="col-md-5">
       <div class="form-group">
-        <label class="col-md-3 control-label" for="tissue-input">Protein Name / ID</label>  
+        <label class="col-md-3 control-label" for="tissue-input">Protein Name / ID</label>
         <div class="col-md-8">
         <input id="tissue-input" name="prot" type="text" placeholder="search for a specific variant protein" class="form-control input-md">
-          
+
         </div>
       </div>
 
@@ -290,7 +270,7 @@ while ($row = $stmt->fetch())
       </div>
 
 
-      </div> 
+      </div>
 
   <div class="col-md-2">
       <div class="form-group">
@@ -304,7 +284,7 @@ while ($row = $stmt->fetch())
     </script>
 
     </div>
-  </div>  
+  </div>
       </fieldset>
       </form>
   <?php
