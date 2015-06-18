@@ -4,84 +4,11 @@
 
   //Generate sitewide database statistics
   include_once('./generate_stats.php');
+	include_once('./header.php');
+
 ?>
 
-<html>
-	<head>
-		<title>
-			Cancer Variants Database :: Main
-		</title>
-		<link rel="shortcut icon" href="canvd.ico">
-		<link href="<?php echo $root_path;?>bootstrap.css" rel="stylesheet">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-		<script src="<?php echo $root_path;?>site.js" ></script>
-		<link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
-    <link href="./slider.css" rel="stylesheet">
-    <script src="<?php echo $root_path;?>bootstrap.js"></script>
-    <script src="./bootstrap-slider.js"></script>
-
-    <style>
-        .footer {
-            z-index: 1;
-            display: block;
-            font-size: 26px;
-            font-weight: 200;
-            text-shadow: 0 1px 0 #fff;
-        }
-
-        svg {
-            overflow: hidden;
-        }
-
-        rect {
-            pointer-events: all;
-            cursor: pointer;
-            stroke: #EEEEEE;
-        }
-
-        .chart {
-            display: block;
-            margin: auto;
-        }
-
-        .label {
-            stroke: 'white';
-            fill: 'white';
-            stroke-width: 0;
-            margin: 2px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .parent .label {
-            font-size: 12px;
-            stroke: 'white';
-            fill: 'white';
-        }
-
-        .child .label {
-            font-size: 11px;
-        }
-
-        .cell {
-            font-size: 11px;
-            cursor: pointer
-        }
-
-
-    </style>
-	</head>
-
-	<body style="background:#fafafa">
-	<div class="jumbotron" style="margin-bottom:0px;height:100%">
-	  <div class="container">
-    <p class="pull-right" id="top_btns"><a class="btn btn-danger" href="<?php echo $root_path;?>variants" role="button"><i class="fa fa-flask"></i> Variants </a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>faqs" role="button"><i class="fa fa-question"></i> About</a>
-      <a class="btn btn-default" href="<?php echo $root_path;?>contact" role="button"><i class="fa fa-database"></i> Contact</a>
-      </p>
       <span id="title_fix"></span>
-	    <h1 id="title_h1"><a href="<?php echo $root_path;?>"><span style="color:#ea2f10">Can-VD</span>: The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase</a></h1>
 
 	    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) is an online resource for the assessment of the impact of cancer mutations on protein-protein interactions (PPI) networks. <a href='faqs/'>Read more...</a></p>
 
