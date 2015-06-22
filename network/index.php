@@ -462,7 +462,7 @@
                     return html + muts_string + "</tbody></table></div>";
                   }
                   else{
-                    return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>SH3 domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + networkData[active_domain].domain_info.EnsPID + "'>" + networkData[active_domain].domain_info.EnsPID + "</a></p></div>";
+                    return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>" + networkData[active_domain].domain_info.Type + " domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + networkData[active_domain].domain_info.EnsPID + "'>" + networkData[active_domain].domain_info.EnsPID + "</a></p></div>";
                   }
                 },
               title: function(event, api) {
