@@ -126,9 +126,6 @@
       var gene_info = {}
       for (gene in networkData[active_domain].gene_info)
       {
-          console.log(i);
-          console.log(start);
-          console.log(limit);
           if (i >= start && i < limit){
              gene_info[gene] = networkData[active_domain].gene_info[gene];
           }
@@ -281,8 +278,6 @@
       net_nodes.push({ data: { id: gene_name, color: "#d12e2e", name: gene_name, weight: 100, center: "true"}} )
       var interactions = mut_ints;
       var interaction_data = gene_info;
-      console.log("%%%%");
-      console.log(Object.keys(gene_info).length);
       for (node in interaction_data)
       {
           //Add nodes
@@ -547,7 +542,7 @@
               $(".layout-grid").removeClass("active");
               $(".layout-circle").addClass("active");
           }
-
+        start = 0;
         update();
     });
 
@@ -629,7 +624,6 @@
             //get list of visible ids
             $.each(cy.nodes(":visible").jsons(), function(index, value) {
                 download_proteins.push(value.data.id);
-                console.log(value.data.id);
             })
         }
         else {
@@ -637,7 +631,6 @@
             download_proteins = Object.keys(networkData[active_domain].gene_info);
         }
 
-        console.log(download_proteins);
         //get information depending on type.
         var netdata = networkData[active_domain];
         var data = "";
