@@ -9,14 +9,14 @@
       <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins.</p>
 
     </div>
-	<div class="container">
+	<div class="container" style="height:100%;">
 	 <div class="row">
    <?php
      /* Is this the search page, or the results page, or the details page? */
    if(isset($_GET['search']))
    {
     ?>
-    <div class="col-md-12" style="height:100%;">
+    <div class="col-md-12">
     <div class="navbar navbar-inverse">
   <div class="navbar-header">
     <a class="navbar-brand" href="#">Variants Browser</a>
