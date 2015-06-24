@@ -16,7 +16,7 @@
    if(isset($_GET['search']))
    {
     ?>
-    <div class="col-md-12">
+    <div class="col-md-12" style="height:100%;">
     <div class="navbar navbar-inverse">
   <div class="navbar-header">
     <a class="navbar-brand" href="#">Variants Browser</a>
