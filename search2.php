@@ -62,15 +62,30 @@ foreach ($domains as $domain) {
 	$interactions = array();
 	$interaction_raw_data = array();
 	$interaction_scores = array();
+	$iid_to_enspid = array();
 	$partners = array();
 	$mut_interaction_types = array();
 	while ($row = $stmt->fetch())
 	{
 		$interactions[] = $row['IID'];
 		$partners[] = $row['Interaction_EnsPID'];
+		$iid_to_enspid[$row['IID']] = $row['Interaction_EnsPID'];
 		$mut_interaction_types[$row['Interaction_EnsPID']] = [];
 		$interaction_raw_data[] = ['domain' => $row['Domain_EnsPID'], 'interaction' => $row['Interaction_EnsPID'], 'start' => $row['Start'], 'end' => $row['End'], 'score'=> $row['Score']];
 		$interaction_scores[$row['Interaction_EnsPID']] = $row['Score'];
+	}
+
+	//Get all T_Interaction_Eval data for all interactions
+	$plist = '\'' . implode('\',\'', $interactions) . '\'';
+	$query = 'SELECT * FROM T_Interactions_Eval WHERE IID IN(' . $plist . ')';
+	$query_params = array();
+	$stmt = $dbh->prepare($query);
+	$stmt->execute($query_params);
+
+	$interaction_eval = [];
+	while ($row = $stmt->fetch())
+	{
+		$interaction_eval[$iid_to_enspid[$row['IID']]] = $row;
 	}
 
 	//Get all Interaction_MT for all Interactions
@@ -192,7 +207,7 @@ foreach ($domains as $domain) {
 	}
 
 	//our info
-	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data, "interaction_scores" => $interaction_scores, "pwm" => $pwm, "int_start" => 0, "int_limit" => 100];
+	$all_data[$domain] = ["domain_info" => $domain_info[$i], "gene_info" => $gene_info, "mut_int" => $mut_interaction_labels, "muts" => $mutation_information, "mut_effects" => $mut_interactions, "raw_interactions" => $interaction_raw_data, "interaction_scores" => $interaction_scores, "interaction_eval" => $interaction_eval, "pwm" => $pwm, "int_start" => 0, "int_limit" => 100];
 
 	$i = $i + 1;
 }

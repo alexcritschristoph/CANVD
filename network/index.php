@@ -297,6 +297,8 @@
             edge_color = "#fdb863", edge_style = "solid";
 
           var edge_width = parseFloat(networkData[active_domain].interaction_scores[node])*7;
+         //CHANGE TO AVERAGE AVG EDGE WIDTH EDGE WEIGHT 
+         // var edge_width = parseFloat(networkData[active_domain].interaction_eval[node]['Avg']*7)
           if (edge_width < 1){
               edge_width = 1;
           }
@@ -480,6 +482,64 @@
             }
             });
 
+            //Edge popups
+            cy.$('edge').on('click', function(e){
+              var ele = e.cyTarget;
+              clickedEdge = ele;
+            });
+
+
+            cy.elements('edge').qtip({
+              content: {
+                text: function(event, api) {
+                    var eval_data = networkData[active_domain].interaction_eval[clickedEdge.data("target")];
+
+                    var html = "<div style='overflow-y:scroll;max-height:200px;'><h5 style='margin-left:10px;'>Interaction Evaluation:</h5>"
+                    var muts_string = "<table class='table table-striped muts-table'><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>";
+                    muts_string += "<h6><b>Evaluation Score: " + eval_data['Avg'] + "</b></h6>";
+                    for (m in eval_data){
+                      if (isNaN(m) && m != 'IID'  && m != 'Avg'  )
+                      {
+                          var scale = parseFloat(eval_data[m]);
+                          var col = '';
+                          if (scale < 0.2){
+                            col = '#ffffb2';
+                          }
+                          else if (scale < 0.4){
+                            col = '#fecc5c';
+                          }
+                          else if (scale < 0.6){
+                            col = '#fd8d3c';
+                          }
+                          else if (scale < 0.8){
+                            col = '#f03b20';
+                          }
+                          else if (scale <= 1){
+                            col = '#bd0026';
+                          }
+                          muts_string += "<tr><td>" + m.replace("_"," ").replace("_"," ").replace("_"," ") + "</td><td style='background:" + col + "'></td></tr>";
+                      }
+                  }
+                  muts_string += "<svg width='120' height='24' style='margin-left:20px;'><rect fill='#ffffb2' width='24' height='24' x='0'></rect><rect fill='#fecc5c' width='24' height='24' x='24'></rect><rect fill='#fd8d3c' width='24' height='24' x='48'></rect><rect fill='#f03b20' width='24' height='24' x='72'></rect><rect fill='#bd0026' width='24' height='24' x='96'></rect></svg>";
+
+                  return html + muts_string +  "</tbody></table></div>";
+                  },
+              },
+              show: {
+                ready: false
+              },
+              position: {
+                my: 'top center',
+                at: 'bottom center'
+              },
+              style: {
+                classes: 'qtip-light',
+                tip: {
+                  width: 10,
+                  height: 8
+                }
+              }
+             });
           }
         };
 
