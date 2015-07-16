@@ -155,9 +155,9 @@
               <table class="table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Ensembl ID</th>
+                    <th>Protein ID</th>
                     <th>Protein Name</th>
-                    <th>Type/Domain</th>
+                    <th>Domain</th>
                     <th>Gain of Interactions</th>
                     <th>Loss of Interactions</th>
                     <th>Total Interactions</th>
