@@ -297,7 +297,7 @@
             edge_color = "#fdb863", edge_style = "solid";
 
           var edge_width = parseFloat(networkData[active_domain].interaction_scores[node])*7;
-         //CHANGE TO AVERAGE AVG EDGE WIDTH EDGE WEIGHT 
+         //CHANGE TO AVERAGE AVG EDGE WIDTH EDGE WEIGHT
          // var edge_width = parseFloat(networkData[active_domain].interaction_eval[node]['Avg']*7)
           if (edge_width < 1){
               edge_width = 1;
@@ -459,7 +459,9 @@
                     return html + muts_string + "</tbody></table></div>";
                   }
                   else{
-                    return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><p><b>" + networkData[active_domain].domain_info.Type + " domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + networkData[active_domain].domain_info.EnsPID + "'>" + networkData[active_domain].domain_info.EnsPID + "</a></p></div>";
+                    return "<div style='padding:10px;font-size:1.5em;line-height:1.8em;'><div style='font-size:14px;line-height:16px;margin-bottom:5px;'>" +
+                    networkData[active_domain].domain_info.Description.split("[")[0] +
+                    "</div><p><b>" + networkData[active_domain].domain_info.Type + " domain. Ensembl ID(s):</b><br><a href='http://ensembl.org/id/" + networkData[active_domain].domain_info.EnsPID + "'>" + networkData[active_domain].domain_info.EnsPID + "</a></p></div>";
                   }
                 },
               title: function(event, api) {

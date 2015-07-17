@@ -31,7 +31,19 @@ while ($row = $stmt->fetch())
 {
 	$domains[] = $row["EnsPID"];
 	$domain_names[$row['EnsPID']] = $row['GeneName'];
-	$domain_info[] = ["EnsPID" => $row["EnsPID"],"DomainName" => $row['GeneName'],"Type" => $row["Type"]];
+
+	//get T_Ensembl description
+	$query2 = 'SELECT Description
+				FROM T_Ensembl
+				WHERE EnsPID=:ens_pid;';
+	$query_params2 = array(':ens_pid' => $row["EnsPID"]);
+	$stmt2 = $dbh->prepare($query2);
+	$stmt2->execute($query_params2);
+	while ($row2 = $stmt2->fetch())
+	{
+		$desc = $row2['Description'];
+	}
+	$domain_info[] = ["EnsPID" => $row["EnsPID"],"DomainName" => $row['GeneName'],"Type" => $row["Type"], "Description" => $desc];
 }
 
 //For each domain, get interaction data
@@ -43,7 +55,7 @@ foreach ($domains as $domain) {
 	$query = 'SELECT PWM
 				FROM T_PWM
 				WHERE Domain=:ens_pid;';
-	$query_params = array(':ens_pid' => $domain_names[$domain]);;
+	$query_params = array(':ens_pid' => $domain_names[$domain]);
 	$stmt = $dbh->prepare($query);
 	$stmt->execute($query_params);
 	while ($row = $stmt->fetch())
