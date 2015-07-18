@@ -73,13 +73,13 @@
   $plist = '\'' . implode('\',\'', $t) . '\'';
 
   $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';
-  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
+  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
   $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
   }
   else
   {
   $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type LIMIT "  . $start . ',' . $end . ';';
-  $query2 = "SELECT COUNT(DISTINCT EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
+  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
   $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
   }
 
@@ -139,10 +139,20 @@
   $stmt->execute($query_params);
 
   $variants = array();
+  $variant_count = array();
   $variant_names = array();
   $variant_ids = array();
   while ($row = $stmt->fetch())
   {
+
+    if(array_key_exists($row[0],$variants))
+    {
+        $variant_count[$row[0]] += 1;
+    }
+    else{
+        $variant_count[$row[0]] = 1;
+    }
+
     if(!array_key_exists($row[0],$variants))
     {
       $variants[$row[0]] = array(array($row[1], $row[3]));
@@ -256,7 +266,7 @@
         <td><?php echo implode(', ',$tissues);?></td>
         <td class="selectable"><?php echo $name;?></td>
         <td class="selectable"><?php echo $variant_names[$name];?></td>
-        <td class="mut-count"><?php echo count($data)?></td>
+        <td class="mut-count"><?php echo $variant_count[$name];?></td>
         <td><?php echo $int_num;?></td>
         <td><?php echo $elist;?></td>
         </a>

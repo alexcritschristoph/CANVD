@@ -49,9 +49,9 @@
           <th>Tissue</th>
           <th>Protein ID</th>
           <th>Protein Name</th>
-          <th>Variants in Tissue(s)</th>
-          <th>Interactions</th>
-          <th>Effect(s)</th>
+          <th>Variants in tissue(s)</th>
+          <th>Interactions (Total for this protein)</th>
+          <th>Rewiring Effects (Total for this protein)</th>
         </tr>
       </thead>
       <tbody id="variants-results">
