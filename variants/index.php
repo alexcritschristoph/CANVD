@@ -37,7 +37,7 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="#" id='download-current'>Download Current View</a></li>
+        <li><a href="#" id='download-current'>Download These Variants</a></li>
         </ul>
       </li>
     </ul>
@@ -167,7 +167,8 @@
       });
 
       $("#download-current").on("click", function(){
-        window.location.href = './download.php?tissue=' + tissues_selected + '&source=' + '<?php echo json_encode($_GET["source"]);?>' + '&type=' + '<?php echo json_encode($_GET["mut_type"]);?>' + '&end=' + $('#prot_current').text() <?php if(isset($_GET['prot'])){ ?> + '&prot=' + "<?php echo $_GET['prot'];?>"<?php } ?>;
+        $('#download_modal').modal('show');
+        window.location.href = './download_all.php?tissue=' + tissues_selected + '&source=' + '<?php echo json_encode($_GET["source"]);?>' + '&type=' + '<?php echo json_encode($_GET["mut_type"]);?>' + '&end=' + $('#prot_current').text() <?php if(isset($_GET['prot'])){ ?> + '&prot=' + "<?php echo $_GET['prot'];?>"<?php } ?>;
       });
 
     });
@@ -194,9 +195,9 @@
       <!-- Text input-->
       <div class="col-md-5">
       <div class="form-group">
-        <label class="col-md-3 control-label" for="tissue-input">Protein Name / ID</label>
+        <label class="col-md-3 control-label" for="tissue-input">Protein Names / IDs (separate by comma)</label>
         <div class="col-md-8">
-        <input id="tissue-input" name="prot" type="text" placeholder="search for a specific variant protein" class="form-control input-md">
+        <input id="tissue-input" name="prot" type="text" placeholder="search for specific variant proteins" class="form-control input-md">
 
         </div>
       </div>
@@ -306,6 +307,31 @@ while ($row = $stmt->fetch())
 	<script>
 
 	</script>
+
+  <!-- Modal -->
+<div id="download_modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Downloading variants <i class="fa fa-cloud-download"></i>
+</h4>
+      </div>
+      <div class="modal-body" style="padding:20px;font-style:italic;">
+        <p> <i class="fa fa-database"></i>
+ Preparing custom variant dataset, please wait... (this could take up to 5 minutes)</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i> Dismiss this message </i></button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
 	</body>
 
 </html>

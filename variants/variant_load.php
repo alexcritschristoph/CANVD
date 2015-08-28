@@ -30,11 +30,16 @@
   $type = '';
 
   if (!isset($_GET['prot']) || $_GET['prot'] == ''){
-    $protein_name = "%";
+    $protein_name = ".*
+
+    ";
     $_GET['prot'] = '';
   }
   else{
     $protein_name = $_GET['prot'];
+
+    $protein_name = str_replace(',', '$|^', $protein_name);
+    $protein_name = "^" . $protein_name . "$";
   }
 
   if (isset($_GET['source']) && $_GET['source'] != ''){
@@ -72,15 +77,15 @@
   $t = array_map('sanitize', $tissues);
   $plist = '\'' . implode('\',\'', $t) . '\'';
 
-  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';
-  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
-  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
+  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ") LIMIT "  . $start . ',' . $end . ';';
+  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
+  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type AND tumour_site IN (" . $plist . ");";
   }
   else
   {
-  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type LIMIT "  . $start . ',' . $end . ';';
-  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
-  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` LIKE :name AND mut_description RLIKE :type;";
+  $query = "SELECT DISTINCT EnsPID FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type LIMIT "  . $start . ',' . $end . ';';
+  $query2 = "SELECT COUNT(EnsPID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type;";
+  $query3 = "SELECT COUNT(ID) FROM T_Mutations WHERE Source RLIKE :source AND `gene name` RLIKE :name AND mut_description RLIKE :type;";
   }
 
 
