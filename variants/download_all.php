@@ -32,14 +32,17 @@ include_once('../common.php');
   $source = '';
   $type = '';
 
+
   if (!isset($_GET['prot']) || $_GET['prot'] == ''){
     $protein_name = "%";
     $_GET['prot'] = '';
   }
   else{
     $protein_name = $_GET['prot'];
-  }
 
+    $protein_name = str_replace(',', '$|^', $protein_name);
+    $protein_name = "^" . $protein_name . "$";
+  }
 
 
   if (isset($_GET['source']) && $_GET['source'] != ''){
@@ -83,11 +86,11 @@ include_once('../common.php');
   $tissue_array = explode(',', $tissues);
 
   $plist = implode("','", $tissue_array);
-  $query = "SELECT GeneName,Sequence FROM T_Ensembl LEFT JOIN T_Mutations on T_Ensembl.EnsPID=T_Mutations.EnsPID WHERE T_Mutations.Source RLIKE :source AND T_Mutations.`gene name` LIKE :name AND T_Mutations.mut_description RLIKE :type AND T_Mutations.tumour_site IN (" . $plist . ") LIMIT 10000;";
+  $query = "SELECT GeneName,Sequence FROM T_Ensembl LEFT JOIN T_Mutations on T_Ensembl.EnsPID=T_Mutations.EnsPID WHERE T_Mutations.Source RLIKE :source AND T_Mutations.`gene name` RLIKE :name AND T_Mutations.mut_description RLIKE :type AND T_Mutations.tumour_site IN (" . $plist . ") LIMIT 10000;";
   }
   else
   {
-  $query = "SELECT GeneName,Sequence FROM T_Ensembl LEFT JOIN T_Mutations on T_Ensembl.EnsPID=T_Mutations.EnsPID WHERE  T_Mutations.Source RLIKE :source AND T_Mutations.`gene name` LIKE :name AND T_Mutations.mut_description RLIKE :type LIMIT 10000;";
+  $query = "SELECT GeneName,Sequence FROM T_Ensembl LEFT JOIN T_Mutations on T_Ensembl.EnsPID=T_Mutations.EnsPID WHERE  T_Mutations.Source RLIKE :source AND T_Mutations.`gene name` RLIKE :name AND T_Mutations.mut_description RLIKE :type LIMIT 10000;";
   }
 
 

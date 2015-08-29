@@ -30,9 +30,7 @@
   $type = '';
 
   if (!isset($_GET['prot']) || $_GET['prot'] == ''){
-    $protein_name = ".*
-
-    ";
+    $protein_name = ".*";
     $_GET['prot'] = '';
   }
   else{
