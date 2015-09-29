@@ -6,7 +6,7 @@
 ?>
 
 
-      <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins.</p>
+      <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins. This feature helps in building custom variants database in FASAT format that can be used in identifying cancer variants using MS/MS-based proteomics, for instance.</p>
 
     </div>
 	<div class="container" style="height:100%;">
@@ -33,6 +33,7 @@
         </ul>
       </li>
     </ul>
+      
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
         <a href="#" class="dropdown-toggle download-dropdown" data-toggle="dropdown">Download <b class="caret"></b></a>
@@ -294,6 +295,8 @@ while ($row = $stmt->fetch())
   </div>
       </fieldset>
       </form>
+         
+         
   <?php
     }
       include $root_path. 'footer.php';

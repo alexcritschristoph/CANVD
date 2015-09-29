@@ -27,7 +27,7 @@
           </div>
 
       <div class="list-group show-list" id="tissue_list">
-        <span class="list-group-item"><b>Mutations in Tissues:</b></span>
+        <span class="list-group-item"><b>Interactions:</b></span>
 
       </div>
 
@@ -35,14 +35,14 @@
       <div id="downloads_panel">
       <p style="font-size:1.2em;">There are multiple datasets which can be downloaded for this domain's network.</p>
       <div class="list-group">
-        <span class="list-group-item download-list" style="background:#d6d6d6">Download current view (csv):</span>
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download - Current view (csv):</span>
         <a href="#" class="list-group-item vd interaction-download">Download Interactions</a>
         <a href="#" class="list-group-item vd effects-download">Download Mutation Effects</a>
         <a href="#" class="list-group-item vd mutation-download">Download Mutation List</a>
       </div>
 
       <div class="list-group">
-        <span class="list-group-item download-list" style="background:#d6d6d6">Download ALL interaction data (csv):</span>
+        <span class="list-group-item download-list" style="background:#d6d6d6">Download - Entire Network (csv):</span>
         <a href="#" class="list-group-item ad interaction-download">Download Interactions</a>
         <a href="#" class="list-group-item ad effects-download">Download Mutation Effects</a>
         <a href="#" class="list-group-item ad mutation-download">Download Mutation List</a>
