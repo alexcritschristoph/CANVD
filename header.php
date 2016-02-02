@@ -8,9 +8,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
 		<script src="<?php echo $root_path;?>site.js" ></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo $root_path;?>styles.css">
-        <link href="./slider.css" rel="stylesheet">
         <script src="<?php echo $root_path;?>bootstrap.js"></script>
-        <script src="./bootstrap-slider.js"></script>
         <link type="text/css" rel="stylesheet" href="<?php echo $root_path;?>jquery.qtip.css" />
         <script type="text/javascript" src="<?php echo $root_path;?>jquery.qtip.js"></script>
         <script src="<?php echo $root_path;?>cytoscape.min.js"></script>

@@ -1,6 +1,7 @@
 <?php
 $root_path = "../";
 include_once('../common.php');
+error_reporting(E_ALL & ~E_WARNING);
 
 /*******************FORM QUERY **********************************
 *****************************************************************/
@@ -78,13 +79,8 @@ include_once('../common.php');
   if(isset($_GET['tissue']))
   {
   $tissues = $_GET['tissue'];
-  function sanitize($s) {
-    return htmlspecialchars($s);
-    }
-  $t = array_map('sanitize', $tissues);
   $tissues = "'" . $tissues . "'";
   $tissue_array = explode(',', $tissues);
-
   $plist = implode("','", $tissue_array);
   $query = "SELECT GeneName,Sequence FROM T_Ensembl LEFT JOIN T_Mutations on T_Ensembl.EnsPID=T_Mutations.EnsPID WHERE T_Mutations.Source RLIKE :source AND T_Mutations.`gene name` RLIKE :name AND T_Mutations.mut_description RLIKE :type AND T_Mutations.tumour_site IN (" . $plist . ") LIMIT 10000;";
   }
@@ -103,13 +99,23 @@ $query_params = array(":source" => $source, ":name" => $protein_name, ":type" =>
 $stmt = $dbh->prepare($query);
 $stmt->execute($query_params);
 $variant_proteins = array();
-$newfile = "";
 while ($row = $stmt->fetch())
 {
-	$newfile = $newfile . '>' . $row['GeneName'] . "\n";
-	$newfile = $newfile . $row['Sequence'] . "\n";
+	$variant_proteins[] = $row['EnsPID'];
 }
 
+/*********************** GRAB VARIANT FILES *****************
+**************************************************************/
+$newfile = "";
+foreach ($variant_proteins as $var)
+{
+  $prot = fopen("../proteins/mt/" . $var . ".fasta", "r");
+  while ($line = fgets($prot)) {
+    $newfile = $newfile . $line;
+  }
+  fclose($prot);
+
+}
 
 /*******************GET SEQUENCES **********************************
 *****************************************************************/

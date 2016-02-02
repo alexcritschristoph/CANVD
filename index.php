@@ -203,16 +203,6 @@
                     }
                 });
 
-                $('#sl1').slider();
-                $('#sl2').slider();
-                $('#sl3').slider();
-                $('#sl4').slider();
-                $('#sl5').slider();
-                $('#sl6').slider();
-                $('#sl7').slider();
-                $('#sl8').slider();
-                $('#sl9').slider();
-                $('#sl10').slider();
                 function update_protein_view()
                 {
                 $("#protein-table").fadeOut('fast');

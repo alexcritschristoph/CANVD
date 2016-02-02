@@ -12,7 +12,7 @@
 ?>	
 	   <p><h2 style="margin-bottom:30px;"> Deposit Your Datasets in <span style="color:#ea2f10">Can-VD</span></h2></p>
 		<br>
-			    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) was designed as a host for all data sets results from studying the impact of cancer mutations in domain-based protein-protein interactions (PPI). This page lists the requirements for datasets deposition to <span style="color:#ea2f10">Can-VD</span>. The dataset should comply with the <span style="color:#ea2f10">Can-VD</span> data standard (Table 1) and has the structure (or can be processed to be in the structure) that fits <span style="color:#ea2f10">Can-VD</span> (Figure 1).</p>
+			    <p align="justify">The <span style="color:#ea2f10">Can</span>cer <span style="color:#ea2f10">V</span>ariants <span style="color:#ea2f10">D</span>atabase (<span style="color:#ea2f10">Can-VD</span>) was designed to grow and accomodate additional data sets from future studies on the impact of cancer mutations in domain-based protein-protein interactions (PPI). This page lists the requirements for dataset deposition to <span style="color:#ea2f10">Can-VD</span>. The dataset should comply with the <span style="color:#ea2f10">Can-VD</span> data standard (Table 1) and has the structure (or can be processed to be in the structure) that fits <span style="color:#ea2f10">Can-VD</span> (Figure 1).</p>
 		<br>
 
 <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0 width="100%"

@@ -267,8 +267,8 @@
         <?php  ?>
 
         <td><?php echo implode(', ',$tissues);?></td>
-        <td class="mut-count"><?php echo $name;?></td>
-        <td class="mut-count"><?php echo $variant_names[$name];?></td>
+        <td class="selectable"><?php echo $name;?></td>
+        <td class="selectable"><?php echo $variant_names[$name];?></td>
         <td class="mut-count"><?php echo $variant_count[$name];?></td>
         <td><?php echo $int_num;?></td>
         <td><?php echo $elist;?></td>
@@ -278,4 +278,3 @@
     }
   }
     ?>
-<p ><span style="text-align:center;font-size: 16px;">Scroll down to load more results</span></p>

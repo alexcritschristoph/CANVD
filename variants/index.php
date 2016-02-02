@@ -6,7 +6,7 @@
 ?>
 
 
-      <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides the information and full sequences of the cancer variants and the corresponding wildtype proteins. This feature helps in building custom variants database in FASAT format that can be used in identifying cancer variants using MS/MS-based proteomics, for instance.</p>
+      <p id="main-top-text" align="justify">The <span style="color:#ea2f10">Variants</span> feature provides details on and full sequences for cancer variants and their corresponding wildtype proteins. This tool can aid in building custom variants database in FASTA format that can be used in applications such as identifying cancer variants using MS/MS-based proteomics.</p>
 
     </div>
 	<div class="container" style="height:100%;">
