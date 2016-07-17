@@ -1,7 +1,6 @@
-**Can-VD README**
+**Legacy Can-VD**
 
-
-The Cancer Variants Database (Can-VD) is an online resource for the assessment of the impact of cancer mutations on protein-protein interactions (PPI) networks. Can-VD stores the PPI interaction networks mediated by wildtype and cancer variants and visualizes the overlay of the two networks to understand the effects of mutations on the network and consequently their cellular and biological impact. The effects of over 800,000 cancer missense mutations are analyzed and stored in Can-VD. Furthermore, Can-VD provides the full sequences of the wildtype and cancer variant proteins, with a comprehensive search and download interface to easily build a customized protein databases for cancer genomics and proteomics. 
+NOTE: Can-VD has been renamed to DV-IMPACT, and the most up-to-date repository for DV-IMPACT is available [here](https://github.com/MoHelmy/DV-IMPACT).
 
 ![CAN-VD Screenshot](http://i.imgur.com/qwGZyAy.png)
 
